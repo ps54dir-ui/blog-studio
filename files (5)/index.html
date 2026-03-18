@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog Studio — 로그인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b4fa0'><text y='18' font-size='18'>✦</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0d12;
+  --card:#111620;
+  --border:rgba(255,255,255,.08);
+  --ink:rgba(255,255,255,.88);
+  --muted:rgba(255,255,255,.35);
+  --purple:#6b4fa0;
+  --green:#2d6a4a;
+  --red:#c0441e;
+  --accent:#7c6bc4;
+}
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* 배경 그리드 */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(107,79,160,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(107,79,160,.04) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+
+/* 배경 글로우 */
+.glow{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(120px);
+  pointer-events:none;
+  opacity:.25;
+}
+.glow-1{width:600px;height:600px;background:#6b4fa0;top:-200px;right:-100px;}
+.glow-2{width:400px;height:400px;background:#1d4e89;bottom:-150px;left:-100px;}
+
+.card{
+  position:relative;
+  width:420px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:48px 40px;
+  text-align:center;
+  box-shadow:0 32px 80px rgba(0,0,0,.4);
+  animation:fadeUp .6s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.logo{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:32px;
+}
+.logo-icon{
+  width:40px;height:40px;
+  background:linear-gradient(135deg,var(--purple),var(--accent));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.logo-text{
+  font-family:'DM Mono',monospace;
+  font-size:18px;
+  font-weight:500;
+  color:white;
+  letter-spacing:-.3px;
+}
+
+h1{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:8px;
+  line-height:1.3;
+}
+.sub{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:36px;
+  line-height:1.7;
+}
+
+.google-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  width:100%;
+  padding:14px 20px;
+  background:white;
+  border:none;
+  border-radius:10px;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  color:#1a1611;
+  cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 2px 12px rgba(0,0,0,.15);
+}
+.google-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.google-btn:active{transform:translateY(0);}
+.google-logo{width:20px;height:20px;}
+
+.divider{
+  display:flex;align-items:center;gap:12px;
+  margin:24px 0;
+  color:var(--muted);font-size:11px;
+}
+.divider::before,.divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+.features{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-top:32px;
+  text-align:left;
+}
+.feat{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:12px;
+}
+.feat-icon{font-size:16px;margin-bottom:6px;}
+.feat-title{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:3px;}
+.feat-desc{font-size:10px;color:var(--muted);line-height:1.5;}
+
+.notice{
+  margin-top:24px;
+  padding:12px 14px;
+  background:rgba(107,79,160,.08);
+  border:1px solid rgba(107,79,160,.2);
+  border-radius:8px;
+  font-size:10px;
+  color:rgba(255,255,255,.4);
+  line-height:1.7;
+  text-align:left;
+}
+
+/* 로딩 상태 */
+.loading{display:none;flex-direction:column;align-items:center;gap:16px;padding:20px 0;}
+.spinner{
+  width:36px;height:36px;
+  border:3px solid rgba(107,79,160,.2);
+  border-top-color:var(--purple);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 에러 */
+.error-box{
+  display:none;
+  background:rgba(192,68,30,.08);
+  border:1px solid rgba(192,68,30,.3);
+  border-radius:8px;
+  padding:12px 14px;
+  font-size:11px;
+  color:#e08a6a;
+  margin-top:16px;
+  text-align:left;
+  line-height:1.6;
+}
+
+/* 설정 안내 모달 */
+.setup-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.7);
+  z-index:100;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.setup-modal{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  width:560px;max-width:95vw;
+  max-height:85vh;
+  overflow-y:auto;
+  padding:32px;
+}
+.setup-modal h2{font-size:16px;margin-bottom:6px;}
+.setup-modal .desc{font-size:12px;color:var(--muted);margin-bottom:24px;line-height:1.7;}
+.step-item{
+  display:flex;gap:14px;
+  margin-bottom:20px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--border);
+}
+.step-item:last-of-type{border-bottom:none;margin-bottom:0;}
+.step-num{
+  width:24px;height:24px;
+  background:var(--purple);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  flex-shrink:0;margin-top:2px;
+}
+.step-content h3{font-size:12px;font-weight:600;margin-bottom:6px;}
+.step-content p{font-size:11px;color:var(--muted);line-height:1.7;}
+.step-content code{
+  display:block;margin-top:8px;
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:8px 10px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:rgba(255,255,255,.7);
+  word-break:break-all;
+}
+.input-field{
+  width:100%;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:10px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--ink);
+  outline:none;
+  margin-top:8px;
+}
+.input-field:focus{border-color:var(--purple);}
+.save-btn{
+  width:100%;
+  margin-top:20px;
+  padding:12px;
+  background:var(--purple);
+  border:none;
+  border-radius:8px;
+  color:white;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .15s;
+}
+.save-btn:hover{background:#5a3f8e;}
+
+/* 설정 링크 */
+.setup-link{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;color:rgba(107,79,160,.7);
+  cursor:pointer;margin-top:16px;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<div class="card">
+  <!-- 로고 -->
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <div class="logo-text">Blog Studio</div>
+  </div>
+
+  <!-- 기본 로그인 화면 -->
+  <div id="loginView">
+    <h1>팀 블로그 스튜디오에<br>오신 것을 환영합니다</h1>
+    <p class="sub">구글 계정으로 로그인하면<br>팀원과 프로젝트를 공유할 수 있습니다</p>
+
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg class="google-logo" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Google 계정으로 로그인
+    </button>
+
+    <div id="errorBox" class="error-box"></div>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon">🔐</div>
+        <div class="feat-title">구글 로그인</div>
+        <div class="feat-desc">별도 회원가입 없이 구글 계정 사용</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">💾</div>
+        <div class="feat-title">구글 드라이브 저장</div>
+        <div class="feat-desc">프로젝트·캐릭터가 드라이브에 자동 저장</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">👥</div>
+        <div class="feat-title">팀 공유</div>
+        <div class="feat-desc">팀원과 설정 실시간 공유</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🛡</div>
+        <div class="feat-title">관리자 모드</div>
+        <div class="feat-desc">전체 팀 데이터 열람 가능</div>
+      </div>
+    </div>
+
+    <div class="notice">
+      ℹ️ 처음 사용 시 구글 드라이브 접근 권한을 요청합니다.<br>
+      데이터는 본인의 구글 드라이브에 저장되며 타인이 볼 수 없습니다.<br>
+      관리자 계정만 팀 전체 데이터에 접근 가능합니다.
+    </div>
+
+    <div class="setup-link" onclick="openSetupModal()">⚙ Google API 설정 안내</div>
+    <div style="margin-top:12px;text-align:center;">
+      <a href="blog-studio-v7.html" style="font-size:11px;color:var(--muted);">로그인 없이 원고만 사용하기 →</a>
+    </div>
+  </div>
+
+  <!-- 로딩 화면 -->
+  <div class="loading" id="loadingView">
+    <div class="spinner"></div>
+    <div style="font-size:13px;color:var(--muted)">로그인 중...</div>
+  </div>
+
+</div>
+
+<!-- 설정 안내 모달 -->
+<div class="setup-overlay" id="setupOverlay" onclick="if(event.target===this)closeSetupModal()">
+<div class="setup-modal">
+  <h2>⚙️ Google API 초기 설정 가이드</h2>
+  <p class="desc">Blog Studio를 팀에서 사용하려면 Google Cloud Console에서<br>앱을 한 번만 등록하면 됩니다. (5~10분 소요)</p>
+
+  <div class="step-item">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h3>Google Cloud Console 접속</h3>
+      <p>아래 주소로 접속해 새 프로젝트를 만드세요.</p>
+      <code>https://console.cloud.google.com</code>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h3>API 활성화</h3>
+      <p>좌측 메뉴 → API 및 서비스 → 라이브러리에서 아래 두 가지를 검색해 활성화하세요.</p>
+      <code>Google Drive API<br>Google Identity Services</code>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h3>OAuth 동의 화면 설정</h3>
+      <p>API 및 서비스 → OAuth 동의 화면 → 외부 선택 → 앱 이름: "Blog Studio" → 저장</p>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h3>OAuth 클라이언트 ID 발급</h3>
+      <p>사용자 인증 정보 → + 사용자 인증 정보 만들기 → OAuth 클라이언트 ID<br>
+      애플리케이션 유형: 웹 애플리케이션<br><br>
+      <strong>승인된 JavaScript 원본</strong>에 추가:<br>
+      <code style="display:block;margin:4px 0">https://kaleidoscopic-gnome-c77113.netlify.app</code><br>
+      <code style="display:block;margin:4px 0">http://localhost:8080</code> (로컬 8080 포트)<br>
+      <code style="display:block;margin:4px 0">http://localhost:3000</code> (로컬 3000 포트)<br>
+      <code style="display:block;margin:4px 0">http://localhost</code> (포트 없이 사용 시)<br><br>
+      <strong>승인된 리디렉션 URI</strong>에 추가:<br>
+      <code style="display:block;margin:2px 0">https://kaleidoscopic-gnome-c77113.netlify.app</code>
+      <code style="display:block;margin:2px 0">https://kaleidoscopic-gnome-c77113.netlify.app/</code>
+      <code style="display:block;margin:2px 0">https://kaleidoscopic-gnome-c77113.netlify.app/index.html</code></p>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <h3>클라이언트 ID를 아래에 입력</h3>
+      <p>발급받은 클라이언트 ID를 붙여넣으세요. <strong>입력 즉시 저장</strong>되어 다음에도 사용됩니다.</p>
+      <input class="input-field" id="clientIdInput" placeholder="예: 123456789-abc.apps.googleusercontent.com" type="text" onblur="autoSaveConfig()">
+      <div style="margin-top:12px;font-size:11px;color:var(--muted)">관리자 이메일 (쉼표로 여러 명 가능)</div>
+      <input class="input-field" id="adminEmailInput" placeholder="예: admin@gmail.com, ceo@company.com" type="text" onblur="autoSaveConfig()">
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveConfig()">✓ 설정 저장</button> <span id="configSavedHint" style="font-size:11px;color:var(--muted);margin-left:8px"></span>
+  <div style="text-align:center;margin-top:12px">
+    <span onclick="closeSetupModal()" style="font-size:11px;color:var(--muted);cursor:pointer">닫기</span>
+  </div>
+</div>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client"></script>
+
+<script>
+// ══════════════════════════════════════
+// 설정 로드
+// ══════════════════════════════════════
+const CONFIG_KEY = 'bs_google_config';
+
+function getConfig(){
+  try{ return JSON.parse(localStorage.getItem(CONFIG_KEY))||{}; }catch{ return {}; }
+}
+function autoSaveConfig(){
+  const clientId = document.getElementById('clientIdInput')?.value?.trim();
+  const admins   = document.getElementById('adminEmailInput')?.value?.trim()||'';
+  if(clientId){
+    localStorage.setItem(CONFIG_KEY, JSON.stringify({ clientId, admins }));
+    const btn = document.getElementById('configSavedHint');
+    if(btn){ btn.textContent='✓ 저장됨'; btn.style.color='var(--green)'; setTimeout(()=>{ btn.textContent=''; }, 1500); }
+  }
+}
+function saveConfig(){
+  const clientId = document.getElementById('clientIdInput').value.trim();
+  const admins   = document.getElementById('adminEmailInput').value.trim();
+  if(!clientId){ alert('클라이언트 ID를 입력해주세요'); return; }
+  localStorage.setItem(CONFIG_KEY, JSON.stringify({ clientId, admins }));
+  closeSetupModal();
+  location.reload();
+}
+
+// ══════════════════════════════════════
+// 구글 로그인
+// ══════════════════════════════════════
+function signInWithGoogle(){
+  const cfg = getConfig();
+  if(!cfg.clientId){
+    showError('Google API 설정이 필요합니다.<br>아래 "⚙ Google API 설정 안내"를 클릭해 설정해주세요.');
+    return;
+  }
+  showLoading(true);
+
+  // Google Identity Services 로드 확인
+  if(typeof google === 'undefined' || !google.accounts){
+    showLoading(false);
+    showError('Google 로그인 스크립트가 로드되지 않았습니다.<br>페이지를 새로고침 후 다시 시도해주세요.');
+    return;
+  }
+  // Google Identity Services 토큰 방식
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: cfg.clientId,
+    scope: [
+      'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ].join(' '),
+    callback: (tokenResponse) => {
+      if(tokenResponse.error){
+        showLoading(false);
+        showError('로그인 실패: ' + tokenResponse.error);
+        return;
+      }
+      handleToken(tokenResponse.access_token);
+    },
+    error_callback: (err) => {
+      showLoading(false);
+      showError('로그인 취소 또는 오류가 발생했습니다.');
+    }
+  });
+  client.requestAccessToken();
+}
+
+async function handleToken(accessToken){
+  try{
+    // 사용자 정보 가져오기
+    const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers:{ Authorization: 'Bearer '+accessToken }
+    });
+    const user = await res.json();
+
+    const cfg = getConfig();
+    const adminList = (cfg.admins||'').split(',').map(e=>e.trim().toLowerCase()).filter(Boolean);
+    const isAdmin = adminList.includes(user.email.toLowerCase());
+
+    // 세션 저장
+    const session = {
+      accessToken,
+      email: user.email,
+      name: user.name,
+      picture: user.picture,
+      isAdmin,
+      loginAt: Date.now(),
+    };
+    sessionStorage.setItem('bs_session', JSON.stringify(session));
+
+    // 드라이브 폴더 초기화
+    await initDriveFolder(accessToken, user.email);
+
+    // 리다이렉트
+    window.location.href = 'blog-studio-v7.html';
+
+  }catch(e){
+    showLoading(false);
+    showError('사용자 정보를 가져오는데 실패했습니다.<br>'+e.message);
+  }
+}
+
+// ══════════════════════════════════════
+// 구글 드라이브 폴더 초기화
+// ══════════════════════════════════════
+const DRIVE_ROOT = 'Blog Studio';
+
+async function initDriveFolder(token, email){
+  // Blog Studio 루트 폴더 확인/생성
+  let rootId = await findOrCreateFolder(token, DRIVE_ROOT, null);
+  // 사용자 개인 폴더
+  let userFolder = await findOrCreateFolder(token, email, rootId);
+  // 공유 팀 폴더 (관리자용)
+  let teamFolder = await findOrCreateFolder(token, '_team_shared', rootId);
+
+  sessionStorage.setItem('bs_drive_root', rootId);
+  sessionStorage.setItem('bs_drive_user', userFolder);
+  sessionStorage.setItem('bs_drive_team', teamFolder);
+}
+
+async function findOrCreateFolder(token, name, parentId){
+  // 존재하는 폴더 찾기
+  let query = `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  if(parentId) query += ` and '${parentId}' in parents`;
+
+  const searchRes = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`,
+    { headers:{ Authorization:'Bearer '+token }}
+  );
+  const searchData = await searchRes.json();
+
+  if(searchData.files && searchData.files.length > 0){
+    return searchData.files[0].id;
+  }
+
+  // 없으면 생성
+  const meta = { name, mimeType:'application/vnd.google-apps.folder' };
+  if(parentId) meta.parents = [parentId];
+
+  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+    method:'POST',
+    headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' },
+    body: JSON.stringify(meta)
+  });
+  const created = await createRes.json();
+  return created.id;
+}
+
+// ══════════════════════════════════════
+// UI 헬퍼
+// ══════════════════════════════════════
+function showLoading(on){
+  document.getElementById('loginView').style.display = on?'none':'';
+  document.getElementById('loadingView').style.display = on?'flex':'none';
+}
+function showError(msg){
+  const el = document.getElementById('errorBox');
+  el.innerHTML = '⚠️ '+msg;
+  el.style.display = 'block';
+}
+function openSetupModal(){
+  const cfg = getConfig();
+  if(cfg.clientId) document.getElementById('clientIdInput').value = cfg.clientId;
+  if(cfg.admins)   document.getElementById('adminEmailInput').value = cfg.admins;
+  document.getElementById('setupOverlay').style.display='flex';
+}
+function closeSetupModal(){
+  document.getElementById('setupOverlay').style.display='none';
+}
+
+// ══════════════════════════════════════
+// 이미 로그인된 경우 자동 리다이렉트
+// ══════════════════════════════════════
+(function(){
+  const s = sessionStorage.getItem('bs_session');
+  if(s){
+    try{
+      const sess = JSON.parse(s);
+      // 토큰 유효 시간 1시간
+      if(Date.now() - sess.loginAt < 3600000){
+        window.location.href = 'blog-studio-v7.html';
+      }
+    }catch{}
+  }
+})();
+</script>
+</body>
+</html>

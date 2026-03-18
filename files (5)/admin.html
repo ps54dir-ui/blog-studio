@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog Studio — 관리자</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0d12;--card:#111620;--border:rgba(255,255,255,.08);
+  --ink:rgba(255,255,255,.88);--muted:rgba(255,255,255,.35);
+  --purple:#6b4fa0;--green:#2d6a4a;--red:#c0441e;--blue:#1d4e89;
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+/* 헤더 */
+.header{
+  height:52px;background:var(--card);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:sticky;top:0;z-index:100;
+}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;}
+.admin-badge{
+  background:rgba(192,68,30,.15);border:1px solid rgba(192,68,30,.3);
+  color:#e08a6a;font-size:9px;padding:2px 8px;border-radius:10px;
+  font-family:'DM Mono',monospace;letter-spacing:.5px;
+}
+.user-info{display:flex;align-items:center;gap:8px;}
+.user-avatar{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);}
+.user-name{font-size:11px;color:var(--muted);}
+.logout-btn{
+  font-size:10px;color:var(--muted);background:transparent;
+  border:1px solid var(--border);border-radius:4px;padding:4px 10px;
+  cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;
+}
+.logout-btn:hover{color:var(--red);border-color:var(--red);}
+
+/* 레이아웃 */
+.layout{display:flex;height:calc(100vh - 52px);}
+
+/* 사이드바 */
+.sidebar{
+  width:200px;flex-shrink:0;background:var(--card);
+  border-right:1px solid var(--border);
+  padding:16px 0;overflow-y:auto;
+}
+.sidebar-section{
+  padding:0 12px;margin-bottom:20px;
+}
+.sidebar-label{
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);padding:0 6px;margin-bottom:6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:6px;cursor:pointer;
+  font-size:11px;color:var(--muted);transition:all .12s;
+  border:1px solid transparent;margin-bottom:2px;
+}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--ink);}
+.nav-item.on{background:rgba(107,79,160,.12);color:white;border-color:rgba(107,79,160,.3);}
+.nav-icon{font-size:13px;width:16px;text-align:center;}
+
+/* 메인 */
+.main{flex:1;overflow-y:auto;padding:24px;}
+
+/* 카드 */
+.page{display:none;}
+.page.on{display:block;}
+.page-title{font-size:18px;font-weight:700;margin-bottom:4px;}
+.page-sub{font-size:11px;color:var(--muted);margin-bottom:24px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;
+}
+.stat-value{font-size:28px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:4px;}
+.stat-label{font-size:10px;color:var(--muted);}
+.stat-card.purple .stat-value{color:var(--purple);}
+.stat-card.green .stat-value{color:#2d9e6a;}
+.stat-card.blue .stat-value{color:#4a8ecc;}
+.stat-card.orange .stat-value{color:#c87820;}
+
+/* 테이블 */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.table-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.table-title{font-size:12px;font-weight:600;}
+.table-search{
+  background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:5px;
+  padding:5px 10px;font-size:10px;color:var(--ink);outline:none;width:180px;
+  font-family:'DM Mono',monospace;
+}
+.table-search::placeholder{color:var(--muted);}
+table{width:100%;border-collapse:collapse;}
+th{
+  padding:9px 14px;text-align:left;font-size:9px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+td{padding:10px 14px;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.badge{
+  display:inline-block;font-size:9px;padding:2px 7px;border-radius:10px;
+  font-family:'DM Mono',monospace;
+}
+.badge-admin{background:rgba(192,68,30,.12);color:#e08a6a;border:1px solid rgba(192,68,30,.25);}
+.badge-member{background:rgba(107,79,160,.1);color:#a08ad4;border:1px solid rgba(107,79,160,.2);}
+.badge-active{background:rgba(45,158,106,.1);color:#5ecb96;border:1px solid rgba(45,158,106,.2);}
+
+/* 액션 버튼 */
+.action-btn{
+  font-size:9px;padding:4px 9px;border-radius:4px;cursor:pointer;
+  font-family:'DM Mono',monospace;border:1px solid var(--border);
+  background:transparent;color:var(--muted);transition:all .12s;margin-right:4px;
+}
+.action-btn:hover{color:var(--ink);border-color:rgba(255,255,255,.25);}
+.action-btn.view{color:#4a8ecc;border-color:rgba(74,142,204,.3);}
+.action-btn.del{color:var(--red);border-color:rgba(192,68,30,.3);}
+
+/* 빈 상태 */
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:11px;line-height:2;}
+.empty-icon{font-size:28px;opacity:.3;margin-bottom:8px;}
+
+/* 데이터 뷰어 모달 */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+  z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.modal-overlay.on{display:flex;}
+.data-modal{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  width:640px;max-width:95vw;max-height:80vh;display:flex;flex-direction:column;
+}
+.modal-head{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.modal-head h3{font-size:13px;font-weight:600;}
+.modal-close{
+  width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);
+  border:none;color:var(--muted);cursor:pointer;font-size:12px;
+}
+.modal-body{flex:1;overflow-y:auto;padding:16px 18px;}
+.data-section{margin-bottom:20px;}
+.data-section h4{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.data-row{
+  display:flex;gap:8px;padding:8px 10px;border-radius:5px;
+  background:rgba(255,255,255,.03);margin-bottom:4px;font-size:11px;
+}
+.data-key{color:var(--muted);width:120px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:10px;}
+.data-val{color:var(--ink);word-break:break-all;}
+
+/* 로딩 */
+.loading-wrap{padding:40px;text-align:center;color:var(--muted);font-size:11px;}
+.spinner{
+  width:28px;height:28px;border:2px solid rgba(107,79,160,.2);border-top-color:var(--purple);
+  border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 접근 거부 */
+.access-denied{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;text-align:center;
+}
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">✦ Blog Studio</div>
+    <div class="admin-badge">ADMIN</div>
+  </div>
+  <div class="user-info">
+    <img class="user-avatar" id="adminAvatar" src="" alt="">
+    <span class="user-name" id="adminName"></span>
+    <button class="logout-btn" onclick="logout()">로그아웃</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">관리</div>
+      <div class="nav-item on" onclick="showPage('overview')" id="nav-overview">
+        <span class="nav-icon">📊</span> 개요
+      </div>
+      <div class="nav-item" onclick="showPage('members')" id="nav-members">
+        <span class="nav-icon">👥</span> 팀원 목록
+      </div>
+      <div class="nav-item" onclick="showPage('projects')" id="nav-projects">
+        <span class="nav-icon">📁</span> 전체 프로젝트
+      </div>
+      <div class="nav-item" onclick="showPage('characters')" id="nav-characters">
+        <span class="nav-icon">🎭</span> 전체 캐릭터
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">바로가기</div>
+      <div class="nav-item" onclick="goStudio()">
+        <span class="nav-icon">✦</span> 블로그 스튜디오
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 -->
+  <div class="main" id="mainArea">
+
+    <!-- 접근 거부 (비관리자) -->
+    <div id="accessDenied" class="access-denied" style="display:none">
+      <div style="text-align:center">
+        <div style="font-size:40px;margin-bottom:16px">🔒</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px">접근 권한이 없습니다</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:20px">관리자 계정만 이 페이지에 접근할 수 있습니다</div>
+        <button onclick="goStudio()" style="padding:10px 20px;background:var(--purple);border:none;color:white;border-radius:6px;cursor:pointer;font-size:12px;">스튜디오로 돌아가기</button>
+      </div>
+    </div>
+
+    <!-- 개요 -->
+    <div class="page on" id="page-overview">
+      <div class="page-title">📊 팀 개요</div>
+      <div class="page-sub">전체 팀 데이터 현황</div>
+
+      <div class="stat-grid">
+        <div class="stat-card purple">
+          <div class="stat-value" id="statMembers">-</div>
+          <div class="stat-label">팀원 수</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-value" id="statProjects">-</div>
+          <div class="stat-label">전체 프로젝트</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-value" id="statChars">-</div>
+          <div class="stat-label">전체 캐릭터</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-value" id="statLastSync">-</div>
+          <div class="stat-label">마지막 동기화</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">최근 활동</div>
+        </div>
+        <div id="recentActivity">
+          <div class="loading-wrap"><div class="spinner"></div>데이터 로딩 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 팀원 -->
+    <div class="page" id="page-members">
+      <div class="page-title">👥 팀원 목록</div>
+      <div class="page-sub">구글 드라이브에 Blog Studio 폴더가 있는 사용자</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">팀원</div>
+        </div>
+        <div id="membersList">
+          <div class="loading-wrap"><div class="spinner"></div>로딩 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 프로젝트 -->
+    <div class="page" id="page-projects">
+      <div class="page-title">📁 전체 프로젝트</div>
+      <div class="page-sub">팀원 전체의 프로젝트 설정</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">프로젝트</div>
+          <input class="table-search" placeholder="🔍 검색..." oninput="filterTable('projectsTable', this.value)">
+        </div>
+        <div id="projectsList">
+          <div class="loading-wrap"><div class="spinner"></div>로딩 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 캐릭터 -->
+    <div class="page" id="page-characters">
+      <div class="page-title">🎭 전체 캐릭터</div>
+      <div class="page-sub">팀원 전체의 캐릭터 설정</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">캐릭터</div>
+          <input class="table-search" placeholder="🔍 검색..." oninput="filterTable('charsTable', this.value)">
+        </div>
+        <div id="charactersList">
+          <div class="loading-wrap"><div class="spinner"></div>로딩 중...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 데이터 뷰어 모달 -->
+<div class="modal-overlay" id="dataModal">
+  <div class="data-modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">상세 정보</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// 세션 + 권한 체크
+// ══════════════════════════════════════
+let session = null;
+
+function init(){
+  try{ session = JSON.parse(sessionStorage.getItem('bs_session')); }catch{}
+  if(!session){ window.location.href='index.html'; return; }
+  if(!session.isAdmin){
+    document.getElementById('accessDenied').style.display='flex';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+    document.querySelector('.sidebar').style.opacity='.3';
+    document.querySelector('.sidebar').style.pointerEvents='none';
+  }
+  // 사용자 정보 표시
+  document.getElementById('adminName').textContent = session.name||session.email;
+  if(session.picture) document.getElementById('adminAvatar').src = session.picture;
+  else document.getElementById('adminAvatar').style.display='none';
+
+  if(session.isAdmin) loadAllData();
+}
+
+// ══════════════════════════════════════
+// 드라이브 데이터 로드
+// ══════════════════════════════════════
+let allMembers=[], allProjects=[], allChars=[];
+
+async function loadAllData(){
+  try{
+    const token = session.accessToken;
+    const rootId = sessionStorage.getItem('bs_drive_root');
+    if(!rootId){ showError('드라이브 연결이 필요합니다'); return; }
+
+    // 루트 폴더 내 사용자 폴더 목록 (팀원)
+    const foldersRes = await fetch(
+      `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(`'${rootId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`)}&fields=files(id,name,modifiedTime)`,
+      { headers:{ Authorization:'Bearer '+token }}
+    );
+    const foldersData = await foldersRes.json();
+    const memberFolders = (foldersData.files||[]).filter(f=>f.name!=='_team_shared');
+
+    allMembers = memberFolders;
+    document.getElementById('statMembers').textContent = memberFolders.length;
+
+    // 각 팀원 폴더에서 projects.json, characters.json 읽기
+    allProjects = [];
+    allChars = [];
+
+    for(const folder of memberFolders){
+      const email = folder.name;
+      // projects.json 찾기
+      const pjFile = await findFile(token, folder.id, 'bs_projects.json');
+      if(pjFile){
+        const content = await readFile(token, pjFile.id);
+        try{
+          const projs = JSON.parse(content);
+          projs.forEach(p=>{ p._owner=email; p._folderId=folder.id; });
+          allProjects.push(...projs);
+        }catch{}
+      }
+      // characters.json 찾기
+      const chFile = await findFile(token, folder.id, 'bs_characters.json');
+      if(chFile){
+        const content = await readFile(token, chFile.id);
+        try{
+          const chars = JSON.parse(content);
+          chars.forEach(c=>{ c._owner=email; c._folderId=folder.id; });
+          allChars.push(...chars);
+        }catch{}
+      }
+    }
+
+    document.getElementById('statProjects').textContent = allProjects.length;
+    document.getElementById('statChars').textContent = allChars.length;
+    document.getElementById('statLastSync').textContent = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+
+    renderRecentActivity();
+    renderMembers();
+    renderProjects();
+    renderChars();
+
+  }catch(e){
+    console.error(e);
+  }
+}
+
+async function findFile(token, parentId, name){
+  const q = `name='${name}' and '${parentId}' in parents and trashed=false`;
+  const res = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`,
+    { headers:{ Authorization:'Bearer '+token }}
+  );
+  const data = await res.json();
+  return data.files&&data.files[0]||null;
+}
+
+async function readFile(token, fileId){
+  const res = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+    { headers:{ Authorization:'Bearer '+token }}
+  );
+  return await res.text();
+}
+
+// ══════════════════════════════════════
+// 렌더링
+// ══════════════════════════════════════
+function renderRecentActivity(){
+  const el = document.getElementById('recentActivity');
+  if(!allProjects.length && !allChars.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">📭</div>아직 데이터가 없습니다</div>`;
+    return;
+  }
+  const recent = [...allProjects.map(p=>({type:'프로젝트',name:p.name,owner:p._owner,icon:'📁'})),
+                   ...allChars.map(c=>({type:'캐릭터',name:c.name,owner:c._owner,icon:'🎭'}))]
+    .slice(0,10);
+  el.innerHTML=`<table><thead><tr><th>유형</th><th>이름</th><th>소유자</th></tr></thead><tbody>${
+    recent.map(r=>`<tr><td>${r.icon} ${r.type}</td><td>${r.name||'(이름없음)'}</td><td style="color:var(--muted);font-size:10px">${r.owner}</td></tr>`).join('')
+  }</tbody></table>`;
+}
+
+function renderMembers(){
+  const el = document.getElementById('membersList');
+  if(!allMembers.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">👥</div>팀원이 없습니다</div>`;
+    return;
+  }
+  const cfg = JSON.parse(localStorage.getItem('bs_google_config')||'{}');
+  const adminList = (cfg.admins||'').split(',').map(e=>e.trim().toLowerCase());
+  el.innerHTML=`<table id="membersTable"><thead><tr><th>이메일</th><th>역할</th><th>프로젝트</th><th>캐릭터</th></tr></thead><tbody>${
+    allMembers.map(m=>{
+      const isAdmin = adminList.includes(m.name.toLowerCase());
+      const pCount = allProjects.filter(p=>p._owner===m.name).length;
+      const cCount = allChars.filter(c=>c._owner===m.name).length;
+      return `<tr>
+        <td>${m.name}</td>
+        <td><span class="badge ${isAdmin?'badge-admin':'badge-member'}">${isAdmin?'관리자':'팀원'}</span></td>
+        <td>${pCount}개</td>
+        <td>${cCount}개</td>
+      </tr>`;
+    }).join('')
+  }</tbody></table>`;
+}
+
+function renderProjects(){
+  const el = document.getElementById('projectsList');
+  if(!allProjects.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">📁</div>프로젝트가 없습니다</div>`;
+    return;
+  }
+  el.innerHTML=`<table id="projectsTable"><thead><tr><th>이름</th><th>소유자</th><th>블로그</th><th>법률검수</th><th>작업</th></tr></thead><tbody>${
+    allProjects.map((p,i)=>`<tr>
+      <td style="font-weight:600">${p.name||'(이름없음)'}</td>
+      <td style="font-size:10px;color:var(--muted)">${p._owner}</td>
+      <td style="font-size:10px">${p.blogName||'-'}</td>
+      <td>${Object.values(p.legalChecks||{}).some(Boolean)?'<span class="badge badge-active">설정됨</span>':'-'}</td>
+      <td><button class="action-btn view" onclick="viewProject(${i})">열람</button></td>
+    </tr>`).join('')
+  }</tbody></table>`;
+}
+
+function renderChars(){
+  const el = document.getElementById('charactersList');
+  if(!allChars.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">🎭</div>캐릭터가 없습니다</div>`;
+    return;
+  }
+  el.innerHTML=`<table id="charsTable"><thead><tr><th>아이콘</th><th>이름</th><th>소유자</th><th>페르소나</th><th>작업</th></tr></thead><tbody>${
+    allChars.map((c,i)=>`<tr>
+      <td style="font-size:18px">${c.icon||'👤'}</td>
+      <td style="font-weight:600">${c.name||'(이름없음)'}</td>
+      <td style="font-size:10px;color:var(--muted)">${c._owner}</td>
+      <td style="font-size:10px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.persona||'-'}</td>
+      <td><button class="action-btn view" onclick="viewChar(${i})">열람</button></td>
+    </tr>`).join('')
+  }</tbody></table>`;
+}
+
+// ══════════════════════════════════════
+// 상세 모달
+// ══════════════════════════════════════
+function viewProject(i){
+  const p = allProjects[i];
+  document.getElementById('modalTitle').textContent = '📁 프로젝트: '+( p.name||'(이름없음)');
+  document.getElementById('modalBody').innerHTML = `
+    <div class="data-section">
+      <h4>기본 정보</h4>
+      ${row('소유자', p._owner)}
+      ${row('프로젝트명', p.name)}
+      ${row('블로그명', p.blogName||'-')}
+      ${row('작성자', p.author||'-')}
+      ${row('카테고리', p.category||'-')}
+    </div>
+    <div class="data-section">
+      <h4>글쓰기 설정</h4>
+      ${row('기본 톤', p.tone||'-')}
+      ${row('기본 템플릿', p.defaultTpl||'-')}
+      ${row('법률 검수', Object.entries(p.legalChecks||{}).filter(([,v])=>v).map(([k])=>k).join(', ')||'없음')}
+      ${row('법률 레벨', p.legalLevel||'-')}
+    </div>
+    ${p.dna?`<div class="data-section">
+      <h4>글쓰기 DNA</h4>
+      ${row('말투/어미', p.dna.ending||'-')}
+      ${row('시그니처', p.dna.signature||'-')}
+      ${row('페르소나', p.dna.persona||'-')}
+      ${row('금지표현', p.dna.avoid||'-')}
+    </div>`:''}
+    ${p.guidelines?`<div class="data-section"><h4>가이드라인</h4><div style="font-size:11px;color:var(--muted);line-height:1.8;white-space:pre-wrap">${p.guidelines}</div></div>`:''}
+  `;
+  document.getElementById('dataModal').classList.add('on');
+}
+
+function viewChar(i){
+  const c = allChars[i];
+  document.getElementById('modalTitle').textContent = (c.icon||'🎭')+' 캐릭터: '+(c.name||'(이름없음)');
+  document.getElementById('modalBody').innerHTML = `
+    <div class="data-section">
+      <h4>기본 정보</h4>
+      ${row('소유자', c._owner)}
+      ${row('이름', c.name)}
+      ${row('설명', c.desc||'-')}
+      ${row('색상', c.color||'-')}
+    </div>
+    <div class="data-section">
+      <h4>스타일 설정</h4>
+      ${row('말투/어미', c.ending||'-')}
+      ${row('시그니처', c.signature||'-')}
+      ${row('문단 구성', c.paraStyle||'-')}
+      ${row('경험담', c.expStyle||'-')}
+      ${row('금지표현', c.avoid||'-')}
+      ${row('글 구조', c.structure||'-')}
+    </div>
+    ${c.persona?`<div class="data-section"><h4>페르소나</h4><div style="font-size:11px;color:var(--muted);line-height:1.8;white-space:pre-wrap">${c.persona}</div></div>`:''}
+  `;
+  document.getElementById('dataModal').classList.add('on');
+}
+
+function row(key, val){
+  return `<div class="data-row"><div class="data-key">${key}</div><div class="data-val">${val||'-'}</div></div>`;
+}
+function closeModal(){ document.getElementById('dataModal').classList.remove('on'); }
+
+// ══════════════════════════════════════
+// 네비
+// ══════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  document.getElementById('nav-'+id).classList.add('on');
+}
+
+function filterTable(tableId, q){
+  const table = document.getElementById(tableId);
+  if(!table) return;
+  const rows = table.querySelectorAll('tbody tr');
+  rows.forEach(r=>{
+    r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+  });
+}
+
+function goStudio(){ window.location.href='blog-studio-v7.html'; }
+function logout(){ sessionStorage.clear(); window.location.href='index.html'; }
+
+init();
+</script>
+</body>
+</html>

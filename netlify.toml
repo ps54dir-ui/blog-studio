@@ -1,0 +1,8 @@
+[build]
+  publish = "files (5)"
+  # index.html, blog-studio-v7.html, admin.html이 루트에 있도록 함
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
