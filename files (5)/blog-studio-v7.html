@@ -3573,9 +3573,9 @@ function cwCopyFromData(el){
 function cwCopyAllPrompts(){
   const it=cwState.itemsById[cwState.selectedContentId];
   if(!it)return;
-  const lines=cwExtractAllCardData(it).map(x=>'['+x.label+']\n'+x.value);
-  const text=lines.join('\n\n');
-  if(!text.trim()){toast('프롬프트 항목 없음','err');return;}
+  const chunks=cwExtractAllCardData(it);
+  if(!chunks.length){toast('프롬프트 항목 없음','err');return;}
+  const text=chunks.map(x=>'['+x.label+']\n'+x.value).join('\n\n');
   navigator.clipboard.writeText(text).then(()=>toast('프롬프트 모음 복사됨','ok'));
 }
 function cwBuildAssetCopyText(it){
@@ -3584,12 +3584,15 @@ function cwBuildAssetCopyText(it){
   const isReels=!!it.shared_video_ref;
   if(isReels){
     parts.push('공통영상: '+it.shared_video_ref+' 참조');
+    const pr0=it.prompts&&typeof it.prompts==='object'?it.prompts:{};
     const cov=it.image&&!Array.isArray(it.image)?it.image:(Array.isArray(it.image)&&it.image[0]?it.image[0]:null);
     if(cov){
       if(cov.ratio)parts.push('커버 비율: '+cov.ratio);
       if(cov.resolution)parts.push('커버 해상도: '+cov.resolution);
-      if(cov.prompt_ko)parts.push('커버 프롬프트(KO): '+cov.prompt_ko);
-      if(cov.prompt_en)parts.push('커버 프롬프트(EN): '+cov.prompt_en);
+      const cko=_csRawStr(cov.prompt_ko)||_csRawStr(pr0.image_1_prompt_ko)||_csRawStr(pr0.image_prompt_ko);
+      const cen=_csRawStr(cov.prompt_en)||_csRawStr(pr0.image_1_prompt_en)||_csRawStr(pr0.image_prompt_en);
+      if(cko)parts.push('커버 프롬프트(KO): '+cko);
+      if(cen)parts.push('커버 프롬프트(EN): '+cen);
     }
   }else{
     const imgs=Array.isArray(it.image)?it.image:(it.image?[it.image]:[]);
@@ -3598,12 +3601,13 @@ function cwBuildAssetCopyText(it){
     const pr=it.prompts&&typeof it.prompts==='object'?it.prompts:{};
     allImgs.forEach((im,i)=>{
       if(!im)return;
-      const pref=allImgs.length>1?('[이미지 '+(i+1)+'] '):'';
+      const idx=i+1,tot=allImgs.length;
+      const pref=tot>1?('[이미지 '+idx+'] '):'';
       if(im.ratio)parts.push(pref+'비율: '+im.ratio);
       if(im.resolution)parts.push(pref+'해상도: '+im.resolution);
       if(im.slides)parts.push(pref+'슬라이드: '+im.slides);
-      const ko=_csRawStr(im.prompt_ko)||(allImgs.length>1?_csRawStr(pr['image_'+(i+1)+'_prompt_ko']):_csRawStr(pr.image_prompt_ko));
-      const en=_csRawStr(im.prompt_en)||(allImgs.length>1?_csRawStr(pr['image_'+(i+1)+'_prompt_en']):_csRawStr(pr.image_prompt_en));
+      const ko=_csRawStr(im.prompt_ko)||_csRawStr(pr['image_'+idx+'_prompt_ko'])||(tot===1?_csRawStr(pr.image_prompt_ko):'');
+      const en=_csRawStr(im.prompt_en)||_csRawStr(pr['image_'+idx+'_prompt_en'])||(tot===1?_csRawStr(pr.image_prompt_en):'');
       if(ko)parts.push(pref+'프롬프트(KO): '+ko);
       if(en)parts.push(pref+'프롬프트(EN): '+en);
     });
@@ -3720,7 +3724,7 @@ function cwRenderDetail(id){
     });
     html+=`</div></div>`;
   }
-  if(it.voice||cwVoicePromptOnly(it)||_csRawStr(it.prompts?.voice_prompt)){
+  if(it.voice?.script||cwVoicePromptOnly(it)){
     html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[D] 음성</div><div class="cw-detail-card-b">`;
     html+=cp('Voice Script (대본)',it.voice?.script);
     const vp=cwVoicePromptOnly(it);
