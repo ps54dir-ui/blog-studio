@@ -430,6 +430,78 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 .pe-btn-del{color:var(--red);border-color:rgba(192,68,30,.2);}
 .pe-btn-del:hover{background:rgba(192,68,30,.06);}
 
+/* ══ CONTENT STUDIO (content_workbench.json) ══ */
+#spCs{flex-direction:column;min-height:0;background:var(--bg);}
+.cw-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.cw-upload-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0;}
+.cw-upload-zone{border:2px dashed var(--border);border-radius:6px;padding:8px 14px;cursor:pointer;font-size:10px;color:var(--muted);transition:all .2s;flex-shrink:0;position:relative;font-family:'DM Mono',monospace;}
+.cw-upload-zone:hover,.cw-upload-zone.drag-over{border-color:var(--purple);color:var(--purple);}
+.cw-file-hint{font-size:9px;color:var(--muted);}
+.cw-summary-cards{display:flex;gap:8px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0;}
+.cw-summary-card{min-width:56px;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;text-align:center;}
+.cw-summary-card .num{font-size:14px;font-weight:700;color:var(--purple);}
+.cw-summary-card .lbl{font-size:8px;color:var(--muted);margin-top:2px;}
+.cw-filter-bar{display:flex;gap:8px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.cw-filter-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.cw-filter-label{font-size:8px;color:var(--muted);text-transform:uppercase;margin-right:4px;}
+.cw-filter-btn{padding:4px 8px;border-radius:4px;font-size:9px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink);font-family:'DM Mono',monospace;}
+.cw-filter-btn:hover{border-color:var(--purple);}
+.cw-filter-btn.on{background:rgba(107,79,160,.12);border-color:var(--purple);color:var(--purple);font-weight:600;}
+.cw-search-box{flex:1;min-width:120px;max-width:200px;}
+.cw-search-box input{width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:10px;outline:none;font-family:'DM Mono',monospace;}
+.cw-body{flex:1;display:flex;overflow:hidden;min-height:0;}
+.cw-panel-left{width:34%;min-width:260px;max-width:400px;flex-shrink:0;border-right:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;overflow:hidden;}
+.cw-panel-right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.cw-list-scroll{flex:1;overflow-y:auto;padding:8px;font-size:10px;}
+.cw-list-scroll::-webkit-scrollbar{width:4px;}
+.cw-list-scroll::-webkit-scrollbar-thumb{background:var(--border);}
+.cw-group-channel{margin-bottom:6px;}
+.cw-group-channel-h{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg);border-radius:5px;font-weight:700;font-size:11px;cursor:pointer;}
+.cw-group-channel-h:hover{background:rgba(107,79,160,.08);}
+.cw-group-channel-h .chevron{transition:transform .2s;font-size:9px;color:var(--muted);}
+.cw-group-channel-h.collapsed .chevron{transform:rotate(-90deg);}
+.cw-group-type{margin-left:10px;margin-top:3px;border-left:2px solid var(--border);padding-left:8px;}
+.cw-group-type-h{display:flex;align-items:center;gap:5px;padding:5px 8px;font-size:10px;font-weight:500;cursor:pointer;}
+.cw-group-type-h .chevron{font-size:8px;color:var(--muted);transition:transform .2s;}
+.cw-group-type-h.collapsed .chevron{transform:rotate(-90deg);}
+.cw-group-cards{margin-left:6px;margin-top:3px;}
+.cw-content-card{padding:8px 10px;background:white;border:1px solid var(--border);border-radius:6px;margin-bottom:5px;cursor:pointer;transition:all .15s;}
+.cw-content-card:hover{border-color:var(--purple);background:rgba(107,79,160,.04);}
+.cw-content-card.on{border-color:var(--purple);box-shadow:0 0 0 2px rgba(107,79,160,.2);}
+.cw-content-card-no{font-weight:700;color:var(--purple);font-size:10px;}
+.cw-content-card-title{font-size:10px;line-height:1.4;margin:3px 0;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cw-content-card-meta{font-size:8px;color:var(--muted);}
+.cw-content-card-badges{display:flex;flex-wrap:wrap;gap:2px;margin-top:4px;}
+.cw-badge{font-size:7px;padding:1px 4px;border-radius:2px;background:var(--bg);color:var(--muted);}
+.cw-badge.has{background:rgba(45,106,74,.12);color:var(--green);}
+.cw-badge.shared{background:rgba(107,79,160,.15);color:var(--purple);}
+.cw-badge.empty{background:rgba(192,68,30,.08);color:var(--red);}
+.cw-list-empty{padding:24px 12px;text-align:center;color:var(--muted);font-size:10px;}
+.cw-detail-scroll{flex:1;overflow-y:auto;padding:12px 14px;}
+.cw-detail-scroll::-webkit-scrollbar{width:5px;}
+.cw-detail-scroll::-webkit-scrollbar-thumb{background:var(--border);}
+.cw-detail-empty{padding:48px 20px;text-align:center;color:var(--muted);font-size:11px;}
+.cw-detail-card{margin-bottom:12px;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cw-detail-card-h{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(107,79,160,.06);font-size:10px;font-weight:700;color:var(--purple);}
+.cw-detail-card-b{padding:10px 12px;font-size:11px;line-height:1.65;}
+.cw-detail-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+.cw-detail-row:last-child{margin-bottom:0;}
+.cw-detail-label{min-width:82px;font-size:10px;color:var(--muted);flex-shrink:0;}
+.cw-detail-val{flex:1;font-size:10px;word-break:break-word;min-width:0;}
+.cw-copy-wrap{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px;}
+.cw-copy-wrap pre{flex:1;min-width:0;margin:0;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:5px;font-size:10px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;font-family:'DM Mono',monospace;}
+.cw-copy-btn{padding:5px 10px;font-size:9px;background:var(--purple);color:white;border:none;border-radius:4px;cursor:pointer;flex-shrink:0;font-family:'DM Mono',monospace;}
+.cw-copy-btn:hover{background:#5a3f8e;}
+.cw-copy-btn.copied{background:var(--green);}
+.cw-scene-row{display:flex;gap:6px;padding:6px 8px;background:var(--bg);border-radius:4px;margin-bottom:4px;font-size:9px;}
+.cw-shared-link{padding:8px 12px;background:rgba(107,79,160,.1);border-radius:5px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:10px;color:var(--purple);font-weight:500;}
+.cw-copy-buttons-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.cw-copy-block-btn{padding:8px 14px;font-size:10px;font-weight:600;border:none;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace;}
+.cw-copy-block-btn.asset{background:var(--blue);color:white;}
+.cw-copy-block-btn.publish{background:var(--green);color:white;}
+.cw-copy-block-btn.copied{background:var(--muted)!important;}
+#cwFileProtocolNotice{display:none;font-size:9px;color:var(--amber);padding:6px 14px;background:rgba(146,99,10,.08);border-bottom:1px solid var(--border);}
+
 /* TOAST */
 .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%) translateY(40px);background:var(--ink);color:var(--bg);border-radius:18px;padding:7px 16px;font-size:10px;opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:2000;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -455,10 +527,61 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 
 <!-- STEP TABS -->
 <div class="steptabs">
-  <div class="stab on" id="stab1" onclick="goStep(1)"><div class="stab-n" id="sn1">1</div>원고 & 회원 배정</div>
+  <div class="stab" id="stabCs" onclick="goStep(1)"><div class="stab-n" id="snCs">◆</div>콘텐츠 스튜디오</div>
+  <div class="stab on" id="stab1" onclick="goStep(2)"><div class="stab-n" id="sn1">1</div>원고 & 회원 배정</div>
 </div>
 
 <div class="workspace">
+
+<!-- ════════════ CONTENT STUDIO: content_workbench.json ════════════ -->
+<div class="step-panel" id="spCs">
+  <div id="cwFileProtocolNotice">⚠ file:// 로 열면 JSON 업로드가 차단될 수 있습니다. 로컬 서버(<code>npm run dev</code>) 사용을 권장합니다.</div>
+  <div class="cw-main">
+    <div class="cw-upload-bar">
+      <label class="cw-upload-zone" id="cwUploadZone" for="cwFileInput" ondragover="cwHandleDragOver(event)" ondragleave="cwHandleDragLeave(event)" ondrop="cwHandleDrop(event)">
+        <input type="file" id="cwFileInput" accept=".json,application/json" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden" onchange="cwHandleFileSelect(event)">
+        📄 content_workbench.json (클릭/드래그)
+      </label>
+      <span class="cw-file-hint" id="cwUploadFileList"></span>
+    </div>
+    <div class="cw-summary-cards" id="cwSummaryCards" style="display:none;">
+      <div class="cw-summary-card"><div class="num" id="cwScTotal">0</div><div class="lbl">총</div></div>
+      <div class="cw-summary-card"><div class="num" id="cwScYoutube">0</div><div class="lbl">유튜브</div></div>
+      <div class="cw-summary-card"><div class="num" id="cwScInstagram">0</div><div class="lbl">인스타</div></div>
+      <div class="cw-summary-card"><div class="num" id="cwScThreads">0</div><div class="lbl">스레드</div></div>
+      <div class="cw-summary-card"><div class="num" id="cwScNaver">0</div><div class="lbl">네이버</div></div>
+      <div class="cw-summary-card"><div class="num" id="cwScShared">0</div><div class="lbl">공통영<span style="letter-spacing:-1px">상</span></div></div>
+      <div class="cw-summary-card"><div class="num" id="cwScEdition">-</div><div class="lbl">에디션</div></div>
+    </div>
+    <div class="cw-filter-bar">
+      <div class="cw-filter-group" id="cwChannelFilterGroup"></div>
+      <div class="cw-filter-group" id="cwTypeFilterGroup"></div>
+      <div class="cw-filter-group">
+        <span class="cw-filter-label">발행</span>
+        <button type="button" class="cw-filter-btn on" data-sched="all" onclick="cwSetScheduleFilter('all')">전체</button>
+        <button type="button" class="cw-filter-btn" data-sched="D+0" onclick="cwSetScheduleFilter('D+0')">D+0</button>
+        <button type="button" class="cw-filter-btn" data-sched="D+1" onclick="cwSetScheduleFilter('D+1')">D+1</button>
+        <button type="button" class="cw-filter-btn" data-sched="D+2~3" onclick="cwSetScheduleFilter('D+2~3')">D+2~3</button>
+        <button type="button" class="cw-filter-btn" data-sched="D+7" onclick="cwSetScheduleFilter('D+7')">D+7</button>
+      </div>
+      <div class="cw-search-box">
+        <input type="text" id="cwSearchInput" placeholder="검색…" oninput="cwApplySearch()">
+      </div>
+    </div>
+    <div class="cw-body">
+      <div class="cw-panel-left">
+        <div class="cw-list-scroll" id="cwContentList">
+          <div class="cw-list-empty" id="cwListEmpty">content_workbench.json 을 업로드하세요</div>
+        </div>
+      </div>
+      <div class="cw-panel-right">
+        <div class="cw-detail-scroll" id="cwDetailPanel">
+          <div class="cw-detail-empty" id="cwDetailEmpty">좌측에서 카드 선택</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════ STEP 1: 원고 & 회원 배정 ════════════ -->
 <div class="step-panel on" id="sp1">
@@ -2595,7 +2718,7 @@ async function fetchFromUrlToEditor(){
 
 // 새 글 작성 모달 열기 (topbar 버튼용 - Step1으로 이동 + AI작성 탭 활성)
 function openNewPost(){
-  goStep(1);
+  goStep(2);
   switchMode('new');
   document.getElementById('f-topic').focus();
   toast('✦ 새 글 작성 모드','ok');
@@ -3074,16 +3197,579 @@ function autoRec(text){
 }
 
 // ════════════════════════════════════════════════════
+// CONTENT STUDIO — content_workbench.json
+// ════════════════════════════════════════════════════
+const THREAD_NO_TO_TYPE={'14':'정보형','15':'정보형','16':'공감형','17':'공감형','18':'반전·논쟁형','19':'스토리텔링형','20':'한줄선언형','21':'리스트형','22':'큐레이션형','23':'질문·참여형'};
+const THREAD_TYPE_ORDER=['정보형','공감형','반전·논쟁형','스토리텔링형','한줄선언형','리스트형','큐레이션형','질문·참여형'];
+function cwBuildChannelTreeWithFixedThread(tree,itemsByNo,allowedChannels){
+  const allowed=allowedChannels&&allowedChannels.size>0?allowedChannels:null;
+  const out=[];
+  for(const g of tree||[]){
+    const chGroup=g.channel_group||'';
+    if(allowed&&!allowed.has(chGroup))continue;
+    if(chGroup!=='스레드'){
+      const types=(g.types||[]).filter(t=>(t.items||[]).some(no=>itemsByNo[no]));
+      if(types.length>0)out.push({channel_group:chGroup,types});
+      continue;
+    }
+    const byType={};
+    for(const ty of THREAD_TYPE_ORDER)byType[ty]=[];
+    for(let n=14;n<=23;n++){
+      const no=String(n).padStart(2,'0');
+      if(!itemsByNo[no])continue;
+      const ty=THREAD_NO_TO_TYPE[no];
+      if(ty&&byType[ty])byType[ty].push(no);
+    }
+    const types=THREAD_TYPE_ORDER.map(ty=>({type:ty,items:byType[ty]||[]})).filter(t=>(t.items||[]).length>0);
+    if(types.length>0)out.push({channel_group:'스레드',types});
+  }
+  return out;
+}
+const cwState={
+  data:null,itemsById:{},itemsByNo:{},channelTree:[],allowedChannels:new Set(),
+  filters:{channel:'all',type:'all',schedule:'all',search:''},selectedContentId:null,groupCollapsed:{}
+};
+function cwEscapeHtml(s){
+  if(s==null)return '';
+  const d=document.createElement('div');
+  d.textContent=String(s);
+  return d.innerHTML;
+}
+function cwSanitize(val){
+  if(val==null||val==='')return '';
+  const s=String(val).trim();
+  if(s==='{}'||s==='...'||s==='…')return '';
+  return s;
+}
+function _csRawStr(v){
+  if(v==null||v==='')return '';
+  if(typeof v==='string')return v;
+  return String(v);
+}
+function _csNormForCompare(s){
+  if(s==null)return '';
+  return String(s).replace(/\s+/g,' ').trim();
+}
+function cwExtractAllCardData(it){
+  if(!it)return[];
+  const prompts=it.prompts&&typeof it.prompts==='object'?it.prompts:{};
+  const out=[];
+  const Rs=_csRawStr;
+  const scriptRaw=Rs(it.voice?.script);
+  let voicePromptRaw=Rs(prompts.voice_prompt)||Rs(it.voice?.prompt);
+  if(voicePromptRaw&&scriptRaw&&_csNormForCompare(voicePromptRaw)===_csNormForCompare(scriptRaw))voicePromptRaw='';
+  if(scriptRaw)out.push({key:'voice_script',label:'Voice Script (대본)',value:scriptRaw});
+  if(voicePromptRaw)out.push({key:'voice_prompt',label:'Voice Prompt',value:voicePromptRaw});
+  const vid=Rs(prompts.video_prompt)||Rs(it.video?.prompt);
+  if(vid)out.push({key:'video_prompt',label:'Video 프롬프트',value:vid});
+  const bgm=Rs(prompts.bgm_prompt)||Rs(it.audio?.bgm?.prompt);
+  if(bgm)out.push({key:'bgm_prompt',label:'BGM 프롬프트',value:bgm});
+  const sfx=Rs(prompts.sfx_summary);
+  if(sfx)out.push({key:'sfx_summary',label:'SFX 요약',value:sfx});
+  const addImg=(im,idx,total)=>{
+    if(!im)return;
+    const ko=Rs(im.prompt_ko)||Rs(prompts['image_'+idx+'_prompt_ko'])||(total===1?Rs(prompts.image_prompt_ko):'');
+    const en=Rs(im.prompt_en)||Rs(prompts['image_'+idx+'_prompt_en'])||(total===1?Rs(prompts.image_prompt_en):'');
+    const pref=total>1?('이미지 '+idx+' '):'';
+    if(ko)out.push({key:'img_ko_'+idx,label:pref+'이미지 프롬프트 (KO)',value:ko});
+    if(en)out.push({key:'img_en_'+idx,label:pref+'Image prompt (EN)',value:en});
+  };
+  const imageArr=Array.isArray(it.image)?it.image:(it.image?[it.image]:[]);
+  const imagesArr=Array.isArray(it.images)?it.images:[];
+  const allImgs=imageArr.length?imageArr:imagesArr;
+  if(allImgs.length)allImgs.forEach((im,i)=>addImg(im,i+1,allImgs.length));
+  else{
+    const ko=_csRawStr(prompts.image_prompt_ko);
+    const en=_csRawStr(prompts.image_prompt_en);
+    if(ko)out.push({key:'image_prompt_ko',label:'이미지 프롬프트 (KO)',value:ko});
+    if(en)out.push({key:'image_prompt_en',label:'Image prompt (EN)',value:en});
+  }
+  const refVid=_csRawStr(prompts.shared_video_reference||prompts.shared_video_ref);
+  if(refVid)out.push({key:'shared_video_ref_prompt',label:'Shared Video Reference',value:refVid});
+  return out;
+}
+/** Voice Prompt만 (script와 중복이면 빈 문자열) — 상세 [D]용 */
+function cwVoicePromptOnly(it){
+  if(!it)return'';
+  const prompts=it.prompts&&typeof it.prompts==='object'?it.prompts:{};
+  let voicePromptRaw=_csRawStr(prompts.voice_prompt)||_csRawStr(it.voice?.prompt);
+  const scriptRaw=_csRawStr(it.voice?.script);
+  if(voicePromptRaw&&scriptRaw&&_csNormForCompare(voicePromptRaw)===_csNormForCompare(scriptRaw))return'';
+  return voicePromptRaw;
+}
+function cwJsAttrStr(s){
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,'\\n');
+}
+function cwNormalizeBody(val){
+  if(val==null||val==='')return '';
+  if(typeof val==='string')return val.trim();
+  if(typeof val==='object'&&Array.isArray(val.content)){
+    return val.content.map(b=>{
+      if(typeof b==='string')return b;
+      if(b?.text)return b.text;
+      if(b?.content)return typeof b.content==='string'?b.content:'';
+      if(b?.paragraph?.rich_text?.length)return b.paragraph.rich_text.map(r=>r.plain_text||'').join('');
+      return '';
+    }).filter(Boolean).join('\n');
+  }
+  return String(val).trim();
+}
+function cwGetItemTitle(it){
+  if(!it)return '';
+  return cwSanitize(it.title)||cwSanitize(it.copy?.title)||'';
+}
+function cwGetItemBody(it){
+  if(!it)return '';
+  const b=it.body??it.copy?.body;
+  return cwNormalizeBody(b);
+}
+function cwGetItemCta(it){
+  if(!it)return '';
+  return cwSanitize(it.cta)||cwSanitize(it.copy?.cta)||'';
+}
+function cwGetItemTags(it){
+  if(!it)return[];
+  return it.tags||it.copy?.tags||[];
+}
+function cwReadFileAsText(file){
+  return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(file,'UTF-8');});
+}
+function cwHandleDragOver(e){e.preventDefault();document.getElementById('cwUploadZone')?.classList.add('drag-over');}
+function cwHandleDragLeave(e){e.preventDefault();document.getElementById('cwUploadZone')?.classList.remove('drag-over');}
+function cwHandleDrop(e){
+  e.preventDefault();
+  document.getElementById('cwUploadZone')?.classList.remove('drag-over');
+  const files=e.dataTransfer?.files;
+  if(files?.length)cwProcessFile(files[0]);
+}
+function cwHandleFileSelect(e){
+  const files=e.target?.files;
+  if(files?.length)cwProcessFile(files[0]);
+  e.target.value='';
+}
+function cwProcessFile(file){
+  const listEl=document.getElementById('cwUploadFileList');
+  if(!file||!/\.json$/i.test(file.name)){
+    if(listEl)listEl.innerHTML='<span style="color:var(--red)">JSON만 지원</span>';
+    return;
+  }
+  cwReadFileAsText(file).then(raw=>{
+    try{
+      const json=JSON.parse(raw);
+      if(json.meta?.file_type!=='content_workbench'){
+        if(listEl)listEl.innerHTML='<span style="color:var(--red)">content_workbench 형식 필요</span>';
+        return;
+      }
+      if(!Array.isArray(json.items)||!Array.isArray(json.channel_tree)){
+        if(listEl)listEl.innerHTML='<span style="color:var(--red)">items / channel_tree 필요</span>';
+        return;
+      }
+      cwState.data=json;
+      const byNo={},byId={},allowedSet=new Set();
+      const mapping=json.channel_group_mapping||{};
+      (json.meta?.allowed_channels||[]).forEach(ch=>{const c=String(ch).trim();if(!c)return;allowedSet.add(mapping[c]||c);});
+      if(allowedSet.size===0)json.items.forEach(it=>{if(it.channel_group)allowedSet.add(it.channel_group);});
+      json.items.forEach(it=>{
+        const no=String(it.no||'').padStart(2,'0');
+        byNo[no]=it;
+        byId['No.'+no]=it;
+      });
+      cwState.itemsByNo=byNo;
+      cwState.itemsById=byId;
+      cwState.allowedChannels=allowedSet;
+      cwState.channelTree=cwBuildChannelTreeWithFixedThread(json.channel_tree||[],byNo,allowedSet);
+      cwState.selectedContentId=null;
+      cwState.groupCollapsed={};
+      cwUpdateSummary();
+      cwRenderList();
+      document.getElementById('cwSummaryCards').style.display='flex';
+      if(listEl)listEl.innerHTML='<span style="color:var(--green)">✓ '+cwEscapeHtml(file.name)+'</span>';
+      const top=document.getElementById('topFileName');
+      if(top){top.textContent=file.name;document.getElementById('topFileIndicator').style.display='flex';}
+      toast('✓ 워크벤치 JSON 로드됨','ok');
+    }catch(err){
+      if(listEl)listEl.innerHTML='<span style="color:var(--red)">파싱 오류: '+cwEscapeHtml(err.message)+'</span>';
+    }
+  });
+}
+function cwUpdateSummary(){
+  const d=cwState.data;
+  if(!d)return;
+  const sum=d.summary||{};
+  const counts=sum.counts_by_channel_group||{};
+  const shared=sum.shared_video_refs||{};
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('cwScTotal',String(sum.total_items??d.items?.length??0));
+  set('cwScYoutube',String(counts['유튜브']??0));
+  set('cwScInstagram',String(counts['인스타그램']??0));
+  set('cwScThreads',String(counts['스레드']??0));
+  set('cwScNaver',String(counts['네이버']??0));
+  set('cwScShared',String(Object.keys(shared).length));
+  set('cwScEdition',sum.edition||'-');
+  cwUpdateFilterButtons();
+}
+function cwUpdateFilterButtons(){
+  const chEl=document.getElementById('cwChannelFilterGroup');
+  const tyEl=document.getElementById('cwTypeFilterGroup');
+  if(!chEl||!tyEl)return;
+  const tree=cwState.channelTree||[];
+  const channels=[...new Set(tree.map(g=>g.channel_group).filter(Boolean))];
+  const typesByCh={};
+  tree.forEach(g=>{(g.types||[]).forEach(t=>{if(!t.type)return;const ch=g.channel_group||'';if(!typesByCh[ch])typesByCh[ch]=new Set();typesByCh[ch].add(t.type);});});
+  const esc=cwEscapeHtml;
+  const chBtns=channels.map(ch=>`<button type="button" class="cw-filter-btn" data-ch="${esc(ch)}" onclick="cwSetChannelFilter('${esc(ch).replace(/'/g,"\\'")}')">${esc(ch)}</button>`).join('');
+  chEl.innerHTML='<span class="cw-filter-label">채널</span><button type="button" class="cw-filter-btn on" data-ch="all" onclick="cwSetChannelFilter(\'all\')">전체</button>'+chBtns;
+  const curCh=cwState.filters.channel;
+  const types=curCh&&typesByCh[curCh]?[...typesByCh[curCh]]:[...new Set(Object.values(typesByCh).flatMap(s=>[...s]))];
+  const tyBtns=types.map(ty=>`<button type="button" class="cw-filter-btn" data-ty="${esc(ty)}" onclick="cwSetTypeFilter('${esc(ty).replace(/'/g,"\\'")}')">${esc(ty)}</button>`).join('');
+  tyEl.innerHTML='<span class="cw-filter-label">유형</span><button type="button" class="cw-filter-btn on" data-ty="all" onclick="cwSetTypeFilter(\'all\')">전체</button>'+tyBtns;
+}
+function cwSetChannelFilter(ch){
+  cwState.filters.channel=ch;
+  document.querySelectorAll('#spCs [data-ch]').forEach(el=>el.classList.toggle('on',el.dataset.ch===ch));
+  cwState.filters.type='all';
+  cwUpdateFilterButtons();
+  cwRenderList();
+}
+function cwSetTypeFilter(ty){
+  cwState.filters.type=ty||'all';
+  document.querySelectorAll('#spCs [data-ty]').forEach(el=>el.classList.toggle('on',el.dataset.ty===ty));
+  cwRenderList();
+}
+function cwGetFilteredNos(){
+  const tree=cwState.channelTree;
+  const sched=cwState.filters.schedule;
+  const q=(cwState.filters.search||'').toLowerCase().trim();
+  const allNos=new Set();
+  tree.forEach(g=>{(g.types||[]).forEach(t=>{(t.items||[]).forEach(no=>allNos.add(no));});});
+  let list=[...allNos];
+  const ch=cwState.filters.channel;
+  const ty=cwState.filters.type;
+  if(ch!=='all')list=list.filter(no=>{const it=cwState.itemsByNo[no];return(it?.channel_group||'')===ch;});
+  if(ty!=='all')list=list.filter(no=>{
+    const it=cwState.itemsByNo[no];
+    const displayType=(parseInt(no,10)>=14&&parseInt(no,10)<=23)?(THREAD_NO_TO_TYPE[no]||it?.type):it?.type;
+    return displayType===ty;
+  });
+  if(sched!=='all'){
+    list=list.filter(no=>{
+      const it=cwState.itemsByNo[no];
+      if(!it)return false;
+      const pt=(it.publish_timing||'').trim();
+      if(sched==='D+2~3')return /D\+2|D\+3/.test(pt);
+      if(sched==='D+3~4')return /D\+3|D\+4/.test(pt);
+      if(sched==='D+4~5')return /D\+4|D\+5/.test(pt);
+      return pt.includes(sched);
+    });
+  }
+  if(q){
+    list=list.filter(no=>{
+      const it=cwState.itemsByNo[no];
+      if(!it)return false;
+      const bodyForSearch=cwGetItemBody(it);
+      const pr=it.prompts||{};
+      const fields=[
+        cwGetItemTitle(it),it.title,it.short_summary,bodyForSearch,it.body,it.copy?.body,it.hook_type,it.angle,
+        pr.voice_prompt,pr.video_prompt,pr.bgm_prompt,pr.sfx_summary,pr.image_prompt_ko,pr.image_prompt_en,
+        it.image?.prompt_ko,it.image?.prompt_en,
+        (Array.isArray(it.images)?it.images:[]).map(im=>im?.prompt_ko).join(' '),
+        it.voice?.script,it.voice?.prompt,it.video?.prompt,
+        (it.video?.scenes||[]).map(s=>s.script).join(' ')
+      ].filter(Boolean).join(' ');
+      return fields.toLowerCase().includes(q);
+    });
+  }
+  return list;
+}
+function cwToggleGroup(key){
+  cwState.groupCollapsed[key]=!cwState.groupCollapsed[key];
+  cwRenderList();
+}
+function cwRenderList(){
+  const container=document.getElementById('cwContentList');
+  if(!container)return;
+  const filteredNos=new Set(cwGetFilteredNos());
+  if(!cwState.data){
+    container.innerHTML='<div class="cw-list-empty">content_workbench.json 을 업로드하세요</div>';
+    return;
+  }
+  let html='';
+  (cwState.channelTree||[]).forEach((group,gi)=>{
+    const chKey='ch_'+(group.channel_group||gi);
+    const chCollapsed=cwState.groupCollapsed[chKey];
+    const types=group.types||[];
+    const totalInGroup=types.reduce((a,t)=>a+(t.items||[]).length,0);
+    html+=`<div class="cw-group-channel"><div class="cw-group-channel-h ${chCollapsed?'collapsed':''}" onclick="cwToggleGroup('${chKey}')"><span class="chevron">▼</span><span>${cwEscapeHtml(group.channel_group||'')}</span><span style="font-size:9px;color:var(--muted);font-weight:400">(${totalInGroup})</span></div>`;
+    if(!chCollapsed){
+      types.forEach((typeBlock,ti)=>{
+        const ty=typeBlock.type||'';
+        const items=(typeBlock.items||[]).filter(no=>filteredNos.has(no));
+        if(items.length===0)return;
+        const tyKey='ty_'+chKey+'_'+ti+'_'+ty.replace(/[^a-zA-Z0-9가-힣_]/g,'_');
+        const tyCollapsed=cwState.groupCollapsed[tyKey];
+        html+=`<div class="cw-group-type"><div class="cw-group-type-h ${tyCollapsed?'collapsed':''}" onclick="cwToggleGroup('${tyKey.replace(/'/g,"\\'")}')"><span class="chevron">▼</span><span>${cwEscapeHtml(ty)}</span><span style="font-size:9px;color:var(--muted)">(${items.length})</span></div>`;
+        if(!tyCollapsed){
+          html+='<div class="cw-group-cards">';
+          items.forEach(no=>{
+            const it=cwState.itemsByNo[no];
+            const displayType=(parseInt(no,10)>=14&&parseInt(no,10)<=23)?(THREAD_NO_TO_TYPE[no]||it?.type):it?.type;
+            const titleVal=cwGetItemTitle(it);
+            const bodyVal=cwGetItemBody(it);
+            const titleOrFirst=titleVal||cwSanitize(it?.short_summary)||bodyVal.split('\n')[0]?.slice(0,50)||'[제목 없음]';
+            const ctaShort=cwGetItemCta(it)?.slice(0,40)||'';
+            const hasBody=!!(bodyVal||titleVal);
+            const hasImg=Array.isArray(it?.image)?it.image?.length:!!it?.image;
+            const hasImages=Array.isArray(it?.images)&&it.images.length>0;
+            const hasVoice=!!(it?.voice?.script||it?.voice?.prompt||it?.prompts?.voice_prompt);
+            const hasVideo=!!it?.video||!!it?.shared_video_ref;
+            const hasSubs=!!(it?.video?.subtitles?.length);
+            const hasAudio=!!it?.audio?.bgm||!!(it?.audio?.sfx?.length);
+            const tagCount=cwGetItemTags(it).length;
+            const id='No.'+no;
+            html+=`<div class="cw-content-card ${cwState.selectedContentId===id?'on':''}" data-id="${id}"><div class="cw-content-card-no">No.${no}</div><div class="cw-content-card-meta">${cwEscapeHtml(it?.channel_group||'')} · ${cwEscapeHtml(displayType||'')} · ${cwEscapeHtml(it?.publish_timing||'')}</div><div class="cw-content-card-title">${cwEscapeHtml(titleOrFirst.slice(0,80))}</div>${ctaShort?`<div style="font-size:8px;color:var(--ink2)">${cwEscapeHtml(ctaShort)}</div>`:''}<div class="cw-content-card-badges"><span class="cw-badge ${hasBody?'has':'empty'}">원고</span><span class="cw-badge ${hasImg||hasImages||it?.shared_video_ref?'has':'empty'}">이미지</span><span class="cw-badge ${hasVoice?'has':'empty'}">음성</span><span class="cw-badge ${hasVideo?'has':'empty'}">영상</span><span class="cw-badge ${hasSubs?'has':'empty'}">자막</span><span class="cw-badge ${hasAudio?'has':'empty'}">오디오</span>${it?.shared_video_ref?`<span class="cw-badge shared">공통 ${cwEscapeHtml(String(it.shared_video_ref))}</span>`:''}</div></div>`;
+          });
+          html+='</div>';
+        }
+        html+='</div>';
+      });
+    }
+    html+='</div>';
+  });
+  container.innerHTML=html||'<div class="cw-list-empty">조건에 맞는 항목 없음</div>';
+  container.querySelectorAll('.cw-content-card').forEach(card=>{card.onclick=e=>{e.stopPropagation();cwSelectContent(card.dataset.id);};});
+}
+function cwSetScheduleFilter(sched){
+  cwState.filters.schedule=sched;
+  document.querySelectorAll('#spCs [data-sched]').forEach(el=>el.classList.toggle('on',el.dataset.sched===sched));
+  cwRenderList();
+}
+function cwApplySearch(){
+  cwState.filters.search=document.getElementById('cwSearchInput')?.value||'';
+  cwRenderList();
+}
+function cwSelectContent(id){
+  cwState.selectedContentId=id;
+  document.querySelectorAll('.cw-content-card').forEach(c=>c.classList.toggle('on',c.dataset.id===id));
+  cwRenderDetail(id);
+  document.getElementById('cwDetailPanel')?.scrollTo({top:0,behavior:'smooth'});
+}
+function cwEncodeCopyPayload(t){
+  return cwEscapeHtml(t).replace(/"/g,'&quot;').replace(/\n/g,'&#10;').slice(0,120000);
+}
+function cwCopyFromData(el){
+  const raw=el.getAttribute('data-copy');
+  if(!raw)return;
+  const d=document.createElement('div');
+  d.innerHTML=raw.replace(/&#10;/g,'\n');
+  const text=d.textContent||'';
+  navigator.clipboard.writeText(text).then(()=>{
+    el.classList.add('copied');
+    const o=el.textContent;
+    el.textContent='됨';
+    setTimeout(()=>{el.classList.remove('copied');el.textContent=o;},1200);
+    toast('📋 복사됨','ok');
+  }).catch(()=>toast('복사 실패','err'));
+}
+function cwCopyAllPrompts(){
+  const it=cwState.itemsById[cwState.selectedContentId];
+  if(!it)return;
+  const lines=cwExtractAllCardData(it).map(x=>'['+x.label+']\n'+x.value);
+  const text=lines.join('\n\n');
+  if(!text.trim()){toast('프롬프트 항목 없음','err');return;}
+  navigator.clipboard.writeText(text).then(()=>toast('프롬프트 모음 복사됨','ok'));
+}
+function cwBuildAssetCopyText(it){
+  if(!it)return'';
+  const parts=[];
+  const isReels=!!it.shared_video_ref;
+  if(isReels){
+    parts.push('공통영상: '+it.shared_video_ref+' 참조');
+    const cov=it.image&&!Array.isArray(it.image)?it.image:(Array.isArray(it.image)&&it.image[0]?it.image[0]:null);
+    if(cov){
+      if(cov.ratio)parts.push('커버 비율: '+cov.ratio);
+      if(cov.resolution)parts.push('커버 해상도: '+cov.resolution);
+      if(cov.prompt_ko)parts.push('커버 프롬프트(KO): '+cov.prompt_ko);
+      if(cov.prompt_en)parts.push('커버 프롬프트(EN): '+cov.prompt_en);
+    }
+  }else{
+    const imgs=Array.isArray(it.image)?it.image:(it.image?[it.image]:[]);
+    const imgsAlt=Array.isArray(it.images)?it.images:[];
+    const allImgs=imgs.length?imgs:imgsAlt;
+    const pr=it.prompts&&typeof it.prompts==='object'?it.prompts:{};
+    allImgs.forEach((im,i)=>{
+      if(!im)return;
+      const pref=allImgs.length>1?('[이미지 '+(i+1)+'] '):'';
+      if(im.ratio)parts.push(pref+'비율: '+im.ratio);
+      if(im.resolution)parts.push(pref+'해상도: '+im.resolution);
+      if(im.slides)parts.push(pref+'슬라이드: '+im.slides);
+      const ko=_csRawStr(im.prompt_ko)||(allImgs.length>1?_csRawStr(pr['image_'+(i+1)+'_prompt_ko']):_csRawStr(pr.image_prompt_ko));
+      const en=_csRawStr(im.prompt_en)||(allImgs.length>1?_csRawStr(pr['image_'+(i+1)+'_prompt_en']):_csRawStr(pr.image_prompt_en));
+      if(ko)parts.push(pref+'프롬프트(KO): '+ko);
+      if(en)parts.push(pref+'프롬프트(EN): '+en);
+    });
+    if(it.video?.scenes?.length)parts.push('장면: '+it.video.scenes.map(s=>(s.timecode||'')+' ['+(s.chapter||'')+'] '+(s.script||'')).join('\n'));
+    if(it.video?.subtitles?.length)parts.push('자막: '+it.video.subtitles.join(' | '));
+    if(it.audio?.bgm?.style)parts.push('BGM 스타일: '+it.audio.bgm.style);
+    if(it.audio?.sfx?.length)parts.push('SFX: '+it.audio.sfx.map(s=>s.type+'@'+s.timing).join(', '));
+  }
+  const pm=cwExtractAllCardData(it);
+  if(pm.length){parts.push('━━ 프롬프트(통합) ━━');pm.forEach(p=>parts.push('['+p.label+']\n'+p.value));}
+  return parts.filter(Boolean).join('\n\n');
+}
+function cwBuildPublishCopyText(it){
+  if(!it)return'';
+  const no=String(it.no||'').padStart(2,'0');
+  const num=parseInt(no,10);
+  const isThread=num>=14&&num<=23;
+  const isBlog=num===24;
+  const parts=[];
+  const title=cwGetItemTitle(it)||it.title;
+  const body=cwGetItemBody(it)||it.body||it.copy?.body;
+  const cta=cwGetItemCta(it)||it.cta;
+  const tags=cwGetItemTags(it)||it.tags||[];
+  const legal=it.legal||{};
+  if(isBlog){
+    parts.push(title||'', '');
+    parts.push(body||'');
+    const bodyStr=typeof body==='string'?body:cwNormalizeBody(body)||'';
+    const h2s=bodyStr?(bodyStr.match(/^##\s+(.+)$/gm)||[]).map(s=>s.replace(/^##\s+/,'').trim()):[];
+    if(h2s.length){parts.push('','━━ H2 ━━');h2s.forEach((h,i)=>parts.push((i+1)+'. '+h));}
+    if(cta){parts.push('',cta);}
+    if(tags.length){parts.push('',tags.map(t=>(t.startsWith('#')?t:'#'+t)).join(' '));}
+    const imgs=Array.isArray(it.image)?it.image:(Array.isArray(it.images)?it.images:[]);
+    if(imgs.length){parts.push('','━━ 이미지 위치 ━━');imgs.forEach((im,i)=>{if(im?.position)parts.push('[IMAGE:'+(i+1)+'] '+im.position);else parts.push('[IMAGE:'+(i+1)+']');});}
+    if(legal.disclaimer||legal.ad_label||legal.ai_label){parts.push('','━━ 법적 ━━');if(legal.ad_label)parts.push('광고: '+legal.ad_label);if(legal.ai_label)parts.push('AI: '+legal.ai_label);if(legal.disclaimer)parts.push(legal.disclaimer);}
+    return parts.join('\n');
+  }
+  if(title)parts.push(title);
+  if(body)parts.push(body);
+  if(!body&&isThread&&it.short_summary)parts.push(it.short_summary);
+  if(cta)parts.push(cta);
+  if(tags.length)parts.push(tags.map(t=>(t.startsWith('#')?t:'#'+t)).join(' '));
+  if(isThread){const im=it.image;if(im&&(im.prompt_ko||im.prompt_en)){if(im.prompt_ko)parts.push('[이미지] '+im.prompt_ko);if(im.prompt_en)parts.push('[EN] '+im.prompt_en);}}
+  if(legal.ad_label)parts.push(legal.ad_label);
+  if(legal.ai_label)parts.push(legal.ai_label);
+  if(legal.disclaimer)parts.push(legal.disclaimer);
+  const result=parts.filter(Boolean).join('\n\n');
+  if(result.trim())return result;
+  if(isThread)return 'No.'+no+' (본문 확인 필요)';
+  return'';
+}
+function cwCopyBlock(type){
+  const it=cwState.itemsById[cwState.selectedContentId];
+  if(!it)return;
+  const text=type==='asset'?cwBuildAssetCopyText(it):cwBuildPublishCopyText(it);
+  if(!text.trim()){
+    toast(type==='asset'?'자산 복사할 내용 없음':'발행 복사할 내용 없음','err');
+    return;
+  }
+  navigator.clipboard.writeText(text).then(()=>toast('📋 '+ (type==='asset'?'자산':'발행') +' 복사됨','ok'));
+}
+function cwCpLong(label,text){
+  const t=_csRawStr(text);
+  if(!t)return'';
+  const safe=cwEncodeCopyPayload(t);
+  return `<div class="cw-detail-row"><span class="cw-detail-label">${cwEscapeHtml(label)}</span><div class="cw-detail-val"><div class="cw-copy-wrap"><pre>${cwEscapeHtml(t)}</pre><button type="button" class="cw-copy-btn" data-copy="${safe}" onclick="cwCopyFromData(this)">복사</button></div></div></div>`;
+}
+function cwRenderDetail(id){
+  const panel=document.getElementById('cwDetailPanel');
+  if(!panel)return;
+  const it=cwState.itemsById[id];
+  if(!it){
+    panel.innerHTML='<div class="cw-detail-empty">좌측에서 카드 선택</div>';
+    return;
+  }
+  const cp=(label,text)=>cwCpLong(label,text);
+  let html='';
+  html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[A] 기본</div><div class="cw-detail-card-b">`;
+  html+=`<div class="cw-detail-row"><span class="cw-detail-label">No.</span><span class="cw-detail-val">No.${String(it.no||'').padStart(2,'0')}</span></div>`;
+  html+=`<div class="cw-detail-row"><span class="cw-detail-label">채널</span><span class="cw-detail-val">${cwEscapeHtml(it.channel_group||'')} &gt; ${cwEscapeHtml(it.channel||'')}</span></div>`;
+  const displayType=(parseInt(it.no,10)>=14&&parseInt(it.no,10)<=23)?(THREAD_NO_TO_TYPE[String(it.no||'').padStart(2,'0')]||it.type):it.type;
+  html+=`<div class="cw-detail-row"><span class="cw-detail-label">유형</span><span class="cw-detail-val">${cwEscapeHtml((it.type!=null&&String(it.type)!=='')?String(it.type):displayType||'')}</span></div>`;
+  html+=`<div class="cw-detail-row"><span class="cw-detail-label">발행</span><span class="cw-detail-val">${cwEscapeHtml(it.publish_timing||'')}</span></div>`;
+  if(it.shared_video_ref){
+    const refNo=String(it.shared_video_ref).replace(/^No\.?/i,'').trim();
+    const selId='No.'+refNo;
+    html+=`<div class="cw-shared-link" onclick="cwSelectContent('${cwJsAttrStr(selId)}')">📎 공통영상 ${cwEscapeHtml(it.shared_video_ref)} · 열기</div>`;
+  }
+  html+=`</div></div>`;
+  html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[B] 원고</div><div class="cw-detail-card-b">`;
+  html+=cp('제목',cwGetItemTitle(it));
+  html+=cp('한줄요약',it.short_summary);
+  const bodyText=cwGetItemBody(it)||cwSanitize(it.body);
+  if(bodyText)html+=cp('본문',bodyText);
+  html+=cp('CTA',cwGetItemCta(it));
+  const tagsArr=cwGetItemTags(it);
+  if(tagsArr.length)html+=`<div class="cw-detail-row"><span class="cw-detail-label">태그</span><span class="cw-detail-val">${tagsArr.map(t=>cwEscapeHtml(t)).join(', ')}</span></div>`;
+  html+=`</div></div>`;
+  const imageArr=Array.isArray(it.image)?it.image:(it.image?[it.image]:[]);
+  const imagesArr=Array.isArray(it.images)?it.images:[];
+  const allImgs=imageArr.length?imageArr:imagesArr;
+  const imgPr=it.prompts&&typeof it.prompts==='object'?it.prompts:{};
+  if(allImgs.length){
+    html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[C] 이미지</div><div class="cw-detail-card-b">`;
+    allImgs.forEach((im,i)=>{
+      if(!im)return;
+      const idx=i+1,tot=allImgs.length;
+      if(allImgs.length>1)html+=`<div style="font-weight:700;margin:8px 0 4px">이미지 ${idx}${im.position?' ('+cwEscapeHtml(im.position)+')':''}</div>`;
+      html+=`<div class="cw-detail-row"><span class="cw-detail-label">비율</span><span class="cw-detail-val">${cwEscapeHtml(im.ratio||'')}</span></div>`;
+      const ko=_csRawStr(im.prompt_ko)||_csRawStr(imgPr['image_'+idx+'_prompt_ko'])||(tot===1?_csRawStr(imgPr.image_prompt_ko):'');
+      const en=_csRawStr(im.prompt_en)||_csRawStr(imgPr['image_'+idx+'_prompt_en'])||(tot===1?_csRawStr(imgPr.image_prompt_en):'');
+      html+=cp('프롬프트(KO)',ko);
+      html+=cp('프롬프트(EN)',en);
+    });
+    html+=`</div></div>`;
+  }
+  if(it.voice||cwVoicePromptOnly(it)||_csRawStr(it.prompts?.voice_prompt)){
+    html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[D] 음성</div><div class="cw-detail-card-b">`;
+    html+=cp('Voice Script (대본)',it.voice?.script);
+    const vp=cwVoicePromptOnly(it);
+    if(vp)html+=cp('Voice Prompt',vp);
+    html+=`</div></div>`;
+  }
+  const prompts=cwExtractAllCardData(it);
+  if(prompts.length){
+    html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[P] 프롬프트 모음 (원문)</div><div class="cw-detail-card-b">`;
+    html+=`<button type="button" class="cw-copy-btn" onclick="cwCopyAllPrompts()" style="margin-bottom:10px">📋 전체 한 번에 복사</button>`;
+    prompts.forEach(p=>{html+=`<div style="font-size:9px;color:var(--muted);margin:8px 0 2px">${cwEscapeHtml(p.label)}</div>`+cp('',p.value);});
+    html+=`</div></div>`;
+  }
+  if(it.video||it.shared_video_ref){
+    html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[E] 영상</div><div class="cw-detail-card-b">`;
+    if(it.shared_video_ref)html+=`<div class="cw-detail-row"><span class="cw-detail-label">공통</span><span class="cw-detail-val">${cwEscapeHtml(it.shared_video_ref)} 참조</span></div>`;
+    if(it.video){
+      html+=cp('영상 프롬프트',_csRawStr(it.prompts?.video_prompt)||it.video.prompt);
+      if(it.video.scenes?.length){
+        html+='<div class="cw-detail-row"><span class="cw-detail-label">장면</span><div class="cw-detail-val">';
+        it.video.scenes.forEach(s=>{html+=`<div class="cw-scene-row"><span>${cwEscapeHtml(s.timecode||'')} [${cwEscapeHtml(s.chapter||'')}] ${cwEscapeHtml(s.script||'')}</span></div>`;});
+        html+='</div></div>';
+      }
+      if(it.video.subtitles?.length)html+=cp('자막',it.video.subtitles.join(' | '));
+    }
+    html+=`</div></div>`;
+  }
+  if(it.audio){
+    html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[F] 오디오</div><div class="cw-detail-card-b">`;
+    if(it.audio.bgm){html+=cp('BGM 스타일',it.audio.bgm.style);html+=cp('BGM 프롬프트',_csRawStr(it.prompts?.bgm_prompt)||it.audio.bgm.prompt);}
+    html+=`</div></div>`;
+  }
+  html+=`<div class="cw-detail-card"><div class="cw-detail-card-h">[복사] 자산 / 발행</div><div class="cw-detail-card-b"><div class="cw-copy-buttons-row"><button type="button" class="cw-copy-block-btn asset" onclick="cwCopyBlock('asset')">📋 자산</button><button type="button" class="cw-copy-block-btn publish" onclick="cwCopyBlock('publish')">📋 발행</button></div></div></div>`;
+  html+=`<details class="cw-detail-card"><summary style="cursor:pointer;padding:10px 12px;background:rgba(107,79,160,.06);font-size:10px;font-weight:700;color:var(--purple);">JSON 원문</summary><div class="cw-detail-card-b"><pre style="font-size:9px;max-height:220px;overflow:auto;white-space:pre-wrap">${cwEscapeHtml(JSON.stringify(it,null,2))}</pre></div></details>`;
+  panel.innerHTML=html;
+}
+if(window.location.protocol==='file:'){const n=document.getElementById('cwFileProtocolNotice');if(n)n.style.display='block';}
+
+// ════════════════════════════════════════════════════
 // STEP NAV
 // ════════════════════════════════════════════════════
 function goStep(n){
-  if(n>1)return; // sp2/sp3 제거됨 — Step 1만 사용
-  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('on',i+1===n));
-  document.querySelectorAll('.stab').forEach((s,i)=>{
-    s.classList.remove('on','done');
-    if(i===n-1)s.classList.add('on'); else if(i<n-1)s.classList.add('done');
-  });
-  const sn1=document.getElementById('sn1');if(sn1)sn1.textContent='1';
+  if(n!==1 && n!==2) return;
+  const spCs=document.getElementById('spCs'), sp1=document.getElementById('sp1');
+  const stabCs=document.getElementById('stabCs'), stab1=document.getElementById('stab1');
+  if(spCs) spCs.classList.toggle('on', n===1);
+  if(sp1) sp1.classList.toggle('on', n===2);
+  if(stabCs){ stabCs.classList.toggle('on', n===1); stabCs.classList.toggle('done', n===2); }
+  if(stab1){ stab1.classList.toggle('on', n===2); stab1.classList.toggle('done', false); }
 }
 
 // ════════════════════════════════════════════════════
@@ -3132,7 +3818,7 @@ function refreshLive(){
   document.getElementById('livePreview').srcdoc=h;
   document.getElementById('prevUrl').textContent=(generatedTitle||'blog').slice(0,30).replace(/[^가-힣a-z0-9]/gi,'_')+'.html';
 }
-function applyImagesAndFinish(){refreshLive();setTimeout(()=>goStep(3),100);}
+function applyImagesAndFinish(){refreshLive();setTimeout(()=>goStep(2),100);}
 
 // ════════════════════════════════════════════════════
 // FINAL RESULT
