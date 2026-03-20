@@ -924,6 +924,13 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 .cs-pf-btn{padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-size:9px;cursor:pointer;background:white;color:var(--ink);font-family:'DM Mono',monospace;transition:all .12s;}
 .cs-pf-btn:hover{border-color:var(--purple);}
 .cs-pf-btn.on{background:rgba(107,79,160,.1);border-color:var(--purple);color:var(--purple);font-weight:700;}
+.cs-pm-btn{padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:8px;cursor:pointer;background:var(--bg);color:var(--ink);font-family:'DM Mono',monospace;}
+.cs-pm-btn:hover{border-color:var(--purple);}
+.cs-pm-btn.on{background:rgba(34,139,103,.12);border-color:#228b67;color:#1e6b52;font-weight:700;}
+.cs-gen-badge{font-size:7px;font-weight:800;padding:1px 6px;border-radius:6px;background:rgba(180,120,30,.2);color:#8a5a00;margin-left:6px;vertical-align:middle}
+.cs-layer-raw{border-left:3px solid #2c5282}
+.cs-layer-view{border-left:3px solid #276749}
+.cs-layer-generated{border-left:3px solid #b7791f}
 .cs-prompt-list{flex:1;overflow-y:auto;padding:12px;}
 .cs-prompt-list::-webkit-scrollbar{width:4px;}
 .cs-prompt-list::-webkit-scrollbar-thumb{background:var(--border);}
@@ -1325,6 +1332,13 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
     </div>
     <!-- PAGE 1: 프롬프트 모음 -->
     <div class="cs-mid-pane" id="csMidPane1">
+      <div class="cs-prompt-mode-bar" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.02)">
+        <span style="font-size:9px;color:var(--muted);margin-right:4px">출력 모드</span>
+        <button type="button" class="cs-pm-btn on" data-cs-pm="all" onclick="csSetPromptLayerFilter('all')">전체</button>
+        <button type="button" class="cs-pm-btn" data-cs-pm="raw" onclick="csSetPromptLayerFilter('raw')">RAW 원본</button>
+        <button type="button" class="cs-pm-btn" data-cs-pm="view" onclick="csSetPromptLayerFilter('view')">VIEW 표시</button>
+        <button type="button" class="cs-pm-btn" data-cs-pm="generated" onclick="csSetPromptLayerFilter('generated')">GENERATED 제안</button>
+      </div>
       <div class="cs-prompt-filters" id="csPromptFilters">
         <button class="cs-pf-btn on" onclick="csFilterPrompts('all')">전체</button>
         <button class="cs-pf-btn" onclick="csFilterPrompts('image')">🖼 이미지</button>
@@ -5470,6 +5484,7 @@ let csCards=[];
 let csPrompts=[];
 let csSelectedCardId=null;
 let csPromptFilter='all';
+let csPromptLayerFilter='all';
 const CS_TYPE_LABELS={blog:'블로그',sns:'SNS',video:'영상',news:'뉴스',other:'기타'};
 const CS_CHANNELS=[
   {key:'youtube',name:'유튜브',color:'#c0441e',types:['롱폼','쇼츠']},
@@ -7018,27 +7033,174 @@ function csSplitSections(text,fn){
 function csGuessType(t,b){const s=(t+' '+b).toLowerCase();if(/youtube|유튜브|영상|video|vlog|shorts|릴스/.test(s))return'video';if(/instagram|인스타|스레드|thread|tiktok|틱톡|sns|피드|스토리/.test(s))return'sns';if(/뉴스|기사|보도|press|언론/.test(s))return'news';if(/블로그|blog|포스트|post|칼럼|에세이|리뷰/.test(s))return'blog';return'other';}
 function csExtractTags(t){const h=t.match(/#[가-힣a-zA-Z0-9_]+/g);if(h)return h.slice(0,5);const kw=['마케팅','브랜드','콘텐츠','SNS','블로그','영상','리뷰','트렌드','AI','광고'];return kw.filter(k=>t.includes(k)).slice(0,5);}
 
+/** 내보내기용 채널 슬러그 */
+function csNormalizeChannelSlug(c){
+  const s=((c.channel||'')+' '+(c.channelType||'')).toLowerCase();
+  if(/youtube|유튜브/.test(s)) return 'youtube';
+  if(/instagram|인스타/.test(s)) return 'instagram';
+  if(/thread|스레드/.test(s)) return 'threads';
+  if(/tiktok|틱톡/.test(s)) return 'tiktok';
+  if(/네이버|naver|블로그/.test(s)) return 'naver_blog';
+  return String(c.channel||'unknown').trim().toLowerCase().replace(/\s+/g,'_')||'unknown';
+}
+/** 내보내기용 유형 (shorts / reels 등) */
+function csNormalizeTypeSlug(c){
+  const mix=((c.channelType||'')+' '+(c.channel||'')+' '+(c.title||'')).toLowerCase();
+  if(/쇼츠|shorts/.test(mix)) return 'shorts';
+  if(/릴스|reels/.test(mix)) return 'reels';
+  if(/스토리|story/.test(mix)) return 'story';
+  if(/피드|feed/.test(mix)) return 'feed';
+  if(c.type==='blog') return 'blog';
+  if(c.type==='video') return /쇼츠|shorts/.test(mix)?'shorts':'longform';
+  if(c.type==='sns') return 'sns_post';
+  if(c.type==='news') return 'news';
+  return c.type||'other';
+}
+/** 카드 prompts → canonical RAW (값 있는 필드만; 요약·재작성 없음) */
+function csCardRawCanonical(c){
+  const p=c.prompts||{};
+  const raw={};
+  const s=(x)=>String(x==null?'':x).trim();
+  const sc=s(p.voiceScript);
+  if(sc) raw.script=sc;
+  const vp=s(p.voice);
+  if(vp) raw.voice_prompt=vp;
+  const vid=s(p.video);
+  if(vid) raw.video_prompt=vid;
+  const bg=s(p.bgm);
+  if(bg) raw.bgm_prompt=bg;
+  const sx=s(p.sfx);
+  if(sx) raw.sfx_prompt=sx;
+  const iko=(p.imageKo||[]).map(String).map(x=>x.trim()).filter(Boolean);
+  if(iko.length) raw.image_prompt_ko=iko;
+  const ien=(p.imageEn||[]).map(String).map(x=>x.trim()).filter(Boolean);
+  if(ien.length) raw.image_prompt_en=ien;
+  return raw;
+}
+/** VIEW: RAW를 덮어쓰지 않는 요약·라벨만 */
+function csCardViewLayer(c, contentId){
+  const body=(c.body||'').trim();
+  const sum=(c.shortSummary||'').trim();
+  const v={
+    content_id:contentId,
+    title_display:(c.title||'').slice(0,120)||'(제목 없음)',
+    summary_line:sum||(body.length?body.slice(0,160).replace(/\s+/g,' ')+(body.length>160?'…':''):''),
+    channel_label:[c.channel,c.channelType].filter(Boolean).join(' · ')||'—',
+    type_label:CS_TYPE_LABELS[c.type]||c.type||'—',
+    tag_list:(c.tags||[]).slice(0,12),
+  };
+  return v;
+}
+/**
+ * GENERATED: 원본(JSON)에 해당 필드가 비어 있을 때만 제안. 임의 대본·TTS 추상문구 금지.
+ * 출력 객체: { field, value, generated:true }
+ */
+function csCardGeneratedLayer(c){
+  const p=c.prompts||{};
+  const has=(key)=>{
+    if(key==='image_prompt_ko') return (p.imageKo||[]).some(x=>String(x||'').trim());
+    if(key==='image_prompt_en') return (p.imageEn||[]).some(x=>String(x||'').trim());
+    if(key==='script') return !!String(p.voiceScript||'').trim();
+    if(key==='voice_prompt') return !!String(p.voice||'').trim();
+    if(key==='video_prompt') return !!String(p.video||'').trim();
+    if(key==='bgm_prompt') return !!String(p.bgm||'').trim();
+    if(key==='sfx_prompt') return !!String(p.sfx||'').trim();
+    return false;
+  };
+  const out={};
+  if(!has('image_prompt_ko')){
+    const title=c.title||'(제목 없음)';
+    const body=(c.body||'').trim();
+    const summ=body.slice(0,400).replace(/\s+/g,' ').trim();
+    out.image_prompt_ko={
+      field:'image_prompt_ko',
+      value:'주제: '+title+'\n비주열 요약(참고): '+summ.slice(0,220)+(summ.length>220?'…':'')+'\n스타일: '+ (CS_TYPE_LABELS[c.type]||'콘텐츠')+'에 맞는 이미지. 텍스트·워터마크 최소.',
+      generated:true
+    };
+  }
+  if(!has('image_prompt_en')){
+    out.image_prompt_en={
+      field:'image_prompt_en',
+      value:'Subject: '+(c.title||'content')+'. Style: clean editorial or UGC-appropriate visual matching the channel; minimal overlaid text.',
+      generated:true
+    };
+  }
+  if(!has('video_prompt')&&(c.type==='video'||c.type==='sns'||c.type==='blog')){
+    out.video_prompt={
+      field:'video_prompt',
+      value:'[장면 구성 제안·플레이스홀더] 훅 구간 → 정보/전개 구간 → CTA. 실제 대사·낭독 대본은 RAW.script 등 원본 필드에만 기입하세요. 이 블록은 촬영·컷 계획용입니다.',
+      generated:true
+    };
+  }
+  return out;
+}
+/** 카드 1건 → 목표 JSON 형태 { content_id, channel, type, raw, view, generated } */
+function csBuildStructuredContent(c, idx){
+  const num=String(idx+1).padStart(2,'0');
+  const content_id='No.'+num;
+  return{
+    content_id,
+    channel:csNormalizeChannelSlug(c),
+    type:csNormalizeTypeSlug(c),
+    raw:csCardRawCanonical(c),
+    view:csCardViewLayer(c, content_id),
+    generated:csCardGeneratedLayer(c)
+  };
+}
+function csPromptCatForField(fieldKey, layer){
+  if(layer==='view') return 'text';
+  const k=String(fieldKey||'');
+  if(/image_prompt/.test(k)) return 'image';
+  if(k==='video_prompt') return 'video';
+  if(k==='script'||k==='voice_prompt') return 'voice';
+  if(k==='bgm_prompt'||k==='sfx_prompt') return 'bgm';
+  return 'text';
+}
+
 function csExtractPrompts(cards,texts){
   const prompts=[];let pid=0;
-  const push=(cat,label,text,cardId)=>{const t=String(text||'').trim();if(!t)return;prompts.push({id:++pid,cat,label,text:t,cardId});};
-  cards.forEach(c=>{
-    const p=c.prompts||{};
-    if(p.voiceScript)push('voice','🎙 대본 — '+c.title,p.voiceScript,c.id);
-    if(p.voice)push('voice','🎙 음성 프롬프트 — '+c.title,p.voice,c.id);
-    if(p.video)push('video','🎬 영상 프롬프트 — '+c.title,p.video,c.id);
-    if(p.bgm)push('bgm','🎵 BGM — '+c.title,p.bgm,c.id);
-    if(p.sfx)push('bgm','🔊 SFX — '+c.title,p.sfx,c.id);
-    (p.imageKo||[]).forEach((t,i)=>{if(t)push('image','🖼 이미지 KO '+(i+1)+' — '+c.title,t,c.id);});
-    (p.imageEn||[]).forEach((t,i)=>{if(t)push('image','🖼 Image EN '+(i+1)+' — '+c.title,t,c.id);});
-    if((c.shortSummary||'').trim())push('text','📌 한줄 요약 — '+c.title,c.shortSummary,c.id);
-    if((c.cta||'').trim())push('text','📣 CTA — '+c.title,c.cta,c.id);
-    if((c.body||'').trim())push('text','📝 본문·카피 — '+c.title,c.body,c.id);
-    csBuildSuggestedPrompts(c).forEach(s=>{
-      const cat=/이미지/i.test(s.label)?'image':(/영상|숏폼|구성/i.test(s.label)?'video':'text');
-      push(cat,s.label+' (제안) — '+c.title,s.text,c.id);
+  const push=(layer,cat,label,text,cardId,extra)=>{
+    const t=String(text||'').trim();
+    if(!t)return;
+    prompts.push(Object.assign({id:++pid,layer,cat,label,text:text,cardId},extra||{}));
+  };
+  cards.forEach((c,idx)=>{
+    const st=csBuildStructuredContent(c,idx);
+    const cid=st.content_id;
+    Object.entries(st.raw).forEach(([k,v])=>{
+      if(v==null)return;
+      if(Array.isArray(v)){
+        v.forEach((item,i)=>{
+          const tx=String(item||'').trim();
+          if(!tx)return;
+          push('raw',csPromptCatForField(k,'raw'),'RAW · '+k+(v.length>1?' '+(i+1):'')+' — '+cid,tx,c.id,{fieldKey:k});
+        });
+        return;
+      }
+      push('raw',csPromptCatForField(k,'raw'),'RAW · '+k+' — '+cid,String(v),c.id,{fieldKey:k});
+    });
+    const vw=st.view;
+    if(vw.summary_line) push('view','text','VIEW · 요약 한 줄 — '+cid,vw.summary_line,c.id,{fieldKey:'summary_line'});
+    if(vw.title_display) push('view','text','VIEW · 제목(표시) — '+cid,vw.title_display,c.id,{fieldKey:'title_display'});
+    if(vw.channel_label&&vw.channel_label!=='—') push('view','text','VIEW · 채널 라벨 — '+cid,vw.channel_label,c.id,{fieldKey:'channel_label'});
+    if(vw.type_label&&vw.type_label!=='—') push('view','text','VIEW · 유형 라벨 — '+cid,vw.type_label,c.id,{fieldKey:'type_label'});
+    if((vw.tag_list||[]).length) push('view','text','VIEW · 태그 — '+cid,(vw.tag_list||[]).join(' '),c.id,{fieldKey:'tags'});
+    Object.entries(st.generated||{}).forEach(([,obj])=>{
+      if(!obj||!obj.generated||!obj.field)return;
+      const tx=String(obj.value||'').trim();
+      if(!tx)return;
+      push('generated',csPromptCatForField(obj.field,'generated'),'GENERATED · '+obj.field+' — '+cid,tx,c.id,{fieldKey:obj.field,generatedFlag:true});
     });
   });
   return prompts;
+}
+
+function csSetPromptLayerFilter(layer){
+  csPromptLayerFilter=layer||'all';
+  document.querySelectorAll('[data-cs-pm]').forEach(b=>{
+    b.classList.toggle('on',b.getAttribute('data-cs-pm')===csPromptLayerFilter);
+  });
+  csRenderPromptList();
 }
 
 function csSyncMidPaneCollapsedClass(){
@@ -7239,12 +7401,14 @@ function csBuildCardActualProductionText(c){
     promptBlock='■ 이 카드에 저장된 제작 프롬프트\n'+parts.join('\n\n');
   }
 
-  const suggested=csBuildSuggestedPrompts(c);
-  if(!parts.length && suggested.length){
-    promptBlock='■ 저장된 프롬프트가 아직 없음 — 아래는 로컬 자동 제안(분류·JSON에 prompts 채우면 여기가 실제 값으로 바뀜)\n\n'
-      +suggested.map(s=>`【${s.label}】\n${s.text}`).join('\n\n');
+  const idxFB=Math.max(0,csCards.findIndex(x=>x&&c&&x.id===c.id));
+  const stFB=csBuildStructuredContent(c,idxFB);
+  const genLines=!parts.length?Object.values(stFB.generated||{}).filter(o=>o&&o.generated):[];
+  if(!parts.length && genLines.length){
+    promptBlock='■ RAW 프롬프트 없음 — 아래만 **GENERATED(AI 제안)** (원본 필드가 비어 있을 때만)\n\n'
+      +genLines.map(o=>`【GENERATED · ${o.field}】\n${o.value}`).join('\n\n');
   }else if(!parts.length){
-    promptBlock='■ 이 카드에 이미지·영상·음성 프롬프트가 아직 없습니다.\nAI 분류(OpenAI/Claude) 또는 카드 JSON의 prompts 필드를 채우면 이 영역에 그대로 표시됩니다.';
+    promptBlock='■ 이 카드에 이미지·영상·음성 프롬프트가 아직 없습니다.\nAI 분류·JSON prompts 채우면 RAW가 표시됩니다.';
   }
 
   const rules=csExtractOutputRulesFromRaw(c);
@@ -7275,11 +7439,13 @@ function csBuildCardPromptsOnlyText(c){
   push('SFX', p.sfx);
   let promptBlock='';
   if(parts.length) promptBlock='■ 이 카드에 저장된 제작 프롬프트\n'+parts.join('\n\n');
-  const suggested=csBuildSuggestedPrompts(c);
-  if(!parts.length && suggested.length){
-    promptBlock='■ 저장된 프롬프트가 아직 없음 — 로컬 자동 제안\n\n'+suggested.map(s=>`【${s.label}】\n${s.text}`).join('\n\n');
+  const idxFB2=Math.max(0,csCards.findIndex(x=>x&&c&&x.id===c.id));
+  const stFB2=csBuildStructuredContent(c,idxFB2);
+  const genLines2=!parts.length?Object.values(stFB2.generated||{}).filter(o=>o&&o.generated):[];
+  if(!parts.length && genLines2.length){
+    promptBlock='■ RAW 없음 — **GENERATED 제안**만\n\n'+genLines2.map(o=>`【GENERATED · ${o.field}】\n${o.value}`).join('\n\n');
   }else if(!parts.length){
-    promptBlock='■ 이미지·영상·음성 프롬프트가 없습니다.\nAI 분류 또는 카드 JSON의 prompts 필드를 채우면 표시됩니다.';
+    promptBlock='■ 프롬프트 없음.\nAI 분류·JSON prompts를 채우면 RAW가 표시됩니다.';
   }
   const rules=csExtractOutputRulesFromRaw(c);
   const rulesBlock=rules?('\n\n■ 출력·생성 규칙 (원본 데이터)\n'+rules):'';
@@ -7466,21 +7632,6 @@ function csRenderContentGuide(id,opts){
   csRenderVisualPreviews(c);
   document.getElementById('csPreviewFinalizeBar')?.classList.add('show');
 }
-function csBuildSuggestedPrompts(c){
-  const p=c.prompts||{};
-  const hasReal=!!(p.voiceScript||p.voice||p.video||p.bgm||(p.sfx)||(p.imageKo&&p.imageKo.length)||(p.imageEn&&p.imageEn.length));
-  if(hasReal)return[];
-  const title=c.title||'(제목 없음)';
-  const body=(c.body||'').trim();
-  const summ=body.slice(0,500).replace(/\s+/g,' ').trim();
-  const img=`주제: ${title}\n스타일: ${CS_TYPE_LABELS[c.type]||'콘텐츠'}에 맞는 고해상도 일러스트 또는 사진 느낌, 텍스트·워터마크 최소\n핵심 비주얼 요소: ${summ.slice(0,280)}`;
-  const out=[{label:'🖼 이미지 프롬프트 (자동 제안)',text:img}];
-  if(c.type==='video'||c.type==='sns'||c.type==='blog'){
-    const v=`[영상·숏폼 스크립트 제안]\n0~3초 훅: ${title}\n본문: ${summ.slice(0,320)}${c.cta?'\n마무리 CTA: '+c.cta:''}`;
-    out.push({label:'🎬 영상·구성 (자동 제안)',text:v});
-  }
-  return out;
-}
 /** 가운데 열: 제목만 갱신(비주얼은 csRenderVisualPreviews). 스크롤 본문은 사용하지 않음. */
 function csRenderPreview(id){
   const titleEl=document.getElementById('csPreviewTitle');
@@ -7493,24 +7644,22 @@ function csRenderPreview(id){
   }
 }
 
-// Copy & Download (순서: 제작 프롬프트 → 본문·메타)
+// Copy & Download — RAW / VIEW / GENERATED 분리 구조
 function csCardExportPlainText(c){
-  const p=c.prompts||{};
-  let t='['+CS_TYPE_LABELS[c.type]+'] '+c.title+'\n\n';
-  t+='── 이미지·영상·음성 프롬프트 ──\n';
-  (p.imageKo||[]).forEach((x,i)=>{if(x)t+='\n[이미지 KO '+(i+1)+']\n'+x+'\n';});
-  (p.imageEn||[]).forEach((x,i)=>{if(x)t+='\n[Image EN '+(i+1)+']\n'+x+'\n';});
-  if(p.video)t+='\n[영상 프롬프트]\n'+p.video+'\n';
-  if(p.voiceScript)t+='\n[대본]\n'+p.voiceScript+'\n';
-  if(p.voice)t+='\n[음성 프롬프트]\n'+p.voice+'\n';
-  if(p.bgm)t+='\n[BGM]\n'+p.bgm+'\n';
-  if(p.sfx)t+='\n[SFX]\n'+p.sfx+'\n';
-  csBuildSuggestedPrompts(c).forEach(s=>{t+='\n['+s.label+']\n'+s.text+'\n';});
-  t+='\n── 글·카피·메타 ──\n';
-  if(c.shortSummary)t+='\n[한줄 요약]\n'+c.shortSummary+'\n\n';
-  t+='[본문]\n'+(c.body||'')+'\n';
-  if(c.cta)t+='\n[CTA]\n'+c.cta+'\n';
-  if(c.tags&&c.tags.length)t+='\n[태그]\n'+c.tags.join(' ')+'\n';
+  const idx=Math.max(0,csCards.findIndex(x=>x&&c&&x.id===c.id));
+  const st=csBuildStructuredContent(c,idx);
+  let t=st.content_id+' | '+st.channel+' | '+st.type+' | '+(c.title||'')+'\n\n';
+  t+='=== RAW (원본 JSON에 있는 값만; 수정·요약 없음) ===\n';
+  t+=JSON.stringify(st.raw,null,2)+'\n\n';
+  t+='=== VIEW (표시용 요약·라벨) ===\n';
+  t+=JSON.stringify(st.view,null,2)+'\n\n';
+  t+='=== GENERATED (필드가 비어 있을 때만 제안; generated:true) ===\n';
+  t+=JSON.stringify(st.generated,null,2)+'\n\n';
+  t+='=== 글·메타 (프롬프트와 별도; 원문 그대로) ===\n';
+  if((c.shortSummary||'').trim()) t+='\n[한줄 요약]\n'+String(c.shortSummary).trim()+'\n';
+  if((c.body||'').trim()) t+='\n[본문]\n'+String(c.body)+'\n';
+  if((c.cta||'').trim()) t+='\n[CTA]\n'+String(c.cta).trim()+'\n';
+  if(c.tags&&c.tags.length) t+='\n[태그]\n'+c.tags.join(' ')+'\n';
   return t.trim();
 }
 function csCopyCardFull(id){
@@ -7540,16 +7689,24 @@ function csRenderPromptList(){
   const el=document.getElementById('csPromptList');
   const copyEl=document.getElementById('csPromptCopyAll');
   if(!el)return;
-  const filtered=csPromptFilter==='all'?csPrompts:csPrompts.filter(p=>p.cat===csPromptFilter);
-  if(!filtered.length){el.innerHTML='<div class="cs-empty-state"><div class="cs-es-icon">📦</div><div class="cs-es-text">'+(csCards.length?'해당 카테고리 프롬프트 없음':'분류 후 프롬프트가 여기에 정리됩니다')+'</div></div>';if(copyEl)copyEl.style.display='none';return;}
-  el.innerHTML=filtered.map(p=>`<div class="cs-prompt-item"><div class="cs-prompt-item-h"><span>${csEsc(p.label)}</span><button class="cs-prev-btn" onclick="event.stopPropagation();navigator.clipboard.writeText(${JSON.stringify(p.text).replace(/</g,'\\u003c')}).then(()=>toast('📋 복사됨','ok'))" style="padding:2px 8px;font-size:8px">복사</button></div><div class="cs-prompt-item-b">${csEsc(p.text)}</div></div>`).join('');
+  let pool=csPrompts;
+  if(csPromptLayerFilter!=='all') pool=pool.filter(p=>p.layer===csPromptLayerFilter);
+  const filtered=csPromptFilter==='all'?pool:pool.filter(p=>p.cat===csPromptFilter);
+  if(!filtered.length){el.innerHTML='<div class="cs-empty-state"><div class="cs-es-icon">📦</div><div class="cs-es-text">'+(csCards.length?'해당 조건의 항목 없음(모드·카테고리 변경)':'분류 후 프롬프트가 여기에 정리됩니다')+'</div></div>';if(copyEl)copyEl.style.display='none';return;}
+  el.innerHTML=filtered.map(p=>{
+    const cls=p.layer==='raw'?'cs-layer-raw':p.layer==='view'?'cs-layer-view':'cs-layer-generated';
+    const badge=p.generatedFlag?'<span class="cs-gen-badge">AI 제안</span>':'';
+    return `<div class="cs-prompt-item ${cls}"><div class="cs-prompt-item-h"><span>${csEsc(p.label)}</span>${badge}<button class="cs-prev-btn" onclick="event.stopPropagation();navigator.clipboard.writeText(${JSON.stringify(p.text).replace(/</g,'\\u003c')}).then(()=>toast('📋 복사됨','ok'))" style="padding:2px 8px;font-size:8px">복사</button></div><div class="cs-prompt-item-b">${csEsc(p.text)}</div></div>`;
+  }).join('');
   if(copyEl)copyEl.style.display='flex';
 }
 function csCopyAllPrompts(){
-  const filtered=csPromptFilter==='all'?csPrompts:csPrompts.filter(p=>p.cat===csPromptFilter);
+  let pool=csPrompts;
+  if(csPromptLayerFilter!=='all') pool=pool.filter(p=>p.layer===csPromptLayerFilter);
+  const filtered=csPromptFilter==='all'?pool:pool.filter(p=>p.cat===csPromptFilter);
   if(!filtered.length)return;
-  const text=filtered.map(p=>'['+p.label+']\n'+p.text).join('\n\n─────────\n\n');
-  navigator.clipboard.writeText(text).then(()=>toast('📋 '+filtered.length+'개 프롬프트 복사됨','ok'));
+  const text=filtered.map(p=>'['+p.layer.toUpperCase()+'] '+p.label+'\n'+p.text).join('\n\n─────────\n\n');
+  navigator.clipboard.writeText(text).then(()=>toast('📋 '+filtered.length+'개 복사됨','ok'));
 }
 
 /* csRenderChannelLayout removed — replaced by csRenderCardLayout */
