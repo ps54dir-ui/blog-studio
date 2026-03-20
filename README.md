@@ -20,7 +20,11 @@ npx serve -p 8080
 **Netlify 배포:**
 [https://kaleidoscopic-gnome-c77113.netlify.app](https://kaleidoscopic-gnome-c77113.netlify.app)
 
+**Netlify에서 AI(`/api/openai/chat` 등) 쓰기:** 저장소의 `netlify/functions/`가 배포에 포함되어야 합니다. 대시보드 **Site configuration → Environment variables**에 최소 **`OPENAI_API_KEY`**(또는 회원이 각자 키를 넣는 모드만 쓸 경우 생략 가능) / Claude 사용 시 **`ANTHROPIC_API_KEY`** 를 설정하세요. **서비스 공용 지침**을 Functions로 내려주려면(선택) `BS_SHARED_GUIDELINES_TEXT`, `BS_SHARED_GUIDELINES_UPDATED_AT` 를 넣을 수 있습니다. 미설정이면 GET은 빈 `text`로 200을 반환합니다.
+
 배포는 `netlify.toml`에서 `files (5)`를 사이트 루트로 쓰고, 빌드 시 레포 루트의 `guidelines/v10/`을 그 안으로 복사합니다. 배포 후 `…/guidelines/v10/SKILL-v10.md`가 열리면 블로그 스튜디오 AI 번들 fetch가 정상입니다.
+
+**Netlify에서 분류·AI(OpenAI/Claude):** 정적 호스팅만 있으면 `/api/openai/chat`가 없어 오류가 납니다. 레포의 **Netlify Functions**(`netlify/functions/`)가 같은 경로로 프록시합니다. Netlify 대시보드 → **Site configuration → Environment variables** 에 최소 **`OPENAI_API_KEY`**(및 Claude 사용 시 **`ANTHROPIC_API_KEY`**)를 넣고 재배포하세요. 회원이 앱 설정에 본인 API 키를 넣으면 그 키로 호출됩니다(관리자 기본 키는 비워도 됨).
 
 **로컬에서 Netlify와 같은 폴더 만들기:** 레포 루트에서 `npm run build:dist` → `dist/`에 `files (5)` 전본 + `dist/guidelines/v10/`이 생깁니다. 미리보기는 `npm run serve:dist`(또는 `npx serve dist -l 3333`).
 

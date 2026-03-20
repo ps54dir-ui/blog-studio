@@ -4,6 +4,28 @@
   command = "mkdir -p \"files (5)/guidelines/v10\" && cp -r guidelines/v10/. \"files (5)/guidelines/v10/\""
   # index.html, blog-studio-v7.html, admin.html이 루트에 있도록 함
 
+[functions]
+  directory = "netlify/functions"
+
+# 브라우저는 /api/... 로 호출 — Functions로 프록시 (OPENAI_API_KEY 등은 Netlify 환경변수)
+[[redirects]]
+  from = "/api/openai/chat"
+  to = "/.netlify/functions/openai-chat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/anthropic/messages"
+  to = "/.netlify/functions/anthropic-messages"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/shared-guidelines"
+  to = "/.netlify/functions/shared-guidelines"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/"
   to = "/index.html"
