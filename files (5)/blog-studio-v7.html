@@ -6450,13 +6450,35 @@ function csCanCallOpenAIProxy(){
   const p=typeof location!=='undefined'?location.protocol:'';
   return p==='http:'||p==='https:';
 }
+/** 분류 등 모델 응답에서 최상위 JSON 객체 추출(구분선·설명·— 문장 뒤에 오는 경우) */
 function csExtractJsonFromModel(s){
-  const t=String(s||'').trim();
+  let t=String(s||'').trim();
   const fence=t.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if(fence)return fence[1].trim();
-  const i=t.indexOf('{'),j=t.lastIndexOf('}');
-  if(i>=0&&j>i)return t.slice(i,j+1);
-  return t;
+  if(fence) t=fence[1].trim();
+  const start=t.indexOf('{');
+  if(start<0) return t;
+  let depth=0;
+  let inStr=false;
+  let esc=false;
+  let q='';
+  for(let i=start;i<t.length;i++){
+    const c=t[i];
+    if(inStr){
+      if(esc){ esc=false; continue; }
+      if(c==='\\'){ esc=true; continue; }
+      if(c===q) inStr=false;
+      continue;
+    }
+    if(c==='"'||c==="'"){ inStr=true; q=c; continue; }
+    if(c==='{') depth++;
+    else if(c==='}'){
+      depth--;
+      if(depth===0) return t.slice(start,i+1);
+    }
+  }
+  const j=t.lastIndexOf('}');
+  if(j>start) return t.slice(start,j+1);
+  return t.slice(start);
 }
 /** AI 분류: 스키마(csClassifySystemPrompt)는 유지하고, 앞단 v10·공용 지침만 짧게 잘라 서버리스 시간·토큰 절약 */
 function csClassifyAiSystemPrefix(){
@@ -6471,7 +6493,7 @@ function csClassifyAiSystemPrefix(){
 }
 function csClassifySystemPrompt(){
   return `당신은 멀티채널 콘텐츠 기획자입니다. 업로드 파일을 읽고 독립 콘텐츠마다 카드 1개로 나눕니다.
-반드시 유효한 JSON만 출력. 코드펜스·설명 금지.
+반드시 유효한 JSON만 출력. 출력의 첫 비공백 문자는 반드시 '{' 이어야 합니다. 구분선(___)·대시(—)·마크다운·코드펜스·설명 문장을 앞에 붙이지 마세요.
 스키마:
 {"cards":[
   {"title":"","body":"전체 카피/원고","type":"blog|sns|video|news|other",
