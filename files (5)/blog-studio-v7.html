@@ -6462,7 +6462,8 @@ function csExtractJsonFromModel(s){
 function csClassifyAiSystemPrefix(){
   const guide=bsSharedGuidelinesSystemPrefix();
   const core=csClassifySystemPrompt();
-  const budget=11000;
+  /* Netlify Function ~30s 하드 한도: 분류 요청 토큰·처리 시간 최소화 */
+  const budget=6500;
   if(guide.length+core.length<=budget) return guide+core;
   const keep=Math.max(0, budget-core.length-80);
   const trim=keep>0?guide.slice(0,keep)+'\n…(상단 지침 일부 생략 — 나머지는 스키마·일반 기준 준수)\n':'';
@@ -6492,14 +6493,14 @@ type이 blog면 본문 구조를 body에 반영하고 imageKo에 대표 이미�
 Instagram/Threads→sns, YouTube→video, 네이버/티스토리→blog.`;
 }
 function csClassifyBlobFromTexts(texts){
-  /* 서버리스 시간 제한: 배치당 짧게 — 파일당·합계 상한 */
-  return texts.map(({name,text})=>`--- FILE: ${name} ---\n${String(text||'').slice(0,4000)}`).join('\n\n').slice(0,12000);
+  /* 서버리스 ~30s: 배치당 입력 최소화 */
+  return texts.map(({name,text})=>`--- FILE: ${name} ---\n${String(text||'').slice(0,2500)}`).join('\n\n').slice(0,6000);
 }
-/** Netlify 등 30s 제한 회피: OpenAI/프록시 분류를 소배치로 나눔 */
+/** 파일당 1배치 — 요청 한 번이 30초 안에 끝나도록(브라우저 대기와 무관, 서버가 강제 종료) */
 function csChunkTextsForClassifyAi(texts){
   const arr=Array.isArray(texts)?texts:[];
   if(!arr.length) return [];
-  const MAX_PER_BATCH=2;
+  const MAX_PER_BATCH=1;
   const out=[];
   for(let i=0;i<arr.length;i+=MAX_PER_BATCH){
     out.push(arr.slice(i,i+MAX_PER_BATCH));
@@ -6735,7 +6736,7 @@ async function csStudioAiSend(){
     if(btn) btn.disabled=false;
   }
 }
-async function csClassifyWithOpenAI(texts){
+async function csClassifyWithOpenAI(texts, onProgress){
   await bsEnsureAiGuidelinesCachesOrAbort(false);
   const system=csClassifyAiSystemPrefix();
   const batches=csChunkTextsForClassifyAi(texts);
@@ -6743,13 +6744,17 @@ async function csClassifyWithOpenAI(texts){
   const all=[];
   let nextId=0;
   for(let bi=0; bi<batches.length; bi++){
+    if(typeof onProgress==='function'){
+      try{
+        onProgress(bi+1,batches.length,batches[bi].map(t=>t.name).join(', '));
+      }catch(_){}
+    }
     const batch=batches[bi];
     const blob=csClassifyBlobFromTexts(batch);
-    const batchNote=batches.length>1?` (배치 ${bi+1}/${batches.length}, 이 배치 파일만 처리)`:'';
+    const batchNote=batches.length>1?` (파일 ${bi+1}/${batches.length}만 이 응답에 포함)`:'';
     const out=await csOpenAIChat(
       [{role:'system',content:system},{role:'user',content:`다음은 파일 모음입니다${batchNote}:\n\n${blob}`}],
-      /* 짧은 출력으로 지연·타임아웃 완화 */
-      {max_tokens:3072}
+      {max_tokens:2048}
     );
     const part=csCardsFromClassifyJson(out,batch);
     for(let j=0;j<part.length;j++){
@@ -6759,7 +6764,7 @@ async function csClassifyWithOpenAI(texts){
   }
   return all;
 }
-async function csClassifyWithClaude(texts){
+async function csClassifyWithClaude(texts, onProgress){
   await bsEnsureAiGuidelinesCachesOrAbort(false);
   const system=csClassifyAiSystemPrefix();
   const batches=csChunkTextsForClassifyAi(texts);
@@ -6767,9 +6772,14 @@ async function csClassifyWithClaude(texts){
   const all=[];
   let nextId=0;
   for(let bi=0; bi<batches.length; bi++){
+    if(typeof onProgress==='function'){
+      try{
+        onProgress(bi+1,batches.length,batches[bi].map(t=>t.name).join(', '));
+      }catch(_){}
+    }
     const batch=batches[bi];
     const blob=csClassifyBlobFromTexts(batch);
-    const batchNote=batches.length>1?` (배치 ${bi+1}/${batches.length}, 이 배치 파일만 처리)`:'';
+    const batchNote=batches.length>1?` (파일 ${bi+1}/${batches.length}만 이 응답에 포함)`:'';
     const user=`다음은 파일 모음입니다${batchNote}:\n\n${blob}`;
     const out=await csAnthropicChat(system,user);
     const part=csCardsFromClassifyJson(out,batch);
@@ -6805,12 +6815,18 @@ async function csClassify(){
   const aiName=provider==='claude'?'Claude':'OpenAI';
   try{
     if(shouldUseAI){
-      if(es)es.innerHTML='<div class="cs-es-icon" style="animation:csSpin 1s linear infinite">⏳</div><div class="cs-es-text">'+aiName+' 분류 시도 중…</div>';
+      const nFiles=texts.length;
+      const prog=(cur,tot,fnames)=>{
+        const hint=nFiles>1?'<div class="cs-es-sub" style="font-size:11px;color:var(--muted);margin-top:6px;max-width:420px;line-height:1.35">Netlify는 <b>요청 한 번당 약 30초</b>에서 끊깁니다. 파일을 나눠 여러 번 호출하니 <b>전체는 시간이 걸려도</b> 두시면 됩니다.</div>':'';
+        const fnEsc=fnames?String(fnames).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'):'';
+        if(es)es.innerHTML='<div class="cs-es-icon" style="animation:csSpin 1s linear infinite">⏳</div><div class="cs-es-text">'+aiName+' 분류 중 · 파일 '+cur+' / '+tot+(fnEsc?'<br/><span style="font-size:11px;opacity:.9">'+fnEsc+'</span>':'')+'</div>'+hint;
+      };
+      prog(1,Math.max(1,nFiles),'');
       if(provider==='claude'){
-        csCards=await csClassifyWithClaude(texts);
+        csCards=await csClassifyWithClaude(texts,prog);
         aiProviderUsed='claude';
       }else{
-        csCards=await csClassifyWithOpenAI(texts);
+        csCards=await csClassifyWithOpenAI(texts,prog);
         aiProviderUsed='openai';
       }
       usedAI=true;

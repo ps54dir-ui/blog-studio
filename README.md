@@ -22,7 +22,7 @@ npx serve -p 8080
 
 **Netlify에서 AI(`/api/openai/chat` 등) 쓰기:** 저장소의 `netlify/functions/`가 배포에 포함되어야 합니다. 대시보드 **Site configuration → Environment variables**에 최소 **`OPENAI_API_KEY`**(또는 회원이 각자 키를 넣는 모드만 쓸 경우 생략 가능) / Claude 사용 시 **`ANTHROPIC_API_KEY`** 를 설정하세요. **서비스 공용 지침**을 Functions로 내려주려면(선택) `BS_SHARED_GUIDELINES_TEXT`, `BS_SHARED_GUIDELINES_UPDATED_AT` 를 넣을 수 있습니다. 미설정이면 GET은 빈 `text`로 200을 반환합니다.
 
-**504·502 / Sandbox.T timed out:** Netlify Functions는 실행 시간이 제한됩니다(플랜에 따라 ~10–30초). **AI 분류**는 파일을 **2개 단위 배치**로 나눠 여러 번 호출하고, 분류용 시스템 지침도 길이 상한을 둡니다. 그래도 타임아웃이면 **한 번에 올리는 파일 수·용량**을 줄이거나 **Netlify 상위 플랜** / **로컬 `npm run dev` + server.js** 를 쓰세요.
+**504·502 / Sandbox.Timedout:** Netlify Functions는 **요청 한 건당** 실행 시간 상한이 있어(흔히 **약 30초**), 브라우저에서 더 기다려도 늘어나지 않습니다. **AI 분류**는 파일을 **한 개씩** 순서대로 API를 호출해 이 한도 안에 맞추고, 화면에 진행(파일 n/m)을 표시합니다. **전체** 분류는 파일 수만큼 시간이 걸릴 수 있습니다. 장문 원고는 **토막·여러 파일**로 나누거나 **로컬 `npm run dev` + server.js** 가 더 유연합니다.
 
 배포는 `netlify.toml`에서 `files (5)`를 사이트 루트로 쓰고, 빌드 시 레포 루트의 `guidelines/v10/`을 그 안으로 복사합니다. 배포 후 `…/guidelines/v10/SKILL-v10.md`가 열리면 블로그 스튜디오 AI 번들 fetch가 정상입니다.
 
