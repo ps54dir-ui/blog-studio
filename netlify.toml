@@ -1,5 +1,7 @@
 [build]
   publish = "files (5)"
+  # v10 지침은 레포 루트 guidelines/에 두고, 배포 루트(files (5))로 복사 → /guidelines/v10/*.md 200
+  command = "mkdir -p \"files (5)/guidelines/v10\" && cp -r guidelines/v10/. \"files (5)/guidelines/v10/\""
   # index.html, blog-studio-v7.html, admin.html이 루트에 있도록 함
 
 [[redirects]]

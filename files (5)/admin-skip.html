@@ -325,17 +325,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
 let session = null;
 
 function init(){
-  // skip=1 또는 #skip 이면 무조건 로그인 생략 (가장 먼저 체크)
-  const urlParams = new URLSearchParams(window.location.search);
-  const hashSkip = (window.location.hash||'').includes('skip');
-  const skipLogin = hashSkip || urlParams.get('skip')==='1' || urlParams.get('skip')==='true';
-  if(skipLogin){
-    session = { isAdmin:true, name:'개발 모드', email:'dev@local', picture:'', _skip:true };
-  }
-  if(!session){
-    try{ session = JSON.parse(sessionStorage.getItem('bs_session')); }catch{}
-  }
-  if(!session){ window.location.href='index.html'; return; }
+  // admin-skip.html 전용: 항상 로그인 스킵 (리다이렉트 없음)
+  session = { isAdmin:true, name:'개발 모드', email:'dev@local', picture:'', _skip:true };
   if(!session.isAdmin){
     document.getElementById('accessDenied').style.display='flex';
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));

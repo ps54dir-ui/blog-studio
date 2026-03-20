@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/blog-studio-v7", "destination": "/blog-studio-v7.html" },
+    { "source": "/blog-studio-v7/", "destination": "/blog-studio-v7.html" }
+  ]
+}

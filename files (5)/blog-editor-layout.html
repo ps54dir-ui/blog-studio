@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>블로그 편집 배치도 &amp; 미리보기 (Master JSON)</title>
+  <style>
+    :root{
+      --bg:#0f1219; --card:#161b26; --border:#2a3142; --ink:#e8eaed; --muted:#8b93a7;
+      --blue:#3b82f6; --ok:#22c55e; --warn:#eab308; --err:#ef4444; --purple:#8b5cf6;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:'Pretendard',ui-sans-serif,'Noto Sans KR',system-ui,sans-serif;font-size:13px;background:var(--bg);color:var(--ink);line-height:1.5;min-height:100vh;}
+    header{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--card);display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+    header h1{margin:0;font-size:15px;font-weight:700;}
+    .btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--ink);cursor:pointer;font-size:12px;}
+    .btn:hover{border-color:var(--purple);}
+    .btn.primary{background:var(--purple);border-color:var(--purple);color:#fff;}
+    .btn.small{padding:4px 8px;font-size:11px;}
+    input[type=file]{display:none;}
+    .layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;min-height:calc(100vh - 52px);}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+    aside{border-right:1px solid var(--border);background:var(--card);overflow:auto;padding:12px;max-height:calc(100vh - 52px);}
+    main{padding:12px 16px;overflow:auto;max-height:calc(100vh - 52px);}
+    textarea.json-in{width:100%;min-height:72px;font-size:11px;font-family:ui-monospace,monospace;background:#0a0c12;border:1px solid var(--border);color:var(--ink);border-radius:8px;padding:8px;resize:vertical;}
+    .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
+    .tab{padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:11px;color:var(--muted);}
+    .tab.on{border-color:var(--blue);color:var(--blue);background:rgba(59,130,246,.1);}
+    .plat-tabs{margin-bottom:8px;}
+    .item-select{margin-bottom:10px;}
+    .item-select select{width:100%;padding:6px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--ink);font-size:11px;}
+    .side-h{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px;}
+    .side-h:first-child{margin-top:0;}
+    .img-nav{display:flex;flex-direction:column;gap:4px;}
+    .img-nav a,.img-nav button{text-align:left;font-size:10px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--ink);cursor:pointer;text-decoration:none;line-height:1.35;}
+    .img-nav a:hover,.img-nav button:hover{border-color:var(--blue);}
+    .chk-item{font-size:10px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:6px;align-items:flex-start;}
+    .chk-item .st{flex-shrink:0;}
+    .st.pass{color:var(--ok);}.st.warn{color:var(--warn);}.st.fail{color:var(--err);}.st.manual{color:var(--muted);}
+    .view-panel{display:none;border:1px solid var(--border);border-radius:10px;background:var(--card);padding:14px;min-height:320px;}
+    .view-panel.on{display:block;}
+    /* 편집 배치도 — 플레이스홀더 */
+    .be-map{max-width:720px;}
+    .be-block{margin-bottom:12px;}
+    .be-block.be-h2{font-size:16px;font-weight:800;color:var(--ink);margin-top:18px;}
+    .be-block.be-h3{font-size:14px;font-weight:700;margin-top:14px;}
+    .be-block.be-p{font-size:12px;color:#c8cdd8;white-space:pre-wrap;}
+    .be-block.be-cp{background:rgba(59,130,246,.12);border-left:3px solid var(--blue);padding:10px 12px;border-radius:6px;font-size:12px;}
+    .be-block.be-hr{font-size:10px;color:var(--muted);cursor:pointer;user-select:none;}
+    .be-block.be-hr collapsed .be-hr-body{display:none;}
+    .be-ph{border:2px dashed var(--blue);background:rgba(59,130,246,.08);border-radius:10px;padding:10px 12px;margin:14px 0;}
+    .be-ph-h{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;margin-bottom:8px;}
+    .be-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;}
+    .be-meta{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.4;}
+    .be-ratio{margin-top:8px;border-radius:8px;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;min-height:80px;color:var(--muted);font-size:10px;overflow:hidden;}
+    .be-ratio-inner{width:100%;max-width:100%;}
+    .ribbon{font-size:9px;background:#dc2626;color:#fff;padding:2px 6px;border-radius:4px;}
+    /* 미리보기 — 플랫폼 */
+    .naver-preview{max-width:740px;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;line-height:1.8;color:#333;background:#fff;border-radius:8px;padding:24px 28px;}
+    .tistory-preview{max-width:760px;font-family:'Pretendard','Noto Sans KR',sans-serif;line-height:1.75;color:#222;background:#fafafa;border-radius:8px;padding:24px 28px;border:1px solid #e5e5e5;}
+    .wordpress-preview{max-width:800px;font-family:Georgia,'Noto Serif KR',serif;line-height:1.8;color:#1f2937;background:#fff;border-radius:8px;padding:28px 32px;border:1px solid #e5e7eb;}
+    .naver-preview h1,.tistory-preview h1,.wordpress-preview h1{margin:0 0 16px;font-weight:bold;color:#111;}
+    .naver-preview h1{font-size:24px;}
+    .tistory-preview h1{font-size:26px;}
+    .wordpress-preview h1{font-size:32px;font-weight:700;}
+    .naver-preview h2,.tistory-preview h2{font-size:18px;font-weight:bold;margin:20px 0 10px;color:#111;}
+    .tistory-preview h2{font-size:20px;}
+    .wordpress-preview h2{font-size:24px;font-weight:600;margin:24px 0 12px;}
+    .wordpress-preview h3{font-size:20px;font-weight:600;margin:18px 0 8px;}
+    .naver-preview p,.tistory-preview p{font-size:15px;margin:0 0 12px;}
+    .tistory-preview p{font-size:16px;}
+    .wordpress-preview p{font-size:16px;margin:0 0 14px;}
+    .naver-preview .checkpoint,.tistory-preview .checkpoint{background:#eef4ff;padding:12px 16px;border-radius:4px;margin:12px 0;font-size:14px;}
+    .tistory-preview .checkpoint{font-size:15px;}
+    .prev-ph{margin:16px 0;border:1px solid #ddd;border-radius:6px;overflow:hidden;background:#f5f5f5;}
+    .prev-ph .cap{padding:8px 10px;font-size:11px;color:#555;background:#eee;border-bottom:1px solid #ddd;}
+    .prev-ph .box{display:flex;align-items:center;justify-content:center;color:#888;font-size:12px;min-height:100px;}
+    .naver-preview .tags,.tistory-preview .tags,.wordpress-preview .tags{color:#1e88e5;font-size:14px;margin-top:20px;}
+    .naver-preview .ai-disclosure,.naver-preview .disclaimer{font-size:13px;color:#999;margin-top:12px;}
+    .wp-faq{border-left:4px solid #2563eb;padding-left:16px;margin:20px 0;}
+    .wp-faq-q{font-weight:bold;font-size:17px;margin-bottom:6px;}
+    .wp-faq-a{font-size:15px;color:#374151;}
+    .interval-warn{background:rgba(234,179,8,.2);outline:1px dashed var(--warn);border-radius:4px;}
+    .export-bar{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;}
+    .empty{padding:40px;text-align:center;color:var(--muted);font-size:12px;}
+    .meta-strip{font-size:10px;color:var(--muted);margin-bottom:10px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--border);}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>블로그 편집 배치도 &amp; 미리보기</h1>
+    <label class="btn primary"><input type="file" accept=".json,application/json" id="fileIn"/> JSON 파일</label>
+    <button type="button" class="btn" id="btnSample">샘플 구조 로드</button>
+    <button type="button" class="btn" id="btnParse">붙여넣기 파싱</button>
+  </header>
+  <div style="padding:8px 16px;border-bottom:1px solid var(--border);">
+    <div class="meta-strip" id="metaStrip">Master JSON을 파일로 열거나 아래에 붙여넣은 뒤 <b>파싱</b>하세요.</div>
+    <textarea class="json-in" id="pasteBox" placeholder='{"meta":{...},"items":[...]}'></textarea>
+  </div>
+  <div class="layout">
+    <aside>
+      <div class="item-select" id="itemBox" style="display:none">
+        <label class="side-h">블로그 항목</label>
+        <select id="itemSel"></select>
+      </div>
+      <div class="side-h">📐 이미지 배치도</div>
+      <nav class="img-nav" id="imgNav"></nav>
+      <div class="side-h">검수 (자동)</div>
+      <div id="chkPanel"></div>
+      <div class="side-h">발행 체크리스트</div>
+      <div id="pubCheck" style="font-size:10px;color:var(--muted);"></div>
+    </aside>
+    <main>
+      <div class="tabs">
+        <button type="button" class="tab on" data-view="layout">편집 배치도</button>
+        <button type="button" class="tab" data-view="preview">미리보기</button>
+      </div>
+      <div class="tabs plat-tabs" id="platTabs" style="display:none">
+        <button type="button" class="tab on" data-plat="naver">네이버 블로그</button>
+        <button type="button" class="tab" data-plat="tistory">티스토리</button>
+        <button type="button" class="tab" data-plat="wordpress">워드프레스</button>
+      </div>
+      <div id="panelLayout" class="view-panel on"></div>
+      <div id="panelPreview" class="view-panel"></div>
+      <div class="export-bar" id="exportBar" style="display:none">
+        <button type="button" class="btn small" id="btnHtml">HTML 내보내기</button>
+        <button type="button" class="btn small" id="btnMd">마크다운 내보내기</button>
+        <button type="button" class="btn small" id="btnPrint">인쇄 / PDF</button>
+      </div>
+    </main>
+  </div>
+
+<script>
+(function(){
+  const BADGE_MAP = {
+    '대표이미지':{c:'#DC2626',b:'#FEE2E2'},
+    '단계별_캡처':{c:'#2563EB',b:'#DBEAFE'},
+    '인포그래픽':{c:'#7C3AED',b:'#EDE9FE'},
+    '비교_이미지':{c:'#EA580C',b:'#FFF7ED'},
+    '제품_사진':{c:'#059669',b:'#D1FAE5'},
+    '라이프스타일_컷':{c:'#D97706',b:'#FEF3C7'},
+    '시각_쉼':{c:'#6B7280',b:'#F3F4F6'},
+    '요약_인포그래픽':{c:'#7C3AED',b:'#EDE9FE'},
+    '전후_비교':{c:'#EA580C',b:'#FFF7ED'},
+    '장소_사진':{c:'#0891B2',b:'#CFFAFE'},
+    '코드_캡처':{c:'#374151',b:'#F3F4F6'}
+  };
+  const VISUAL_LIMITS = {
+    naver:{max:400},
+    tistory:{max:500},
+    wordpress:{max:600}
+  };
+
+  let state = { raw:null, blogItems:[], idx:0, view:'layout', plat:'naver' };
+
+  function esc(s){
+    const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;
+  }
+
+  function isBlogItem(it){
+    if(!it||typeof it!=='object') return false;
+    const ch = String(it.channel||'');
+    return /네이버블로그\s*\(NAVER_BLOG\)/i.test(ch)
+      || /티스토리\s*\(TISTORY\)/i.test(ch)
+      || /워드프레스\s*\(WORDPRESS\)/i.test(ch);
+  }
+
+  function detectPlat(it){
+    const ch = String(it.channel||'');
+    if(/네이버블로그/i.test(ch)) return 'naver';
+    if(/티스토리/i.test(ch)) return 'tistory';
+    if(/워드프레스/i.test(ch)) return 'wordpress';
+    return 'naver';
+  }
+
+  function ratioToCss(r){
+    const s = String(r||'16:9').replace(/\s/g,'');
+    const m = s.match(/^(\d+)\s*[:：]\s*(\d+)$/);
+    if(m) return m[1]+'/'+m[2];
+    if(s==='3:2') return '3/2';
+    return '16/9';
+  }
+
+  function getImage(images, n){
+    if(!Array.isArray(images)) return null;
+    return images.find(im => Number(im.index)===Number(n)) || null;
+  }
+
+  function parseBodyToBlocks(body){
+    const lines = String(body||'').split('\n');
+    const blocks = [];
+    let paraBuf = [];
+    function flushPara(){
+      if(!paraBuf.length) return;
+      const t = paraBuf.join('\n').trim();
+      if(t) blocks.push({type:'p', text:t});
+      paraBuf = [];
+    }
+    for(const line of lines){
+      const im = line.match(/^\[IMAGE:(\d+)\]\s*$/);
+      if(im){
+        flushPara();
+        blocks.push({type:'image', index:parseInt(im[1],10)});
+        continue;
+      }
+      if(/^■\s?/.test(line)){
+        flushPara();
+        blocks.push({type:'h2', text:line.replace(/^■\s?/,'').trim()});
+        continue;
+      }
+      if(/^####\s+/.test(line)){
+        flushPara();
+        blocks.push({type:'h4', text:line.replace(/^####\s+/,'').trim()});
+        continue;
+      }
+      if(/^###\s+/.test(line)){
+        flushPara();
+        blocks.push({type:'h3', text:line.replace(/^###\s+/,'').trim()});
+        continue;
+      }
+      if(/^##\s+/.test(line)){
+        flushPara();
+        blocks.push({type:'h2md', text:line.replace(/^##\s+/,'').trim()});
+        continue;
+      }
+      if(/^📌/.test(line)){
+        flushPara();
+        blocks.push({type:'checkpoint', text:line.replace(/^📌\s*/,'').trim()});
+        continue;
+      }
+      if(/^[━─\-]{8,}$/.test(line.trim())){
+        flushPara();
+        blocks.push({type:'hr_guide', text:line.trim()});
+        continue;
+      }
+      if(line.trim()===''){
+        flushPara();
+        continue;
+      }
+      paraBuf.push(line);
+    }
+    flushPara();
+    return blocks;
+  }
+
+  function inlineFormat(t){
+    if(!t) return '';
+    let h = esc(t);
+    h = h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+    h = h.replace(/&lt;b&gt;([\s\S]*?)&lt;\/b&gt;/gi,'<strong>$1</strong>');
+    return h;
+  }
+
+  function placeholderHtml(img, n){
+    if(!img){
+      return '<div class="be-ph" id="ph-'+n+'"><div class="be-ph-h">📷 <strong>[IMAGE:'+n+']</strong> — 메타에 없음</div>'
+        +'<div class="be-ratio"><div class="be-ratio-inner" style="aspect-ratio:16/9">이미지 '+n+' 정보 없음</div></div></div>';
+    }
+    const bm = BADGE_MAP[img.type] || {c:'#6b7280',b:'#f3f4f6'};
+    const ar = ratioToCss(img.ratio);
+    const star = Number(img.index)===1 && String(img.type||'').includes('대표') ? '<span class="ribbon">★ 대표</span> ' : '';
+    return '<div class="be-ph" id="ph-'+n+'">'
+      +'<div class="be-ph-h">'+star+'📷 <strong>[IMAGE:'+n+']</strong> — <span class="be-badge" style="color:'+bm.c+';background:'+bm.b+'">'+esc(img.type||'이미지')+'</span>'
+      +' <span style="color:var(--muted)">'+esc(img.ratio||'')+' | '+esc(img.resolution||'')+'</span></div>'
+      +'<div class="be-meta">위치: '+esc(img.position||'')+'</div>'
+      +'<div class="be-meta">💡 '+esc(img.position_reasoning||'')+'</div>'
+      +'<div class="be-ratio"><div class="be-ratio-inner" style="aspect-ratio:'+ar+'">비율 '+esc(img.ratio||'')+' · 업로드 영역</div></div>'
+      +'<div class="be-meta" style="margin-top:6px">ALT: '+esc((img.description||'').slice(0,120))+(String(img.description||'').length>120?'…':'')+'</div>'
+      +'</div>';
+  }
+
+  function renderLayoutMap(item){
+    const copy = item.copy||{};
+    const body = copy.body||'';
+    const images = item.images||[];
+    const blocks = parseBodyToBlocks(body);
+    let html = '<div class="be-map">';
+    for(const b of blocks){
+      if(b.type==='image'){
+        html += placeholderHtml(getImage(images,b.index), b.index);
+        continue;
+      }
+      if(b.type==='h2'){ html += '<div class="be-block be-h2">■ '+esc(b.text)+'</div>'; continue; }
+      if(b.type==='h2md'){ html += '<div class="be-block be-h2">'+esc(b.text)+'</div>'; continue; }
+      if(b.type==='h3'){ html += '<div class="be-block be-h3">### '+esc(b.text)+'</div>'; continue; }
+      if(b.type==='h4'){ html += '<div class="be-block be-h3">#### '+esc(b.text)+'</div>'; continue; }
+      if(b.type==='checkpoint'){ html += '<div class="be-block be-cp">📌 '+inlineFormat(b.text)+'</div>'; continue; }
+      if(b.type==='hr_guide'){
+        html += '<div class="be-block be-hr" onclick="this.classList.toggle(\'collapsed\')"><span>━ 가이드 구분선 (클릭 접기) ━</span><div class="be-hr-body">'+esc(b.text)+'</div></div>';
+        continue;
+      }
+      if(b.type==='p'){
+        html += '<div class="be-block be-p">'+inlineFormat(b.text)+'</div>';
+      }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function prevPlaceholder(img, n){
+    const ar = ratioToCss(img&&img.ratio||'16:9');
+    const label = img ? esc(img.type||'')+' · '+esc(img.ratio||'') : 'IMAGE '+n;
+    const cap = img ? esc((img.description||'').slice(0,80)) : '';
+    return '<div class="prev-ph" id="pph-'+n+'"><div class="cap">'+label+'</div><div class="box" style="aspect-ratio:'+ar+'">['+n+'] 플레이스홀더</div>'
+      +(cap?'<div class="cap">'+cap+'</div>':'')+'</div>';
+  }
+
+  function splitFaq(body){
+    const idx = body.search(/\n##\s*FAQ/i);
+    if(idx<0) return {main:body, faq:''};
+    return {main:body.slice(0,idx).trim(), faq:body.slice(idx).trim()};
+  }
+
+  function parseFaqBlocks(faqText){
+    if(!faqText) return [];
+    const out = [];
+    const re = /\*\*Q:\s*([^*]+?)\*\*\s*\n\s*A:\s*((?:.|\n)+?)(?=\n\n\*\*Q:|$)/gi;
+    let m;
+    while((m = re.exec(faqText))!==null){
+      out.push({q:m[1].trim(),a:m[2].trim().replace(/\n+$/,'')});
+    }
+    return out;
+  }
+
+  function renderPreviewHtml(item, plat){
+    const copy = item.copy||{};
+    const title = copy.title||'(제목 없음)';
+    const images = item.images||[];
+    const body = copy.body||'';
+    const tags = Array.isArray(copy.tags)?copy.tags:[];
+    const bodyMain = plat==='wordpress' ? splitFaq(body).main : body;
+    const blocks = parseBodyToBlocks(bodyMain);
+    const wrapCls = plat==='naver'?'naver-preview':(plat==='tistory'?'tistory-preview':'wordpress-preview');
+    let inner = '<h1>'+esc(title)+'</h1>';
+    if(plat==='wordpress'){
+      inner += '<p style="font-size:13px;color:#6b7280">메타 타이틀: '+esc(title.slice(0,60))+(title.length>60?'…':'')+' ('+Math.min(title.length,60)+'/60자 권장)</p>';
+    }
+    if(plat==='tistory'){
+      const desc = body.split(/\n\n/)[0]||'';
+      inner += '<p style="font-size:12px;color:#666">메타 디스크립션(안): '+esc(desc.slice(0,155))+(desc.length>155?'…':'')+' · '+desc.length+'자</p>';
+    }
+    for(let i=0;i<blocks.length;i++){
+      const b = blocks[i];
+      if(b.type==='image'){
+        inner += prevPlaceholder(getImage(images,b.index), b.index);
+        continue;
+      }
+      if(b.type==='h2'||b.type==='h2md') inner += '<h2>'+esc(b.text)+'</h2>';
+      else if(b.type==='h3') inner += (plat==='wordpress'?'<h3>':'<h2>')+esc(b.text)+(plat==='wordpress'?'</h3>':'</h2>');
+      else if(b.type==='h4') inner += '<h3>'+esc(b.text)+'</h3>';
+      else if(b.type==='checkpoint') inner += '<div class="checkpoint">📌 '+inlineFormat(b.text)+'</div>';
+      else if(b.type==='hr_guide') inner += '';
+      else if(b.type==='p'){
+        inner += '<p>'+inlineFormat(b.text)+'</p>';
+      }
+    }
+    if(plat==='wordpress'){
+      const {faq} = splitFaq(body);
+      const faqs = parseFaqBlocks(faq);
+      if(faqs.length){
+        inner += '<div class="wp-faq-section"><h2>FAQ</h2>';
+        for(const f of faqs){
+          inner += '<div class="wp-faq"><div class="wp-faq-q">Q. '+esc(f.q)+'</div><div class="wp-faq-a">'+inlineFormat(f.a)+'</div></div>';
+        }
+        inner += '</div>';
+      }
+    }
+    if(/AI를 활용|AI tools/i.test(body)){
+      inner += '<p class="ai-disclosure">해당 콘텐츠는 AI를 활용하여 제작되었을 수 있습니다.</p>';
+    }
+    if(/수의사|상담|면책/i.test(body)){
+      inner += '<p class="disclaimer">건강·법률 관련 면책 고지는 실제 발행 시 반드시 확인하세요.</p>';
+    }
+    if(tags.length){
+      inner += '<div class="tags">'+tags.map(t=>'#'+esc(String(t).replace(/^#/,''))).join(' ')+'</div>';
+    }
+    if(plat==='tistory'){
+      inner += '<p style="font-size:11px;color:#888;margin-top:12px">WebP 권장 · 모바일 미리보기 확인</p>';
+    }
+    return '<div class="'+wrapCls+'">'+inner+'</div>';
+  }
+
+  function imageIntervalsWarn(blocks, plat){
+    const lim = VISUAL_LIMITS[plat]||VISUAL_LIMITS.naver;
+    const warns = [];
+    let lastIm = -1;
+    let charSince = 0;
+    for(const b of blocks){
+      if(b.type==='image'){
+        if(lastIm>=0 && charSince>lim.max){
+          warns.push({after:lastIm, chars:charSince, max:lim.max});
+        }
+        lastIm = b.index;
+        charSince = 0;
+      }else if(b.type==='p'){
+        charSince += (b.text||'').replace(/\s/g,'').length;
+      }
+    }
+    return warns;
+  }
+
+  function runChecklist(item, plat){
+    const copy = item.copy||{};
+    const images = item.images||[];
+    const tags = Array.isArray(copy.tags)?copy.tags:[];
+    const body = copy.body||'';
+    const layout = copy.image_layout;
+    const rows = [];
+    const img0 = images[0];
+    let pass = !!(img0 && String(img0.type||'')==='대표이미지');
+    rows.push({st:pass?'pass':'fail', text:'C-08-1 대표이미지 (첫 장 타입)', sub:pass?'':'images[0].type 확인'});
+
+    const blocks = parseBodyToBlocks(body);
+    const warns = imageIntervalsWarn(blocks, plat);
+    const okInt = !warns.length;
+    rows.push({st:okInt?'pass':'warn', text:'C-08-2 시각 쉼 간격', sub: okInt?'':warns.map(w=>w.chars+'자 (권장 ~'+w.max+'자)').join(' / ')});
+
+    const hasReason = images.length && images.every(im => im.position_reasoning);
+    rows.push({st:hasReason?'pass':'warn', text:'C-08-3 position_reasoning', sub: hasReason?'':'일부 누락'});
+
+    const hasTri = images.length && images.every(im => im.description && im.en && im.flow);
+    rows.push({st:hasTri?'pass':'warn', text:'C-08-4 description+en+flow', sub: hasTri?'':'일부 누락'});
+
+    const kw = tags[0] && images.every(im => String(im.description||'').includes(tags[0]));
+    rows.push({st:kw?'pass':'warn', text:'C-08-5 ALT에 첫 태그', sub: kw?'':'키워드 포함 검토'});
+
+    const layOk = Array.isArray(layout) && layout.length===images.length;
+    rows.push({st:layOk?'pass':'warn', text:'C-08-7 image_layout 길이', sub: layOk?'':'images와 불일치'});
+
+    if(plat==='naver'){
+      rows.push({st:tags.length>=15?'pass':'warn', text:'C-08A-3 SEO 태그 15개', sub: tags.length+'개'});
+      const qSub = /■[^\n]*[란은을]\s*\?|■[^\n]*방법|■[^\n]*차이/.test(body);
+      rows.push({st:qSub?'pass':'manual', text:'C-08A-2 질문형 소제목', sub: qSub?'패턴 감지':'수동'});
+    }
+    let h = rows.map(r=>'<div class="chk-item"><span class="st '+r.st+'">'+(r.st==='pass'?'✅':r.st==='warn'?'⚠️':r.st==='fail'?'❌':'⬜')+'</span><span><b>'+esc(r.text)+'</b><br/><span style="color:var(--muted)">'+esc(r.sub||'')+'</span></span></div>').join('');
+    document.getElementById('chkPanel').innerHTML = h || '<div class="empty">항목 없음</div>';
+
+    const n = images.length;
+    const pub = plat==='naver'
+      ? ['대표이미지 [IMAGE:1] 설정','[IMAGE:N] 업로드 총 '+n+'장','ALT 키워드','SEO 태그 15개','모바일 미리보기','서치어드바이저 색인']
+      : plat==='tistory'
+      ? ['대표이미지 [IMAGE:1]','[IMAGE:N] 총 '+n+'장','ALT','메타 디스크립션 155자','모바일','서치 콘솔']
+      : ['Featured Image [IMAGE:1]','[IMAGE:N] 총 '+n+'장','ALT 문장형','메타 타이틀/디스크립션','내부·외부 링크','FAQ 스키마 해당 시'];
+    document.getElementById('pubCheck').innerHTML = pub.map(s=>'☐ '+esc(s)).join('<br/>');
+  }
+
+  function refreshImgNav(item){
+    const nav = document.getElementById('imgNav');
+    const layout = (item.copy&&item.copy.image_layout)||[];
+    const images = item.images||[];
+    if(!layout.length){
+      nav.innerHTML = images.map(im=>'<button type="button" data-scroll="ph-'+im.index+'">[IMAGE:'+im.index+'] '+esc(im.type||'')+'</button>').join('') || '<span style="font-size:10px;color:var(--muted)">이미지 메타 없음</span>';
+    }else{
+      nav.innerHTML = layout.map(row=>{
+        const n = String(row.marker||'').replace(/^\[IMAGE:(\d+)\]$/,'$1');
+        return '<button type="button" data-scroll="ph-'+n+'">'+esc(row.marker||'')+' '+esc(row.type||'')+' → '+esc(row.after||'')+'</button>';
+      }).join('');
+    }
+    nav.querySelectorAll('[data-scroll]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const id = btn.getAttribute('data-scroll');
+        const el = document.getElementById(id);
+        if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+      });
+    });
+  }
+
+  function refresh(){
+    const items = state.blogItems;
+    if(!items.length){
+      document.getElementById('panelLayout').innerHTML = '<div class="empty">블로그 채널 항목이 없습니다 (channel: 네이버블로그/티스토리/워드프레스).</div>';
+      document.getElementById('panelPreview').innerHTML = '';
+      document.getElementById('itemBox').style.display='none';
+      document.getElementById('platTabs').style.display='none';
+      document.getElementById('exportBar').style.display='none';
+      document.getElementById('chkPanel').innerHTML='';
+      document.getElementById('imgNav').innerHTML='';
+      return;
+    }
+    document.getElementById('itemBox').style.display='';
+    document.getElementById('platTabs').style.display='flex';
+    document.getElementById('exportBar').style.display='flex';
+    const item = items[state.idx];
+    const srcPlat = detectPlat(item);
+    const plat = state.plat || srcPlat;
+    document.getElementById('panelLayout').innerHTML = renderLayoutMap(item);
+    document.getElementById('panelPreview').innerHTML = renderPreviewHtml(item, plat);
+    refreshImgNav(item);
+    runChecklist(item, plat);
+  }
+
+  function parseJsonText(text){
+    const j = JSON.parse(text);
+    state.raw = j;
+    const items = Array.isArray(j.items)?j.items.filter(isBlogItem):[];
+    state.blogItems = items;
+    state.idx = 0;
+    const sel = document.getElementById('itemSel');
+    sel.innerHTML = items.map((it,i)=>{
+      const no = it.no||('#'+(i+1));
+      const pl = detectPlat(it);
+      return '<option value="'+i+'">'+esc(no+' · '+pl+' · '+String((it.copy&&it.copy.title)||'').slice(0,36))+'</option>';
+    }).join('');
+    if(items.length){
+      const pref = items.findIndex(it => detectPlat(it)===state.plat);
+      state.idx = pref>=0?pref:0;
+      sel.value = String(state.idx);
+      state.plat = detectPlat(items[state.idx]);
+      document.querySelectorAll('.plat-tabs .tab').forEach(t=>t.classList.toggle('on', t.getAttribute('data-plat')===state.plat));
+    }
+    const meta = j.meta||{};
+    document.getElementById('metaStrip').textContent = [meta.package_title||meta.source_title, meta.total_items, '블로그 '+items.length+'건'].filter(Boolean).join(' · ');
+    refresh();
+    syncTabs();
+  }
+
+  function syncTabs(){
+    document.querySelectorAll('[data-view].tab').forEach(t=>t.classList.toggle('on', t.getAttribute('data-view')===state.view));
+    document.getElementById('panelLayout').classList.toggle('on', state.view==='layout');
+    document.getElementById('panelPreview').classList.toggle('on', state.view==='preview');
+  }
+
+  document.querySelectorAll('[data-view].tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      state.view = t.getAttribute('data-view');
+      syncTabs();
+    });
+  });
+  document.getElementById('platTabs').querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      state.plat = t.getAttribute('data-plat');
+      document.querySelectorAll('.plat-tabs .tab').forEach(x=>x.classList.toggle('on', x===t));
+      if(state.blogItems.length) document.getElementById('panelPreview').innerHTML = renderPreviewHtml(state.blogItems[state.idx], state.plat);
+      runChecklist(state.blogItems[state.idx], state.plat);
+    });
+  });
+  document.getElementById('itemSel').addEventListener('change',e=>{
+    state.idx = parseInt(e.target.value,10)||0;
+    state.plat = detectPlat(state.blogItems[state.idx]);
+    document.querySelectorAll('.plat-tabs .tab').forEach(t=>t.classList.toggle('on', t.getAttribute('data-plat')===state.plat));
+    refresh();
+  });
+
+  document.getElementById('btnParse').addEventListener('click',()=>{
+    const t = document.getElementById('pasteBox').value.trim();
+    if(!t){ alert('JSON을 붙여넣으세요'); return; }
+    try{ parseJsonText(t); }catch(err){ alert('JSON 오류: '+err.message); }
+  });
+  document.getElementById('fileIn').addEventListener('change',e=>{
+    const f = e.target.files&&e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload=()=>{ try{ parseJsonText(String(r.result)); }catch(err){ alert('JSON 오류: '+err.message); } };
+    r.readAsText(f);
+    e.target.value='';
+  });
+
+  document.getElementById('btnSample').addEventListener('click',()=>{
+    document.getElementById('pasteBox').value = JSON.stringify(SAMPLE_MASTER, null, 2);
+    try{ parseJsonText(document.getElementById('pasteBox').value); }catch(e){ alert(e.message); }
+  });
+
+  document.getElementById('btnHtml').addEventListener('click',()=>{
+    const item = state.blogItems[state.idx];
+    if(!item)return;
+    const html = '<!DOCTYPE html><html><head><meta charset="utf-8"/><title>'+esc(item.copy.title||'')+'</title></head><body>'
+      + renderPreviewHtml(item, state.plat)+'</body></html>';
+    const blob = new Blob([html],{type:'text/html;charset=utf-8'});
+    const a = document.createElement('a');a.href=URL.createObjectURL(blob);a.download='blog-preview.html';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  });
+  document.getElementById('btnMd').addEventListener('click',()=>{
+    const item = state.blogItems[state.idx];
+    if(!item)return;
+    const c = item.copy||{};
+    let md = '# '+String(c.title||'')+'\n\n'+String(c.body||'')+'\n\n'+((c.tags||[]).map(t=>'#'+t).join(' '));
+    const blob = new Blob([md],{type:'text/markdown;charset=utf-8'});
+    const a = document.createElement('a');a.href=URL.createObjectURL(blob);a.download='blog-export.md';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  });
+  document.getElementById('btnPrint').addEventListener('click',()=>{
+    state.view='preview';syncTabs();
+    const w = window.open('','_blank');
+    if(!w)return;
+    w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"/><title>인쇄</title>');
+    w.document.write('<style>body{font-family:sans-serif;padding:20px;}</style></head><body>');
+    w.document.write(document.getElementById('panelPreview').innerHTML);
+    w.document.write('</body></html>');w.document.close();w.print();
+  });
+
+  const SAMPLE_MASTER = {
+    meta:{source_title:'샘플',total_items:'1',package_title:'데모'},
+    items:[{
+      no:'No.11',
+      channel:'네이버블로그 (NAVER_BLOG)',
+      type:'블로그',
+      images:[
+        {index:1,ratio:'3:2',resolution:'1200×800px',position:'제목_직후',type:'대표이미지',position_reasoning:'Layer 1',description:'대표 이미지 설명 한글',en:'en prompt',flow:'3:2'},
+        {index:2,ratio:'1:1',resolution:'800×800px',position:'소제목 후',type:'인포그래픽',position_reasoning:'데이터 패턴',description:'인포 설명',en:'en',flow:'1:1'}
+      ],
+      copy:{
+        title:'샘플 블로그 제목',
+        body:'도입 문단입니다.\n\n[IMAGE:1]\n\n■ 첫 번째 소제목\n\n본문 단락.\n\n[IMAGE:2]\n\n📌 체크포인트: 핵심 한 줄\n\n마무리.\n해당 콘텐츠는 AI를 활용하여 제작되었습니다.',
+        tags:Array.from({length:15},(_,i)=>'태그'+(i+1)),
+        image_layout:[
+          {marker:'[IMAGE:1]',after:'제목',type:'대표이미지'},
+          {marker:'[IMAGE:2]',after:'소제목1',type:'인포그래픽'}
+        ]
+      }
+    }]
+  };
+  // fix typo for AI
+})();
+</script>
+</body>
+</html>

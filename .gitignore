@@ -1,0 +1,7 @@
+# Netlify 빌드가 레포 루트 guidelines/v10 → publish 폴더로 복사; 워킹 트리 복사본은 추적하지 않음
+files (5)/guidelines/
+
+# npm run build:dist 로컬 산출물
+dist/
+
+node_modules/

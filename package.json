@@ -1,0 +1,16 @@
+{
+  "name": "blog-studio",
+  "version": "1.0.0",
+  "description": "콘텐츠 제작 워크벤치",
+  "scripts": {
+    "build:dist": "node scripts/build-dist.js",
+    "start": "node server.js",
+    "serve": "npx --yes serve \"files (5)\" -l 3333",
+    "serve:dist": "npx --yes serve dist -l 3333",
+    "dev": "node server.js",
+    "dev:restart": "run-dev.bat"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

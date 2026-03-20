@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/files \\(5\\)/blog-studio-v7",
+      "destination": "/files \\(5\\)/blog-studio-v7.html"
+    },
+    {
+      "source": "/files \\(5\\)/blog-studio-v7/",
+      "destination": "/files \\(5\\)/blog-studio-v7.html"
+    },
+    {
+      "source": "/blog-studio-v7",
+      "destination": "/files \\(5\\)/blog-studio-v7.html"
+    },
+    {
+      "source": "/blog-studio-v7/",
+      "destination": "/files \\(5\\)/blog-studio-v7.html"
+    }
+  ]
+}

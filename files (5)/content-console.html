@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>콘텐츠 제작 콘솔 — Blog Studio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b4fa0'><text y='18' font-size='18'>✦</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+:root{--bg:#f5f2eb;--card:#fff;--border:#ddd6ca;--ink:#1a1611;--ink2:#444;--muted:#78716c;--red:#c0441e;--blue:#1d4e89;--green:#2d6a4a;--purple:#6b4fa0;--amber:#92630a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px;}
+
+.topbar{background:var(--ink);color:white;height:48px;display:flex;align-items:center;padding:0 20px;flex-shrink:0;border-bottom:2px solid var(--red);}
+.logo{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--red);}
+.topbar-right{margin-left:auto;}
+.tbtn{padding:6px 12px;border-radius:6px;font-size:11px;color:white;text-decoration:none;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);transition:all .15s;}
+.tbtn:hover{background:rgba(255,255,255,.2);}
+
+.main-layout{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.cc-body{flex:1;display:flex;overflow:hidden;min-height:0;}
+
+/* Upload - compact */
+.upload-bar{display:flex;align-items:center;gap:12px;padding:8px 20px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0;}
+.upload-zone{border:2px dashed var(--border);border-radius:6px;padding:10px 16px;cursor:pointer;font-size:11px;color:var(--muted);transition:all .2s;flex-shrink:0;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--purple);color:var(--purple);}
+.upload-file-list{font-size:10px;color:var(--green);}
+
+/* Summary cards */
+.summary-cards{display:flex;gap:10px;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0;}
+.summary-card{min-width:70px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;text-align:center;}
+.summary-card .num{font-size:18px;font-weight:700;color:var(--purple);}
+.summary-card .lbl{font-size:9px;color:var(--muted);margin-top:2px;}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.filter-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.filter-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+.filter-btn{padding:5px 10px;border-radius:5px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink);transition:all .15s;}
+.filter-btn:hover{border-color:var(--purple);}
+.filter-btn.on{background:rgba(107,79,160,.12);border-color:var(--purple);color:var(--purple);font-weight:600;}
+.search-box{flex:1;min-width:160px;max-width:240px;}
+.search-box input{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:5px;font-size:11px;outline:none;}
+.search-box input:focus{border-color:var(--purple);}
+
+/* 2-panel: 35% / 65% */
+.panel-left{width:35%;min-width:280px;max-width:420px;flex-shrink:0;border-right:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;overflow:hidden;}
+.panel-right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+
+/* Left: Collapsible groups */
+.list-scroll{flex:1;overflow-y:auto;padding:10px;}
+.list-scroll::-webkit-scrollbar{width:5px;}
+.list-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.group-channel{margin-bottom:8px;}
+.group-channel-h{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;user-select:none;}
+.group-channel-h:hover{background:rgba(107,79,160,.08);}
+.group-channel-h .chevron{transition:transform .2s;font-size:10px;color:var(--muted);}
+.group-channel-h.collapsed .chevron{transform:rotate(-90deg);}
+.group-type{margin-left:12px;margin-top:4px;border-left:2px solid var(--border);padding-left:10px;}
+.group-type-h{display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:11px;font-weight:500;color:var(--ink2);cursor:pointer;}
+.group-type-h:hover{color:var(--purple);}
+.group-type-h .chevron{font-size:9px;color:var(--muted);transition:transform .2s;}
+.group-type-h.collapsed .chevron{transform:rotate(-90deg);}
+.group-cards{margin-left:8px;margin-top:4px;}
+.content-card{padding:10px 12px;background:white;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.content-card:hover{border-color:var(--purple);background:rgba(107,79,160,.03);}
+.content-card.on{border-color:var(--purple);box-shadow:0 0 0 2px rgba(107,79,160,.15);}
+.content-card-no{font-weight:700;color:var(--purple);font-size:11px;}
+.content-card-title{font-size:11px;line-height:1.4;margin:4px 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink);}
+.content-card-meta{font-size:9px;color:var(--muted);}
+.content-card-badges{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+.badge{font-size:8px;padding:2px 5px;border-radius:3px;background:var(--bg);color:var(--muted);}
+.badge.has{background:rgba(45,106,74,.12);color:var(--green);}
+.badge.shared{background:rgba(107,79,160,.15);color:var(--purple);}
+.badge.empty{background:rgba(192,68,30,.08);color:var(--red);}
+.list-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12px;}
+
+/* Right: Detail panel - card sections */
+.detail-scroll{flex:1;overflow-y:auto;padding:20px;}
+.detail-scroll::-webkit-scrollbar{width:6px;}
+.detail-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.detail-empty{padding:80px 40px;text-align:center;color:var(--muted);font-size:14px;}
+.detail-card{margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.detail-card-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(107,79,160,.06);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--purple);}
+.detail-card-b{padding:14px 16px;font-size:12px;line-height:1.7;}
+.detail-row{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start;}
+.detail-row:last-child{margin-bottom:0;}
+.detail-label{min-width:90px;font-size:11px;color:var(--muted);flex-shrink:0;}
+.detail-val{flex:1;font-size:12px;word-break:break-word;}
+.copy-wrap{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;}
+.copy-wrap .text{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;}
+.copy-btn{padding:6px 12px;font-size:10px;background:var(--purple);color:white;border:none;border-radius:5px;cursor:pointer;flex-shrink:0;font-weight:500;}
+.copy-btn:hover{background:#5a3f8e;}
+.copy-btn.copied{background:var(--green);}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:4px;}
+.tag-chip{display:inline-block;padding:4px 10px;background:var(--bg);border-radius:5px;font-size:10px;cursor:pointer;}
+.tag-chip:hover{background:rgba(107,79,160,.1);}
+.scene-row{display:flex;gap:8px;padding:8px 10px;background:var(--bg);border-radius:6px;margin-bottom:6px;font-size:11px;align-items:center;}
+.scene-row .tc{color:var(--muted);flex-shrink:0;min-width:70px;}
+.shared-link{padding:10px 14px;background:rgba(107,79,160,.1);border-radius:6px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--purple);font-weight:500;}
+.shared-link:hover{background:rgba(107,79,160,.18);}
+.legal-box{font-size:11px;color:var(--amber);padding:10px 12px;background:rgba(146,99,10,.08);border-radius:6px;border-left:3px solid var(--amber);margin-bottom:8px;}
+.detail-collapse{display:none;}
+.detail-collapse.open{display:block;}
+.collapse-trigger{display:flex;align-items:center;gap:8px;padding:10px 16px;cursor:pointer;font-size:11px;color:var(--muted);background:var(--bg);border-radius:6px;}
+.collapse-trigger:hover{color:var(--purple);}
+.collapse-trigger .arrow{transition:transform .2s;}
+.collapse-trigger.open .arrow{transform:rotate(90deg);}
+.raw-pre{max-height:200px;overflow:auto;font-size:10px;background:#1a1a1a;color:#e0e0e0;padding:12px;border-radius:6px;white-space:pre-wrap;margin-top:8px;}
+
+/* Validation */
+.val-panel{padding:20px;}
+.val-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--amber);border-radius:8px;margin-bottom:8px;font-size:12px;}
+.val-item .no{font-weight:700;color:var(--purple);}
+.val-item .msg{color:var(--ink2);}
+.val-item button{padding:6px 12px;background:var(--purple);color:white;border:none;border-radius:5px;cursor:pointer;font-size:10px;}
+
+/* Shared tree */
+.shared-tree{padding:20px;}
+.shared-node{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.shared-node-h{padding:12px 14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.shared-node-h:hover{background:rgba(107,79,160,.06);}
+.shared-node-b{padding:12px 14px 12px 28px;border-top:1px solid var(--border);}
+.shared-node-b span{margin-right:12px;cursor:pointer;color:var(--purple);font-size:11px;}
+.shared-node-b span:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="main-layout">
+  <div class="topbar">
+    <div class="logo"><span class="logo-dot"></span>콘텐츠 제작 콘솔</div>
+    <div class="topbar-right"><a href="content-workbench.html" class="tbtn">워크벤치</a><a href="blog-studio-v7.html" class="tbtn">← Blog Studio</a></div>
+  </div>
+
+  <div class="upload-bar">
+    <div class="upload-zone" id="uploadZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept=".json,.docx" multiple style="display:none" onchange="handleFileSelect(event)">
+      📄 DOCX · JSON 업로드 (드래그 또는 클릭)
+    </div>
+    <div class="upload-file-list" id="uploadFileList"></div>
+  </div>
+
+  <div class="summary-cards" id="summaryCards" style="display:none;">
+    <div class="summary-card"><div class="num" id="scTotal">0</div><div class="lbl">총</div></div>
+    <div class="summary-card"><div class="num" id="scYoutube">0</div><div class="lbl">유튜브</div></div>
+    <div class="summary-card"><div class="num" id="scInstagram">0</div><div class="lbl">인스타</div></div>
+    <div class="summary-card"><div class="num" id="scThreads">0</div><div class="lbl">스레드</div></div>
+    <div class="summary-card"><div class="num" id="scBlog">0</div><div class="lbl">블로그</div></div>
+    <div class="summary-card"><div class="num" id="scShared">0</div><div class="lbl">공통 사용</div></div>
+    <div class="summary-card"><div class="num" id="scImg">0</div><div class="lbl">이미지</div></div>
+    <div class="summary-card"><div class="num" id="scVideo">0</div><div class="lbl">영상</div></div>
+    <div class="summary-card"><div class="num" id="scVoice">0</div><div class="lbl">음성</div></div>
+    <div class="summary-card"><div class="num" id="scWarn">0</div><div class="lbl">경고</div></div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-group" id="channelFilterGroup">
+      <span class="filter-label">채널</span>
+      <button class="filter-btn on" data-ch="all" onclick="setChannelFilter('all')">전체</button>
+    </div>
+    <div class="filter-group" id="typeFilterGroup">
+      <span class="filter-label">유형</span>
+      <button class="filter-btn on" data-ty="all" onclick="setTypeFilter('all')">전체</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">일정</span>
+      <button class="filter-btn on" data-sched="all" onclick="setScheduleFilter('all')">전체</button>
+      <button class="filter-btn" data-sched="D+0" onclick="setScheduleFilter('D+0')">D+0</button>
+      <button class="filter-btn" data-sched="D+1" onclick="setScheduleFilter('D+1')">D+1</button>
+      <button class="filter-btn" data-sched="D+2~3" onclick="setScheduleFilter('D+2~3')">D+2~3</button>
+      <button class="filter-btn" data-sched="D+4~5" onclick="setScheduleFilter('D+4~5')">D+4~5</button>
+      <button class="filter-btn" data-sched="D+7" onclick="setScheduleFilter('D+7')">D+7</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">자산</span>
+      <button class="filter-btn on" data-stat="all" onclick="setStatusFilter('all')">전체</button>
+      <button class="filter-btn" data-stat="script" onclick="setStatusFilter('script')">원고</button>
+      <button class="filter-btn" data-stat="img" onclick="setStatusFilter('img')">이미지</button>
+      <button class="filter-btn" data-stat="voice" onclick="setStatusFilter('voice')">음성</button>
+      <button class="filter-btn" data-stat="video" onclick="setStatusFilter('video')">영상</button>
+      <button class="filter-btn" data-stat="subs" onclick="setStatusFilter('subs')">자막</button>
+      <button class="filter-btn" data-stat="shared" onclick="setStatusFilter('shared')">공통 사용</button>
+    </div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="제목·본문·훅·액글·프롬프트 검색" oninput="applySearch()">
+    </div>
+  </div>
+
+  <div class="cc-body">
+    <div class="panel-left">
+      <div class="list-scroll" id="contentList">
+        <div class="list-empty" id="listEmpty">파일을 업로드해주세요</div>
+      </div>
+    </div>
+    <div class="panel-right">
+      <div id="validationPanel" class="val-panel" style="display:none"></div>
+      <div class="detail-scroll" id="detailPanel">
+        <div class="detail-empty" id="detailEmpty">좌측에서 콘텐츠를 선택하세요</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  rawDocuments: { json: null, docx: null },
+  normalizedContents: [],
+  relations: [],
+  validationWarnings: [],
+  validationErrors: [],  // 심각: 렌더 중단 또는 경고
+  allowedChannels: new Set(),
+  allowedChannelGroups: new Set(),
+  filters: { mainTab: 'all', channel: 'all', type: 'all', schedule: 'all', status: 'all', search: '' },
+  selectedContentId: null,
+  channelTypes: {},
+  groupCollapsed: {},
+  totalExpected: 0
+};
+
+// 원본 허용 채널 화이트리스트 (이 목록 외 채널 절대 렌더링 금지)
+const STRICT_CHANNEL_WHITELIST = new Set([
+  '유튜브숏츠','인스타릴스','인스타캐러셀','인스타단일이미지',
+  '스레드정보','스레드공감','스레드반전논쟁','스레드스토리텔링','스레드한줄선언',
+  '스레드리스트','스레드큐레이션','스레드질문참여','네이버블로그'
+]);
+
+// 채널명 정규화 (괄호 제거)
+function normChannel(ch) {
+  if(!ch) return '';
+  return String(ch).replace(/\s*\([^)]*\)\s*/g,'').trim();
+}
+
+// No. → 스레드 유형 고정 매핑 (JSON 우선, No. 기준 검증)
+const THREAD_NO_MAP = {
+  '14':'정보형','15':'정보형',
+  '16':'공감형','17':'공감형',
+  '18':'반전·논쟁형',
+  '19':'스토리텔링형',
+  '20':'한줄선언형',
+  '21':'리스트형',
+  '22':'큐레이션형',
+  '23':'질문·참여형'
+};
+const EXPECTED_CHANNEL_BY_NO = {
+  '14':'스레드정보','15':'스레드정보','16':'스레드공감','17':'스레드공감','18':'스레드반전논쟁',
+  '19':'스레드스토리텔링','20':'스레드한줄선언','21':'스레드리스트','22':'스레드큐레이션','23':'스레드질문참여'
+};
+
+// 원본 허용 채널 → channelGroup (화이트리스트 내에서만 사용)
+const ALLOWED_CH_TO_GROUP = {
+  '유튜브숏츠':'유튜브',
+  '인스타릴스':'인스타그램','인스타캐러셀':'인스타그램','인스타단일이미지':'인스타그램',
+  '스레드정보':'스레드','스레드공감':'스레드','스레드반전논쟁':'스레드','스레드스토리텔링':'스레드',
+  '스레드한줄선언':'스레드','스레드리스트':'스레드','스레드큐레이션':'스레드','스레드질문참여':'스레드',
+  '네이버블로그':'네이버블로그'
+};
+
+function getChannelGroup(ch, allowed) {
+  if(!ch || !allowed) return '';
+  const c = normChannel(ch);
+  if(!allowed.has(c)) return '';  // 화이트리스트 외 채널 → 렌더 안 함
+  return ALLOWED_CH_TO_GROUP[c] || '';
+}
+
+function extractCTA(body) {
+  if(!body) return '';
+  const lines = body.split('\n');
+  for(let i = 0; i < lines.length; i++) {
+    const l = lines[i].trim();
+    if(l.includes('↓') || /자세히\s*보기|확인해보세요|시작해보세요/.test(l)) return l;
+  }
+  return '';
+}
+
+function parseJsonContentPack(obj) {
+  if(!obj || !obj.meta || !Array.isArray(obj.items)) return { ok: false, items: [], meta: null };
+  return { ok: true, items: obj.items, meta: obj.meta };
+}
+function parseDocxContentPack(buffer) {
+  return new Promise((res) => {
+    if(typeof mammoth === 'undefined') { res({ ok: false, text: '' }); return; }
+    mammoth.extractRawText({ arrayBuffer: buffer }).then(r => res({ ok: true, text: r.value || '' })).catch(() => res({ ok: false, text: '' }));
+  });
+}
+function splitDocxByNo(txt, itemCount) {
+  if(!txt || !itemCount) return [];
+  const trimmed = txt.trim();
+  const byNo = {};
+  const re = /No\.\s*(\d{1,2})\s+/g;
+  let m;
+  while((m = re.exec(trimmed)) !== null) {
+    const no = parseInt(m[1], 10);
+    if(no >= 1 && no <= 99) byNo[no] = m.index;
+  }
+  const nums = Object.keys(byNo).map(Number).sort((a,b) => a - b);
+  if(nums.length === 0) return [];
+  const chunks = [];
+  for(let i = 0; i < nums.length; i++) {
+    const start = byNo[nums[i]];
+    const end = i + 1 < nums.length ? byNo[nums[i + 1]] : trimmed.length;
+    chunks.push({ no: nums[i], text: trimmed.slice(start, end).trim() });
+  }
+  return chunks.slice(0, itemCount);
+}
+
+function buildAllowedChannels(meta, items, validationErrors) {
+  const raw = new Set();
+  (meta?.channels || []).forEach(c => { const n = normChannel(c); if(n) raw.add(n); });
+  (items || []).forEach(it => { const c = normChannel(it.channel); if(c) raw.add(c); });
+  const allowed = new Set();
+  raw.forEach(c => {
+    if(STRICT_CHANNEL_WHITELIST.has(c)) allowed.add(c);
+    else validationErrors.push({ id: '_ch', msg: `허용되지 않은 채널: "${c}" (렌더링 금지)` });
+  });
+  return allowed;
+}
+
+function normalizeContents(jsonItems, docxChunks, meta, allowedChannels, validationWarnings) {
+  const contents = [];
+  const legal = meta?.legal_review_memo || {};
+  const adRequired = !!(legal.ad_label || meta?.ad_notice);
+  const aiRequired = !!(legal.ai_label);
+  const disclaimer = legal.disclaimer || null;
+
+  jsonItems.forEach((it, idx) => {
+    const no = String(it.no || '').padStart(2, '0');
+    const id = 'No.' + no;
+    const chRaw = it.channel || '';
+    const chNorm = normChannel(chRaw);
+    if(!allowedChannels.has(chNorm)) {
+      state.validationErrors.push({ id: 'No.'+no, msg: `허용되지 않은 채널: "${chNorm}" (렌더링 금지)` });
+      return;  // 화이트리스트 외 → 렌더 안 함
+    }
+    const chGroup = getChannelGroup(chRaw, allowedChannels);
+    const typeRaw = it.type || '';
+    let displayType = typeRaw;
+    if(chGroup === '스레드') {
+      displayType = THREAD_NO_MAP[no] || displayType;
+      const expectedCh = EXPECTED_CHANNEL_BY_NO[no];
+      if(expectedCh && chNorm !== expectedCh) state.validationErrors.push({ id, msg: `스레드 유형 불일치: No.${no}=${expectedCh} 예상, 실제=${chNorm}` });
+    } else if(chGroup === '인스타그램') {
+      if(/릴스|reels/i.test(chRaw)) displayType = '릴스';
+      else if(/캐러셀|carousel/i.test(chRaw)) displayType = '캐러셀';
+      else if(/단일|image/i.test(chRaw)) displayType = '단일이미지';
+    }
+
+    const copy = it.copy || {};
+    const body = copy.body || '';
+    const title = copy.title || '';
+    const cta = extractCTA(body);
+    const img = it.image || {};
+    const images = it.images || [];
+    let imagePromptKo = img.prompt_ko;
+    let imagePromptEn = img.prompt_en;
+    let imageRatio = img.ratio;
+    let imageResolution = img.resolution;
+    let imageSlides = img.slides ?? null;
+    let slideStructure = img.slide_structure || null;
+    if(images.length && !imagePromptKo) imagePromptKo = images[0]?.prompt_ko;
+    if(images.length && !imageRatio) imageRatio = images[0]?.ratio;
+    const voice = it.voice || {};
+    const video = it.video || {};
+    const audio = it.audio || {};
+
+    const nc = {
+      id, no, channelGroup: chGroup, channel: chNorm,
+      type: displayType, publishTiming: it.publish_timing,
+      title: title || undefined, body: body || undefined, cta: cta || undefined, tags: copy.tags,
+      hookType: it.hook_type, angle: it.angle,
+      sharedVideoRef: it.shared_video_ref || null, hasSharedAsset: !!it.shared_video_ref,
+      imagePromptKo, imagePromptEn, imageRatio, imageResolution, imageSlides, slideStructure,
+      voiceScript: voice.script, voicePrompt: voice.prompt,
+      videoPrompt: video.prompt, videoScenes: video.scenes, subtitles: video.subtitles,
+      bgmDescription: audio.bgm?.style, bgmPrompt: audio.bgm?.prompt, sfx: audio.sfx,
+      adLabelRequired: adRequired, aiLabelRequired: aiRequired, disclaimer,
+      _rawChannel: chRaw, _rawType: typeRaw
+    };
+    if(docxChunks && docxChunks[idx]) nc.docxExcerpt = docxChunks[idx].text;
+    contents.push(nc);
+  });
+  return contents;
+}
+
+function buildContentRelations(contents) {
+  const relations = [];
+  contents.forEach(c => {
+    if(c.sharedVideoRef) {
+      const origNo = c.sharedVideoRef.replace(/^No\.?/i,'').trim();
+      const origin = contents.find(x => x.no === origNo || x.id === 'No.' + origNo);
+      if(origin) relations.push({ originId: origin.id, derivedId: c.id });
+    }
+  });
+  return relations;
+}
+
+const VALID_THREAD_TYPES = ['정보형','리스트형','질문·참여형','공감형','반전·논쟁형','스토리텔링형','한줄선언형','큐레이션형'];
+function runValidation(contents) {
+  const warns = [];
+  contents.forEach(c => {
+    if(!c.title && !c.body) warns.push({ id: c.id, msg: '제목·본문 없음' });
+    if(!c.imagePromptKo && !c.hasSharedAsset && ['숏츠','릴스','캐러셀','단일이미지'].includes(c.type)) warns.push({ id: c.id, msg: '이미지 프롬프트 없음' });
+    if(!c.voiceScript && c.type === '숏츠') warns.push({ id: c.id, msg: '음성 대본 없음' });
+    if(!c.videoPrompt && ['숏츠','릴스'].includes(c.type) && !c.hasSharedAsset) warns.push({ id: c.id, msg: '영상 프롬프트 없음' });
+    if(!c.subtitles?.length && c.type === '숏츠' && !c.hasSharedAsset) warns.push({ id: c.id, msg: '자막 없음' });
+  });
+  return warns;
+}
+
+function isPlaceholder(val) {
+  if(val == null || val === '') return true;
+  const s = String(val).trim();
+  if(s === '{}' || s === '...' || s === '…' || s === '""' || s === "''") return true;
+  if(/^\{+\s*\}+$/.test(s)) return true;
+  return false;
+}
+function sanitizeForDisplay(val) {
+  if(val == null || val === '') return '';
+  if(isPlaceholder(val)) return '';
+  return String(val).trim();
+}
+function runPreRenderValidation(meta, contents) {
+  const totalExpected = meta?.total_items ?? 0;
+  if(contents.length !== totalExpected) state.validationErrors.push({ id: '_meta', msg: `렌더링 수 불일치: ${contents.length}개 렌더됨, meta.total_items=${totalExpected} (반드시 ${totalExpected}개)` });
+  const nos = contents.map(c => c.no);
+  const seen = new Set();
+  const duplicates = [];
+  nos.forEach(no => { if(seen.has(no)) duplicates.push(no); else seen.add(no); });
+  if(duplicates.length) state.validationErrors.push({ id: '_meta', msg: `No. 중복: ${[...new Set(duplicates)].join(', ')}` });
+  for(let i = 1; i <= totalExpected; i++) {
+    const n = String(i).padStart(2,'0');
+    if(!seen.has(n)) state.validationErrors.push({ id: '_meta', msg: `누락된 번호: No.${n}` });
+  }
+  const renderedChannels = [...new Set(contents.map(c => c.channel))];
+  renderedChannels.forEach(ch => {
+    if(!state.allowedChannels.has(ch)) state.validationErrors.push({ id: '_ch', msg: `비허용 채널 렌더됨: "${ch}"` });
+  });
+  const threadMismatch = state.validationWarnings.filter(w => w.msg && w.msg.includes('스레드 유형 불일치'));
+  threadMismatch.forEach(w => state.validationErrors.push({ id: w.id, msg: w.msg }));
+}
+function renderValidationPanel() {
+  const panel = document.getElementById('validationPanel');
+  if(!panel) return;
+  const listEl = document.getElementById('contentList');
+  const emptyEl = document.getElementById('listEmpty');
+  const errs = state.validationErrors || [];
+  const warns = state.validationWarnings || [];
+  const disallowedCount = errs.filter(e => e.id === '_ch' || (e.msg || '').includes('허용되지 않은 채널')).length;
+  const missingNo = errs.filter(e => (e.msg || '').includes('누락된 번호')).length;
+  const threadMismatch = warns.filter(w => (w.msg || '').includes('스레드 유형 불일치')).length;
+  const countMismatch = errs.some(e => (e.msg || '').includes('불일치')) ? 1 : 0;
+  const jsonDocxConflict = warns.filter(w => (w.msg || '').includes('충돌')).length;
+  let html = '<div class="val-panel"><h4 style="margin-bottom:12px;font-size:12px;">⚠ 검증 결과</h4>';
+  html += '<div class="val-item"><span class="no">허용되지 않은 채널</span><span class="msg">'+disallowedCount+'건</span></div>';
+  html += '<div class="val-item"><span class="no">누락된 번호</span><span class="msg">'+missingNo+'건</span></div>';
+  html += '<div class="val-item"><span class="no">스레드 매핑 오류</span><span class="msg">'+threadMismatch+'건</span></div>';
+  html += '<div class="val-item"><span class="no">총 콘텐츠 수 불일치</span><span class="msg">'+(countMismatch?'예':'아니오')+'</span></div>';
+  html += '<div class="val-item"><span class="no">JSON/DOCX 충돌</span><span class="msg">'+jsonDocxConflict+'건</span></div>';
+  html += '<hr style="margin:12px 0;border:none;border-top:1px solid var(--border)"/>';
+  errs.forEach(e => { html += '<div class="val-item"><span class="no">'+escapeHtml(e.id)+'</span><span class="msg">'+escapeHtml(e.msg)+'</span></div>'; });
+  warns.slice(0,10).forEach(w => { html += '<div class="val-item" style="border-color:var(--amber);opacity:.9"><span class="no">'+escapeHtml(w.id)+'</span><span class="msg">'+escapeHtml(w.msg)+'</span></div>'; });
+  if(warns.length>10) html += '<div class="val-item" style="border-color:var(--muted)"><span class="msg">... 외 '+(warns.length-10)+'건 경고</span></div>';
+  html += '</div>';
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+  if(listEl) listEl.innerHTML = '<div class="list-empty">검증 오류로 렌더링이 중단되었습니다. 위 검증 결과를 확인하세요.</div>';
+  if(emptyEl) emptyEl.style.display = 'none';
+}
+
+async function processFiles(files) {
+  const jsonFile = Array.from(files).find(f => /\.json$/i.test(f.name));
+  const docxFile = Array.from(files).find(f => /\.docx$/i.test(f.name));
+  let jsonData = null, docxText = '', docxChunks = [];
+  if(jsonFile) { const raw = await readFileAsText(jsonFile); try { jsonData = JSON.parse(raw); } catch(e) { console.error(e); } }
+  if(docxFile) { const buf = await readFileAsArrayBuffer(docxFile); const r = await parseDocxContentPack(buf); docxText = r.text || ''; }
+  state.rawDocuments = { json: jsonData, docx: docxText };
+  if(!jsonData?.meta || !Array.isArray(jsonData?.items)) {
+    document.getElementById('uploadFileList').innerHTML = '<span style="color:var(--red)">유효한 JSON (meta+items) 필요</span>';
+    return;
+  }
+  const parsed = parseJsonContentPack(jsonData);
+  if(!parsed.ok) return;
+  const meta = jsonData.meta;
+  const items = parsed.items;
+  state.validationErrors = [];
+  state.validationWarnings = [];
+  state.allowedChannels = buildAllowedChannels(meta, items, state.validationErrors);
+  state.totalExpected = meta?.total_items ?? items.length;
+  if(items.length !== state.totalExpected) state.validationErrors.push({ id: '_meta', msg: `총 콘텐츠 수 불일치: meta.total_items=${state.totalExpected}, 실제=${items.length}` });
+  const scheduleSum = (meta?.channel_schedule || []).reduce((a,s)=> a + (parseInt(String(s.count||'0').replace(/\D/g,''),10)||0), 0);
+  if(scheduleSum && scheduleSum !== items.length) state.validationWarnings.push({ id: '_meta', msg: `channel_schedule 합계(${scheduleSum}) ≠ 아이템 수(${items.length})` });
+  if(state.validationErrors.length) {
+    document.getElementById('uploadFileList').innerHTML = '<span style="color:var(--red)">검증 오류: 렌더링 중단</span>';
+    state.normalizedContents = [];
+    renderValidationPanel();
+    return;
+  }
+  if(docxText) docxChunks = splitDocxByNo(docxText, items.length);
+  state.normalizedContents = normalizeContents(items, docxChunks, meta, state.allowedChannels, state.validationWarnings);
+  runPreRenderValidation(meta, state.normalizedContents);
+  if(state.validationErrors.length) {
+    document.getElementById('uploadFileList').innerHTML = '<span style="color:var(--red)">검증 오류: 렌더링 중단</span>';
+    state.normalizedContents = [];
+    renderValidationPanel();
+    return;
+  }
+  state.relations = buildContentRelations(state.normalizedContents);
+  runValidation(state.normalizedContents).forEach(w => state.validationWarnings.push(w));
+  state.allowedChannelGroups = new Set(state.normalizedContents.map(c => c.channelGroup).filter(Boolean));
+  const ct = {};
+  state.normalizedContents.forEach(c => {
+    if(!c.channelGroup) return;
+    if(!ct[c.channelGroup]) ct[c.channelGroup] = new Set();
+    ct[c.channelGroup].add(c.type || '(기타)');
+  });
+  state.channelTypes = {};
+  Object.keys(ct).forEach(k => state.channelTypes[k] = Array.from(ct[k]));
+  updateChannelFilterButtons();
+  updateTypeFilterButtons();
+  const vp = document.getElementById('validationPanel');
+  if(vp) vp.style.display = 'none';
+  renderList();
+  updateSummary();
+  document.getElementById('summaryCards').style.display = 'flex';
+  document.getElementById('uploadFileList').innerHTML = '<span style="color:var(--green)">✓ ' + (jsonFile?.name || '') + (docxFile ? ' + ' + docxFile.name : '') + '</span>';
+}
+
+function readFileAsText(file) { return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsText(file); }); }
+function readFileAsArrayBuffer(file) { return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsArrayBuffer(file); }); }
+function handleDragOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); }
+function handleDragLeave(e) { e.preventDefault(); document.getElementById('uploadZone').classList.remove('drag-over'); }
+function handleDrop(e) { e.preventDefault(); document.getElementById('uploadZone').classList.remove('drag-over'); const files = e.dataTransfer?.files; if(files?.length) processFiles(files); }
+function handleFileSelect(e) { const files = e.target?.files; if(files?.length) processFiles(files); e.target.value = ''; }
+
+function getFilteredContents() {
+  let list = state.normalizedContents.filter(c => c.channelGroup);  // 화이트리스트 외/빈 채널 제외
+  const f = state.filters;
+  if(f.channel !== 'all') list = list.filter(c => c.channelGroup === f.channel);
+  if(f.type !== 'all') list = list.filter(c => c.type === f.type);
+  if(f.schedule !== 'all') list = list.filter(c => { const t = c.publishTiming || ''; if(f.schedule === 'D+2~3') return t.includes('D+2') || t.includes('D+3'); return t.includes(f.schedule); });
+  if(f.status !== 'all') {
+    if(f.status === 'script') list = list.filter(c => !c.body && !c.title);
+    if(f.status === 'img') list = list.filter(c => !!c.imagePromptKo);
+    if(f.status === 'voice') list = list.filter(c => !!c.voiceScript);
+    if(f.status === 'video') list = list.filter(c => !!c.videoPrompt);
+    if(f.status === 'subs') list = list.filter(c => !!(c.subtitles?.length));
+    if(f.status === 'shared') list = list.filter(c => !!c.sharedVideoRef);
+  }
+  if(f.search) {
+    const q = f.search.toLowerCase().trim();
+    list = list.filter(c =>
+      (c.id && c.id.toLowerCase().includes(q)) || (c.channel && c.channel.toLowerCase().includes(q)) ||
+      (c.type && c.type.toLowerCase().includes(q)) || (c.title && c.title.toLowerCase().includes(q)) ||
+      (c.body && c.body.toLowerCase().includes(q)) || (c.hookType && c.hookType.includes(q)) ||
+      (c.angle && c.angle.includes(q)) || (c.tags && c.tags.some(t => t.toLowerCase().includes(q))) ||
+      (c.imagePromptKo && c.imagePromptKo.includes(q)) || (c.videoPrompt && c.videoPrompt.includes(q)) ||
+      (c.subtitles && c.subtitles.some(s => s.includes(q)))
+    );
+  }
+  return list;
+}
+
+function updateChannelFilterButtons() {
+  const group = document.getElementById('channelFilterGroup');
+  if(!group) return;
+  const labels = { '유튜브':'유튜브', '인스타그램':'인스타', '스레드':'스레드', '네이버블로그':'블로그' };
+  const order = ['유튜브','인스타그램','스레드','네이버블로그'];
+  let html = '<span class="filter-label">채널</span><button class="filter-btn on" data-ch="all" onclick="setChannelFilter(\'all\')">전체</button>';
+  const allowed = state.allowedChannelGroups || new Set();
+  order.forEach(g => { if(allowed.has(g)) html += `<button class="filter-btn" data-ch="${g}" onclick="setChannelFilter('${g}')">${labels[g]||g}</button>`; });
+  group.innerHTML = html;
+}
+function setChannelFilter(ch) { state.filters.channel = ch; document.querySelectorAll('[data-ch]').forEach(el => el.classList.toggle('on', el.dataset.ch === ch)); state.filters.type = 'all'; document.querySelectorAll('[data-ty]').forEach(el => el.classList.toggle('on', el.dataset.ty === 'all')); updateTypeFilterButtons(); renderList(); }
+function setTypeFilter(ty) {
+  state.filters.type = ty || 'all';
+  document.querySelectorAll('[data-ty]').forEach(el => {
+    const v = el.getAttribute('data-ty');
+    el.classList.toggle('on', v === ty);
+  });
+  renderList();
+}
+function setScheduleFilter(sched) { state.filters.schedule = sched; document.querySelectorAll('[data-sched]').forEach(el => el.classList.toggle('on', el.dataset.sched === sched)); renderList(); }
+function setStatusFilter(stat) { state.filters.status = stat; document.querySelectorAll('[data-stat]').forEach(el => el.classList.toggle('on', el.dataset.stat === stat)); renderList(); }
+function applySearch() { state.filters.search = document.getElementById('searchInput').value; renderList(); }
+function updateTypeFilterButtons() {
+  const ch = state.filters.channel;
+  const types = (ch && state.channelTypes[ch]) ? state.channelTypes[ch] : [];
+  const group = document.getElementById('typeFilterGroup');
+  group.innerHTML = '<span class="filter-label">유형</span><button class="filter-btn on" data-ty="all" onclick="setTypeFilter(\'all\')">전체</button>' +
+    types.map(t => `<button class="filter-btn" data-ty="${escapeHtml(t).replace(/"/g,'&quot;')}" onclick="setTypeFilter(this.getAttribute('data-ty'))">${escapeHtml(t)}</button>`).join('');
+}
+
+function toggleGroup(key) { state.groupCollapsed[key] = !state.groupCollapsed[key]; renderList(); }
+
+function renderList() {
+  const list = getFilteredContents();
+  const container = document.getElementById('contentList');
+  const empty = document.getElementById('listEmpty');
+  if(!list.length) {
+    container.innerHTML = '<div class="list-empty">조건에 맞는 콘텐츠가 없습니다</div>';
+    return;
+  }
+  empty.style.display = 'none';
+  const byCh = {};
+  list.forEach(c => {
+    if(!byCh[c.channelGroup]) byCh[c.channelGroup] = {};
+    if(!byCh[c.channelGroup][c.type]) byCh[c.channelGroup][c.type] = [];
+    byCh[c.channelGroup][c.type].push(c);
+  });
+  const chOrder = ['유튜브','인스타그램','스레드','네이버블로그'];
+  let html = '';
+  chOrder.forEach(chGroup => {
+    const types = byCh[chGroup];
+    if(!types) return;
+    const chKey = 'ch_' + chGroup;
+    const chCollapsed = state.groupCollapsed[chKey];
+    html += `<div class="group-channel">
+      <div class="group-channel-h ${chCollapsed ? 'collapsed' : ''}" onclick="toggleGroup('${chKey}')">
+        <span class="chevron">▼</span>
+        <span>${escapeHtml(chGroup)}</span>
+        <span style="font-size:10px;color:var(--muted);font-weight:400">(${Object.values(types).reduce((a,t)=>a+t.length,0)}건)</span>
+      </div>`;
+    if(!chCollapsed) {
+      Object.entries(types).forEach(([ty, cards]) => {
+        const tyKey = 'ty_' + chGroup + '_' + ty;
+        const tyCollapsed = state.groupCollapsed[tyKey];
+        html += `<div class="group-type">
+          <div class="group-type-h ${tyCollapsed ? 'collapsed' : ''}" onclick="toggleGroup('${tyKey}')">
+            <span class="chevron">▼</span>
+            <span>${escapeHtml(ty)}</span>
+            <span style="font-size:10px;color:var(--muted)">(${cards.length})</span>
+          </div>`;
+        if(!tyCollapsed) {
+          html += '<div class="group-cards">';
+          cards.forEach(c => {
+            const raw = c.title || (c.body || '').split('\n')[0] || '';
+            const titleOrFirst = sanitizeForDisplay(raw) || '[제목 없음]';
+            const hasBody = !!(c.body || c.title);
+            const warn = state.validationWarnings.filter(w => w.id === c.id);
+            html += `<div class="content-card ${state.selectedContentId === c.id ? 'on' : ''}" data-id="${c.id}">
+              <div class="content-card-no">${c.id}</div>
+              <div class="content-card-title">${escapeHtml(titleOrFirst.slice(0,60))}</div>
+              <div class="content-card-meta">${c.publishTiming || ''} · ${c.type}</div>
+              <div class="content-card-badges">
+                <span class="badge ${hasBody ? 'has' : 'empty'}">원고</span>
+                <span class="badge ${c.imagePromptKo ? 'has' : (c.hasSharedAsset ? 'shared' : 'empty')}">이미지</span>
+                <span class="badge ${c.voiceScript ? 'has' : 'empty'}">음성</span>
+                <span class="badge ${c.videoPrompt || c.hasSharedAsset ? 'has' : 'empty'}">영상</span>
+                <span class="badge ${c.subtitles?.length ? 'has' : 'empty'}">자막</span>
+                ${c.sharedVideoRef ? `<span class="badge shared">공통영상 ${(c.sharedVideoRef+'').replace(/^No\.?/i,'') ? 'No.'+(c.sharedVideoRef+'').replace(/^No\.?/i,'') : c.sharedVideoRef} 참조</span>` : ''}
+              </div>
+              ${warn.length ? `<div style="font-size:9px;color:var(--amber);margin-top:4px">⚠ ${warn[0].msg}</div>` : ''}
+            </div>`;
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.content-card').forEach(card => { card.onclick = (e) => { e.stopPropagation(); selectContent(card.dataset.id); }; });
+}
+
+function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function selectContent(id) {
+  state.selectedContentId = id;
+  document.querySelectorAll('.content-card').forEach(c => c.classList.toggle('on', c.dataset.id === id));
+  renderDetailPanel(id);
+}
+
+function copySection(el, text) {
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    el.classList.add('copied');
+    const orig = el.textContent;
+    el.textContent = '복사됨';
+    setTimeout(() => { el.classList.remove('copied'); el.textContent = orig; }, 1500);
+  });
+}
+
+function renderDetailPanel(id) {
+  const panel = document.getElementById('detailPanel');
+  const empty = document.getElementById('detailEmpty');
+  const c = state.normalizedContents.find(x => x.id === id);
+  if(!c) { empty.style.display = 'block'; panel.innerHTML = ''; return; }
+  empty.style.display = 'none';
+
+  const cp = (text) => {
+    const t = sanitizeForDisplay(text);
+    if(!t) return '';
+    const safe = escapeHtml(t).replace(/"/g,'&quot;').replace(/\n/g,'&#10;').slice(0,50000);
+    return `<div class="copy-wrap"><span class="text">${escapeHtml(t.slice(0,300))}${t.length>300?'…':''}</span><button class="copy-btn" data-copy="${safe}" onclick="copyFromData(this)">복사</button></div>`;
+  };
+
+  let html = '';
+
+  html += `<div class="detail-card"><div class="detail-card-h">[A] 기본 정보</div><div class="detail-card-b">`;
+  html += `<div class="detail-row"><span class="detail-label">No.</span><span class="detail-val">${c.id}</span></div>`;
+  html += `<div class="detail-row"><span class="detail-label">채널</span><span class="detail-val">${c.channelGroup} > ${c.channel}</span></div>`;
+  html += `<div class="detail-row"><span class="detail-label">유형</span><span class="detail-val">${c.type}</span></div>`;
+  html += `<div class="detail-row"><span class="detail-label">발행시점</span><span class="detail-val">${sanitizeForDisplay(c.publishTiming) || '[없음]'}</span></div>`;
+  html += `<div class="detail-row"><span class="detail-label">훅 유형</span><span class="detail-val">${sanitizeForDisplay(c.hookType) || '[없음]'}</span></div>`;
+  html += `<div class="detail-row"><span class="detail-label">앵글</span><span class="detail-val">${sanitizeForDisplay(c.angle) || '[없음]'}</span></div>`;
+  if(c.sharedVideoRef) {
+    const refNo = (c.sharedVideoRef+'').replace(/^No\.?/i,'').trim();
+    const refLabel = refNo ? 'No.'+refNo : c.sharedVideoRef;
+    html += `<div class="shared-link" onclick="selectContent('No.${refNo}')">📎 공통영상 ${refLabel} 참조 · <strong>원본 영상 열기</strong></div>`;
+  }
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[B] 최종 원고</div><div class="detail-card-b">`;
+  html += cp(c.title);
+  html += cp(c.body);
+  html += cp(c.cta);
+  if(c.tags?.length) html += `<div style="margin-top:10px"><span class="detail-label">태그</span></div><div class="tag-wrap">${c.tags.map(t=>{ const q=escapeHtml(t).replace(/"/g,'&quot;'); return `<span class="tag-chip" data-copy="${q}" onclick="copyFromData(this)">${escapeHtml(t)}</span>`; }).join('')}</div>`;
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[C] 이미지 제작</div><div class="detail-card-b">`;
+  html += `<div class="detail-row"><span class="detail-label">비율</span><span class="detail-val">${sanitizeForDisplay(c.imageRatio) || '[없음]'}</span></div>`;
+  html += `<div class="detail-row"><span class="detail-label">해상도</span><span class="detail-val">${sanitizeForDisplay(c.imageResolution) || '[없음]'}</span></div>`;
+  if(c.imageSlides) html += `<div class="detail-row"><span class="detail-label">슬라이드 수</span><span class="detail-val">${c.imageSlides}</span></div>`;
+  html += cp(c.imagePromptKo);
+  html += cp(c.imagePromptEn);
+  if(c.slideStructure) html += `<div style="margin-top:8px"><span class="detail-label">슬라이드 구성</span></div>${cp(c.slideStructure)}`;
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[D] 음성 제작</div><div class="detail-card-b">`;
+  html += cp(c.voiceScript);
+  html += cp(c.voicePrompt);
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[E] 영상 제작</div><div class="detail-card-b">`;
+  html += cp(c.videoPrompt);
+  if(c.videoScenes?.length) {
+    html += `<div style="margin-top:10px"><span class="detail-label">씬 구성</span></div>`;
+    c.videoScenes.forEach(s => {
+      const line = `${s.timecode || ''} [${s.chapter || ''}] ${s.script || ''}`;
+      const safe = escapeHtml(line).replace(/"/g,'&quot;').replace(/\n/g,'&#10;');
+      html += `<div class="scene-row"><span class="tc">${s.timecode || ''}</span><span>${escapeHtml((s.chapter||'') + ' ' + (s.script||''))}</span><button class="copy-btn" data-copy="${safe}" onclick="copyFromData(this)">복사</button></div>`;
+    });
+  }
+  if(c.subtitles?.length) {
+    html += `<div style="margin-top:10px"><span class="detail-label">자막</span></div>`;
+    c.subtitles.forEach(s => {
+      const safe = escapeHtml(s).replace(/"/g,'&quot;').replace(/\n/g,'&#10;');
+      html += `<div class="copy-wrap"><span class="text">${escapeHtml(s)}</span><button class="copy-btn" data-copy="${safe}" onclick="copyFromData(this)">복사</button></div>`;
+    });
+  }
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[F] 오디오 제작</div><div class="detail-card-b">`;
+  html += cp(c.bgmDescription);
+  html += cp(c.bgmPrompt);
+  if(c.sfx?.length) html += `<div class="detail-row"><span class="detail-label">효과음</span><span class="detail-val">${c.sfx.map(s=>`Scene${s.scene_id} ${s.type}@${s.timing||''}`).join(' / ')}</span></div>`;
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[G] 발행/주의사항</div><div class="detail-card-b">`;
+  if(c.adLabelRequired) html += `<div class="legal-box">[광고] 표기 필요</div>`;
+  if(c.aiLabelRequired) html += `<div class="legal-box">AI 보조 제작 표시 필요</div>`;
+  if(c.disclaimer) html += `<div class="legal-box">${escapeHtml(c.disclaimer)}</div>`;
+  html += `</div></div>`;
+
+  html += `<div class="detail-card"><div class="detail-card-h">[H] 원문 보기 (접힘)</div><div class="detail-card-b">`;
+  html += `<div class="collapse-trigger" id="rawToggle" onclick="document.getElementById('rawContent').classList.toggle('open'); this.classList.toggle('open')"><span class="arrow">▶</span> 펼치기</div>`;
+  html += `<div class="detail-collapse" id="rawContent">`;
+  const rawItem = state.rawDocuments.json?.items?.find(x=>String(x.no).padStart(2,'0')===c.no);
+  html += `<details style="margin-top:8px"><summary>원문 보기: JSON</summary>`;
+  try { html += `<pre class="raw-pre">${escapeHtml(JSON.stringify(rawItem, null, 2))}</pre>`; } catch(_) { html += '<pre>원문 조회 실패</pre>'; }
+  html += `</details>`;
+  if(c.docxExcerpt) {
+    html += `<details style="margin-top:8px"><summary>원문 보기: DOCX</summary><pre class="raw-pre">${escapeHtml(c.docxExcerpt.slice(0,3000))}</pre></details>`;
+  }
+  html += `</div></div></div>`;
+
+  html += `<div style="margin-top:16px"><button class="copy-btn" style="padding:10px 20px" onclick="copyFullContent('${c.id}')">📋 전체 제작 정보 복사</button></div>`;
+
+  panel.innerHTML = html;
+}
+
+function copyFromData(el) {
+  const text = el.getAttribute('data-copy');
+  if(!text) return;
+  const decoded = document.createElement('div');
+  decoded.innerHTML = text;
+  const plain = decoded.textContent || decoded.innerText || text;
+  navigator.clipboard.writeText(plain).then(() => {
+    el.classList.add('copied');
+    const orig = el.textContent;
+    el.textContent = '복사됨';
+    setTimeout(() => { el.classList.remove('copied'); el.textContent = orig; }, 1500);
+  });
+}
+
+function copyFullContent(id) {
+  const c = state.normalizedContents.find(x => x.id === id);
+  if(!c) return;
+  const parts = [
+    `[${c.id}] ${c.channelGroup} > ${c.channel} · ${c.type}`,
+    `발행시점: ${c.publishTiming || ''}`,
+    `훅: ${c.hookType || ''} / 앵글: ${c.angle || ''}`,
+    c.sharedVideoRef ? `공통 사용: ${c.sharedVideoRef}` : '',
+    '--- 최종 원고 ---',
+    c.title || '',
+    c.body || '',
+    c.cta || '',
+    '--- 이미지 ---',
+    `비율: ${c.imageRatio || ''} 해상도: ${c.imageResolution || ''}`,
+    c.imagePromptKo || '',
+    c.imagePromptEn || '',
+    '--- 음성 ---',
+    c.voiceScript || '',
+    c.voicePrompt || '',
+    '--- 영상 ---',
+    c.videoPrompt || '',
+    c.videoScenes?.map(s=>`${s.timecode} [${s.chapter}] ${s.script}`).join('\n') || '',
+    c.subtitles?.join('\n') || '',
+    '--- 오디오 ---',
+    c.bgmDescription || '',
+    c.bgmPrompt || ''
+  ];
+  navigator.clipboard.writeText(parts.filter(Boolean).join('\n\n'));
+  const btn = event?.target;
+  if(btn) { btn.textContent = '복사됨'; setTimeout(() => btn.textContent = '📋 전체 제작 정보 복사', 1500); }
+}
+
+function updateSummary() {
+  const list = state.normalizedContents;
+  document.getElementById('scTotal').textContent = list.length;
+  document.getElementById('scYoutube').textContent = list.filter(c => c.channelGroup === '유튜브').length;
+  document.getElementById('scInstagram').textContent = list.filter(c => c.channelGroup === '인스타그램').length;
+  document.getElementById('scThreads').textContent = list.filter(c => c.channelGroup === '스레드').length;
+  document.getElementById('scBlog').textContent = list.filter(c => c.channelGroup === '네이버블로그').length;
+  document.getElementById('scShared').textContent = list.filter(c => c.sharedVideoRef).length;
+  document.getElementById('scImg').textContent = list.filter(c => c.imagePromptKo).length;
+  document.getElementById('scVideo').textContent = list.filter(c => c.videoPrompt || c.sharedVideoRef).length;
+  document.getElementById('scVoice').textContent = list.filter(c => c.voiceScript).length;
+  document.getElementById('scWarn').textContent = state.validationWarnings.length;
+}
+</script>
+</body>
+</html>

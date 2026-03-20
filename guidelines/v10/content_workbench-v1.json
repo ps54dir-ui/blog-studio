@@ -1,0 +1,1722 @@
+{
+  "meta": {
+    "file_type": "content_workbench",
+    "version": "1.0",
+    "description": "프로그램 UI용 작업 JSON. v13 지침 반영. 채널별 > 유형별 > 콘텐츠별 분류/필터/상세표시용.",
+    "source": "ohmycat_master_v6.json",
+    "generated_at": "2026-03-16"
+  },
+  "summary": {
+    "edition": "1편",
+    "series": "데일리 사료, 쉬운 선택",
+    "total_items": 24,
+    "counts_by_channel_group": {
+      "유튜브": 5,
+      "인스타그램": 8,
+      "스레드": 10,
+      "네이버": 1
+    },
+    "counts_by_type": {
+      "숏츠": 5,
+      "릴스": 5,
+      "캐러셀": 2,
+      "단일이미지": 1,
+      "정보형": 2,
+      "공감형": 2,
+      "반전·논쟁형": 1,
+      "스토리텔링형": 1,
+      "한줄선언형": 1,
+      "리스트형": 1,
+      "큐레이션형": 1,
+      "질문·참여형": 1,
+      "파생 포스트": 1
+    },
+    "counts_by_publish_timing": {
+      "D+0": 10,
+      "D+2~3": 5,
+      "D+7": 2,
+      "D+1": 3,
+      "D+4~5": 3,
+      "D+3~4": 1
+    },
+    "shared_video_refs": {
+      "No.06": "No.01",
+      "No.07": "No.02",
+      "No.08": "No.03",
+      "No.09": "No.04",
+      "No.10": "No.05"
+    }
+  },
+  "allowed_channels": [
+    "네이버블로그",
+    "스레드공감",
+    "스레드리스트",
+    "스레드반전논쟁",
+    "스레드스토리텔링",
+    "스레드정보",
+    "스레드질문참여",
+    "스레드큐레이션",
+    "스레드한줄선언",
+    "유튜브숏츠",
+    "인스타단일이미지",
+    "인스타릴스",
+    "인스타캐러셀"
+  ],
+  "channel_group_mapping": {
+    "유튜브숏츠": "유튜브",
+    "유튜브미들폼": "유튜브",
+    "유튜브롱폼": "유튜브",
+    "인스타릴스": "인스타그램",
+    "인스타캐러셀": "인스타그램",
+    "인스타단일이미지": "인스타그램",
+    "틱톡메인": "틱톡",
+    "틱톡스티치": "틱톡",
+    "스레드정보": "스레드",
+    "스레드리스트": "스레드",
+    "스레드질문참여": "스레드",
+    "스레드공감": "스레드",
+    "스레드반전논쟁": "스레드",
+    "스레드스토리텔링": "스레드",
+    "스레드한줄선언": "스레드",
+    "스레드큐레이션": "스레드",
+    "네이버블로그": "네이버",
+    "네이버카페": "네이버",
+    "페이스북": "페이스북",
+    "트위터X": "트위터"
+  },
+  "thread_type_mapping": {
+    "스레드정보": "정보형",
+    "스레드리스트": "리스트형",
+    "스레드질문참여": "질문·참여형",
+    "스레드공감": "공감형",
+    "스레드반전논쟁": "반전·논쟁형",
+    "스레드스토리텔링": "스토리텔링형",
+    "스레드한줄선언": "한줄선언형",
+    "스레드큐레이션": "큐레이션형"
+  },
+  "channel_tree": [
+    {
+      "channel_group": "유튜브",
+      "types": [
+        {
+          "type": "숏츠",
+          "items": [
+            "01",
+            "02",
+            "03",
+            "04",
+            "05"
+          ]
+        }
+      ]
+    },
+    {
+      "channel_group": "인스타그램",
+      "types": [
+        {
+          "type": "릴스",
+          "items": [
+            "06",
+            "07",
+            "08",
+            "09",
+            "10"
+          ]
+        },
+        {
+          "type": "캐러셀",
+          "items": [
+            "11",
+            "12"
+          ]
+        },
+        {
+          "type": "단일이미지",
+          "items": [
+            "13"
+          ]
+        }
+      ]
+    },
+    {
+      "channel_group": "스레드",
+      "types": [
+        {
+          "type": "정보형",
+          "items": [
+            "14",
+            "15"
+          ]
+        },
+        {
+          "type": "공감형",
+          "items": [
+            "16",
+            "17"
+          ]
+        },
+        {
+          "type": "반전·논쟁형",
+          "items": [
+            "18"
+          ]
+        },
+        {
+          "type": "스토리텔링형",
+          "items": [
+            "19"
+          ]
+        },
+        {
+          "type": "한줄선언형",
+          "items": [
+            "20"
+          ]
+        },
+        {
+          "type": "리스트형",
+          "items": [
+            "21"
+          ]
+        },
+        {
+          "type": "큐레이션형",
+          "items": [
+            "22"
+          ]
+        },
+        {
+          "type": "질문·참여형",
+          "items": [
+            "23"
+          ]
+        }
+      ]
+    },
+    {
+      "channel_group": "네이버",
+      "types": [
+        {
+          "type": "파생 포스트",
+          "items": [
+            "24"
+          ]
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "no": "01",
+      "id": "content_01",
+      "channel": "유튜브숏츠",
+      "channel_group": "유튜브",
+      "type": "숏츠",
+      "publish_timing": "D+0",
+      "title": "사료 바꾸기 무서운 집사들의 공통 고민 | 오마이캣",
+      "short_summary": "입맛 까다로운 고양이일수록 사료 선택은 더 조심스러워지죠.",
+      "hook_type": "손해 프레이밍",
+      "angle": "사료 바꾸기 두려움",
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": true,
+      "has_video": true,
+      "has_subtitles": true,
+      "has_audio": true,
+      "body": "입맛 까다로운 고양이일수록 사료 선택은 더 조심스러워지죠.\n오마이캣은 매일 급여하기 좋은 데일리 균형 사료예요.\n\n오마이캣 자세히 보기 ↓\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\n\nAI 보조 제작\n이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+      "cta": null,
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#입짧은고양이"
+      ],
+      "image": null,
+      "voice": {
+        "script": "좋아 보여도 안 먹으면 끝이죠. 집사들이 사료 바꾸기를 망설이는 이유, 의외로 간단해요. 우리 아이가 먹을까? 데일리 사료일수록 잘 먹는 반응과 부담 없는 시작이 중요해요. 오마이캣은 매일 급여하기 좋은 데일리 균형 사료예요. 사료 선택이 늘 부담스러웠다면, 이번엔 좀 더 쉽게 시작해보세요.",
+        "prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림"
+      },
+      "video": {
+        "scenes": [
+          {
+            "id": 1,
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "script": "좋아 보여도 안 먹으면 끝이죠"
+          },
+          {
+            "id": 2,
+            "timecode": "0:03~0:12",
+            "chapter": "[배경]",
+            "script": "집사들이 사료 바꾸기를 망설이는 이유, 의외로 간단해요"
+          },
+          {
+            "id": 3,
+            "timecode": "0:12~0:22",
+            "chapter": "[핵심1]",
+            "script": "우리 아이가 먹을까?"
+          },
+          {
+            "id": 4,
+            "timecode": "0:22~0:38",
+            "chapter": "[핵심2]",
+            "script": "데일리 사료일수록 잘 먹는 반응과 부담 없는 시작이 중요해요"
+          },
+          {
+            "id": 5,
+            "timecode": "0:38~0:48",
+            "chapter": "[제품]",
+            "script": "오마이캣은 매일 급여하기 좋은 데일리 균형 사료예요"
+          },
+          {
+            "id": 6,
+            "timecode": "0:48~0:55",
+            "chapter": "[CTA]",
+            "script": "사료 선택이 늘 부담스러웠다면 이번엔 좀 더 쉽게 시작해보세요"
+          }
+        ],
+        "prompt": "Vertical 9:16. Scene1: Cat sniffing bowl, tilting head, walking away. Scene2: Owner looking at cat with concern. Scene3: Question mark floating over cat. Scene4: Cat happily eating from bowl. Scene5: Product beauty shot warm lighting. Scene6: End card with CTA text. Warm cozy home interior throughout.",
+        "subtitles": [
+          "좋아 보여도|안 먹으면 끝",
+          "사료 바꾸기|망설이는 이유",
+          "우리 아이가|먹을까?",
+          "데일리 사료일수록|잘 먹는 반응이 중요",
+          "오마이캣은|데일리 균형 사료",
+          "이번엔 좀 더|쉽게 시작해보세요"
+        ]
+      },
+      "audio": {
+        "bgm": {
+          "style": "밝고 경쾌한 어쿠스틱 기타 핑거스타일 루프",
+          "bpm": 100,
+          "volume_pct": 20,
+          "loop_sec": 55,
+          "prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 100 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+          "source_type": "ai_generated"
+        },
+        "sfx": [
+          {
+            "scene_id": 1,
+            "type": "whoosh",
+            "timing": "0.0sec",
+            "duration": "0.5sec"
+          },
+          {
+            "scene_id": 3,
+            "type": "click",
+            "timing": "0.0sec",
+            "duration": "0.2sec"
+          },
+          {
+            "scene_id": 5,
+            "type": "ding",
+            "timing": "0.0sec",
+            "duration": "0.3sec"
+          },
+          {
+            "scene_id": 6,
+            "type": "riser",
+            "timing": "0.0sec",
+            "duration": "1.0sec"
+          }
+        ]
+      },
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+        "ad_label": null
+      },
+      "prompts": {
+        "voice_prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림",
+        "video_prompt": "Vertical 9:16. Scene1: Cat sniffing bowl, tilting head, walking away. Scene2: Owner looking at cat with concern. Scene3: Question mark floating over cat. Scene4: Cat happily eating from bowl. Scene5: Product beauty shot warm lighting. Scene6: End card with CTA text. Warm cozy home interior throughout.",
+        "bgm_prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 100 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+        "sfx_summary": "Scene1 whoosh@0.0sec / Scene3 click@0.0sec / Scene5 ding@0.0sec / Scene6 riser@0.0sec"
+      }
+    },
+    {
+      "no": "02",
+      "id": "content_02",
+      "channel": "유튜브숏츠",
+      "channel_group": "유튜브",
+      "type": "숏츠",
+      "publish_timing": "D+0",
+      "title": "매일 먹이는 사료, 무엇이 중요할까 | 오마이캣",
+      "short_summary": "매일 급여하는 사료라면 쉬운 선택이 더 오래 가요.",
+      "hook_type": "직접 호출형",
+      "angle": "데일리 사료 기준",
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": true,
+      "has_video": true,
+      "has_subtitles": true,
+      "has_audio": true,
+      "body": "매일 급여하는 사료라면 쉬운 선택이 더 오래 가요.\n잘 먹는가, 쉬운가, 기본은 갖췄는가. 이 세 가지부터 확인해보세요.\n\n매일 급여하기 좋은 오마이캣 확인해보세요 ↓\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\n\nAI 보조 제작\n이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+      "cta": "잘 먹는가, 쉬운가, 기본은 갖췄는가. 이 세 가지부터 확인해보세요.",
+      "tags": [
+        "#오마이캣",
+        "#데일리사료",
+        "#고양이사료"
+      ],
+      "image": null,
+      "voice": {
+        "script": "매일 먹이는 사료라면 화려한 성분표보다 쉽게 이어갈 수 있는 선택이 더 오래가요. 잘 먹는가, 계속 급여하기 쉬운가, 기본은 갖췄는가. 복잡하게 따지기보다 이 세 가지부터 확인해보세요. 오마이캣은 그런 데일리 기준에 맞춘 고양이 사료예요. 매일 급여하기 좋은 오마이캣, 확인해보세요.",
+        "prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림"
+      },
+      "video": {
+        "scenes": [
+          {
+            "id": 1,
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "script": "매일 먹이는 사료, 기준이 뭔가요?"
+          },
+          {
+            "id": 2,
+            "timecode": "0:03~0:15",
+            "chapter": "[핵심1]",
+            "script": "화려한 성분표보다 쉽게 이어갈 수 있는 선택이 더 오래가요"
+          },
+          {
+            "id": 3,
+            "timecode": "0:15~0:30",
+            "chapter": "[핵심2]",
+            "script": "잘 먹는가, 계속 급여하기 쉬운가, 기본은 갖췄는가"
+          },
+          {
+            "id": 4,
+            "timecode": "0:30~0:45",
+            "chapter": "[핵심3]",
+            "script": "복잡하게 따지기보다 이 세 가지부터 확인해보세요"
+          },
+          {
+            "id": 5,
+            "timecode": "0:45~0:55",
+            "chapter": "[CTA]",
+            "script": "매일 급여하기 좋은 오마이캣 확인해보세요"
+          }
+        ],
+        "prompt": "Vertical 9:16. Scene1: Clean kitchen table with cat food bowl, morning light. Scene2: Owner reading food package labels confused. Scene3: Three checkmarks appearing one by one. Scene4: Simple checklist graphic. Scene5: Cat eating contentedly, owner smiling. Bright minimal interior.",
+        "subtitles": [
+          "매일 먹이는 사료|기준이 뭔가요?",
+          "쉽게 이어갈 수 있는|선택이 오래가요",
+          "잘 먹는가|쉬운가|기본은 갖췄는가",
+          "세 가지부터|확인해보세요",
+          "매일 급여하기 좋은|오마이캣"
+        ]
+      },
+      "audio": {
+        "bgm": {
+          "style": "밝고 경쾌한 어쿠스틱 기타 핑거스타일 루프",
+          "bpm": 105,
+          "volume_pct": 20,
+          "loop_sec": 55,
+          "prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 105 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+          "source_type": "ai_generated"
+        },
+        "sfx": [
+          {
+            "scene_id": 1,
+            "type": "whoosh",
+            "timing": "0.0sec",
+            "duration": "0.5sec"
+          },
+          {
+            "scene_id": 3,
+            "type": "click",
+            "timing": "0.0sec",
+            "duration": "0.2sec"
+          },
+          {
+            "scene_id": 4,
+            "type": "ding",
+            "timing": "0.0sec",
+            "duration": "0.3sec"
+          },
+          {
+            "scene_id": 5,
+            "type": "riser",
+            "timing": "0.0sec",
+            "duration": "1.0sec"
+          }
+        ]
+      },
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+        "ad_label": null
+      },
+      "prompts": {
+        "voice_prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림",
+        "video_prompt": "Vertical 9:16. Scene1: Clean kitchen table with cat food bowl, morning light. Scene2: Owner reading food package labels confused. Scene3: Three checkmarks appearing one by one. Scene4: Simple checklist graphic. Scene5: Cat eating contentedly, owner smiling. Bright minimal interior.",
+        "bgm_prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 105 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+        "sfx_summary": "Scene1 whoosh@0.0sec / Scene3 click@0.0sec / Scene4 ding@0.0sec / Scene5 riser@0.0sec"
+      }
+    },
+    {
+      "no": "03",
+      "id": "content_03",
+      "channel": "유튜브숏츠",
+      "channel_group": "유튜브",
+      "type": "숏츠",
+      "publish_timing": "D+0",
+      "title": "입짧은 고양이 사료 고르기가 어려운 이유 | 오마이캣",
+      "short_summary": "사료 고르기가 너무 어렵게 느껴졌다면 기준을 바꿔보세요.",
+      "hook_type": "감성 호출형",
+      "angle": "입짧은 고양이 공감",
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": true,
+      "has_video": true,
+      "has_subtitles": true,
+      "has_audio": true,
+      "body": "사료 고르기가 너무 어렵게 느껴졌다면 기준을 바꿔보세요.\n입짧은 아이일수록 기호성과 쉬운 시작이 첫 번째예요.\n\n입맛 까다로운 아이도 시작하기 쉬운 오마이캣 ↓\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\n\nAI 보조 제작\n이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+      "cta": null,
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#입짧은고양이"
+      ],
+      "image": null,
+      "voice": {
+        "script": "입맛 까다로운 고양이 키우는 집사라면 한 번쯤 겪어본 고민이죠. 사료는 좋아 보이는데, 안 먹으면 다시 처음부터. 입짧은 아이일수록 기호성과 쉬운 시작이 더 중요해요. 오마이캣은 매일 부담 없이 급여하기 좋은 데일리 선택이에요. 사료 고르기가 어렵게 느껴졌다면, 이번엔 기준을 바꿔보세요.",
+        "prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림"
+      },
+      "video": {
+        "scenes": [
+          {
+            "id": 1,
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "script": "입짧은 고양이 키우는 집사라면 공감할 거예요"
+          },
+          {
+            "id": 2,
+            "timecode": "0:03~0:12",
+            "chapter": "[배경]",
+            "script": "사료는 좋아 보이는데, 안 먹으면 다시 처음부터"
+          },
+          {
+            "id": 3,
+            "timecode": "0:12~0:25",
+            "chapter": "[핵심1]",
+            "script": "입짧은 아이일수록 기호성과 쉬운 시작이 더 중요해요"
+          },
+          {
+            "id": 4,
+            "timecode": "0:25~0:40",
+            "chapter": "[제품]",
+            "script": "오마이캣은 매일 부담 없이 급여하기 좋은 데일리 선택이에요"
+          },
+          {
+            "id": 5,
+            "timecode": "0:40~0:50",
+            "chapter": "[전환]",
+            "script": "사료 고르기가 어렵게 느껴졌다면"
+          },
+          {
+            "id": 6,
+            "timecode": "0:50~0:55",
+            "chapter": "[CTA]",
+            "script": "이번엔 기준을 바꿔보세요"
+          }
+        ],
+        "prompt": "Vertical 9:16. Scene1: Picky cat turning nose away from bowl. Scene2: Multiple rejected food bowls lined up. Scene3: Owner trying new food, cat sniffing. Scene4: Cat starting to eat. Scene5: Happy cat and relieved owner. Scene6: End CTA. Warm home setting.",
+        "subtitles": [
+          "입짧은 고양이|집사라면 공감",
+          "좋아 보이는데|안 먹으면 처음부터",
+          "기호성과|쉬운 시작이 중요",
+          "매일 부담 없이|급여하기 좋은 선택",
+          "사료 고르기|어렵게 느껴졌다면",
+          "기준을 바꿔보세요"
+        ]
+      },
+      "audio": {
+        "bgm": {
+          "style": "밝고 경쾌한 어쿠스틱 기타 핑거스타일 루프",
+          "bpm": 110,
+          "volume_pct": 20,
+          "loop_sec": 55,
+          "prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 110 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+          "source_type": "ai_generated"
+        },
+        "sfx": [
+          {
+            "scene_id": 1,
+            "type": "whoosh",
+            "timing": "0.0sec",
+            "duration": "0.5sec"
+          },
+          {
+            "scene_id": 3,
+            "type": "click",
+            "timing": "0.0sec",
+            "duration": "0.2sec"
+          },
+          {
+            "scene_id": 5,
+            "type": "ding",
+            "timing": "0.0sec",
+            "duration": "0.3sec"
+          },
+          {
+            "scene_id": 6,
+            "type": "riser",
+            "timing": "0.0sec",
+            "duration": "1.0sec"
+          }
+        ]
+      },
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+        "ad_label": null
+      },
+      "prompts": {
+        "voice_prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림",
+        "video_prompt": "Vertical 9:16. Scene1: Picky cat turning nose away from bowl. Scene2: Multiple rejected food bowls lined up. Scene3: Owner trying new food, cat sniffing. Scene4: Cat starting to eat. Scene5: Happy cat and relieved owner. Scene6: End CTA. Warm home setting.",
+        "bgm_prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 110 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+        "sfx_summary": "Scene1 whoosh@0.0sec / Scene3 click@0.0sec / Scene5 ding@0.0sec / Scene6 riser@0.0sec"
+      }
+    },
+    {
+      "no": "04",
+      "id": "content_04",
+      "channel": "유튜브숏츠",
+      "channel_group": "유튜브",
+      "type": "숏츠",
+      "publish_timing": "D+0",
+      "title": "좋은 사료 = 어려운 사료? | 오마이캣",
+      "short_summary": "좋은 사료를 찾는 것도 중요하지만, 매일 급여하기 쉬운 사료도 중요해요.",
+      "hook_type": "반전형",
+      "angle": "사료 선택 단순화",
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": true,
+      "has_video": true,
+      "has_subtitles": true,
+      "has_audio": true,
+      "body": "좋은 사료를 찾는 것도 중요하지만, 매일 급여하기 쉬운 사료도 중요해요.\n오마이캣은 그런 기준으로 시작하기 좋은 사료예요.\n\n오마이캣으로 쉬운 데일리 선택 시작해보세요 ↓\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\n\nAI 보조 제작\n이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+      "cta": "오마이캣으로 쉬운 데일리 선택 시작해보세요 ↓",
+      "tags": [
+        "#오마이캣",
+        "#데일리사료",
+        "#고양이사료"
+      ],
+      "image": null,
+      "voice": {
+        "script": "좋은 사료를 찾는 것도 중요하지만, 매일 급여하기 쉬운 사료를 찾는 것도 꽤 중요하잖아요. 고양이는 부담 없이 먹고, 집사는 어렵지 않게 고를 수 있는 것. 기본 영양 균형과 기호성을 함께 보는 게 데일리 사료의 현실적인 기준이에요. 오마이캣은 그런 기준으로 시작하기 좋은 사료예요.",
+        "prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림"
+      },
+      "video": {
+        "scenes": [
+          {
+            "id": 1,
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "script": "좋은 사료 = 어려운 사료라고요?"
+          },
+          {
+            "id": 2,
+            "timecode": "0:03~0:15",
+            "chapter": "[핵심1]",
+            "script": "매일 급여하기 쉬운 사료를 찾는 것도 꽤 중요하잖아요"
+          },
+          {
+            "id": 3,
+            "timecode": "0:15~0:30",
+            "chapter": "[핵심2]",
+            "script": "고양이는 부담 없이 먹고, 집사는 어렵지 않게 고를 수 있는 것"
+          },
+          {
+            "id": 4,
+            "timecode": "0:30~0:43",
+            "chapter": "[핵심3]",
+            "script": "기본 영양 균형과 기호성을 함께 보는 게 데일리 사료의 현실적인 기준이에요"
+          },
+          {
+            "id": 5,
+            "timecode": "0:43~0:55",
+            "chapter": "[CTA]",
+            "script": "오마이캣은 그런 기준으로 시작하기 좋은 사료예요"
+          }
+        ],
+        "prompt": "Vertical 9:16. Scene1: Shelf full of premium cat food bags with price tags. Scene2: Owner confused comparing packages. Scene3: Simple vs complex comparison graphic. Scene4: Cat eating simple daily food happily. Scene5: Product shot. Bright modern kitchen.",
+        "subtitles": [
+          "좋은 사료 =|어려운 사료?",
+          "쉬운 사료를 찾는 것도|꽤 중요하잖아요",
+          "부담 없이 먹고|어렵지 않게 고르고",
+          "영양 균형 + 기호성|데일리 사료의 기준",
+          "그런 기준으로|시작하기 좋은 사료"
+        ]
+      },
+      "audio": {
+        "bgm": {
+          "style": "밝고 경쾌한 어쿠스틱 기타 핑거스타일 루프",
+          "bpm": 115,
+          "volume_pct": 20,
+          "loop_sec": 55,
+          "prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 115 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+          "source_type": "ai_generated"
+        },
+        "sfx": [
+          {
+            "scene_id": 1,
+            "type": "whoosh",
+            "timing": "0.0sec",
+            "duration": "0.5sec"
+          },
+          {
+            "scene_id": 3,
+            "type": "click",
+            "timing": "0.0sec",
+            "duration": "0.2sec"
+          },
+          {
+            "scene_id": 4,
+            "type": "ding",
+            "timing": "0.0sec",
+            "duration": "0.3sec"
+          },
+          {
+            "scene_id": 5,
+            "type": "riser",
+            "timing": "0.0sec",
+            "duration": "1.0sec"
+          }
+        ]
+      },
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+        "ad_label": null
+      },
+      "prompts": {
+        "voice_prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림",
+        "video_prompt": "Vertical 9:16. Scene1: Shelf full of premium cat food bags with price tags. Scene2: Owner confused comparing packages. Scene3: Simple vs complex comparison graphic. Scene4: Cat eating simple daily food happily. Scene5: Product shot. Bright modern kitchen.",
+        "bgm_prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 115 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+        "sfx_summary": "Scene1 whoosh@0.0sec / Scene3 click@0.0sec / Scene4 ding@0.0sec / Scene5 riser@0.0sec"
+      }
+    },
+    {
+      "no": "05",
+      "id": "content_05",
+      "channel": "유튜브숏츠",
+      "channel_group": "유튜브",
+      "type": "숏츠",
+      "publish_timing": "D+0",
+      "title": "집사가 사료에서 먼저 보는 것 3가지 | 오마이캣",
+      "short_summary": "사료 선택이 늘 고민이었다면 기준을 좀 더 단순하게 잡아보세요.",
+      "hook_type": "반전형",
+      "angle": "집사 선택 기준 3가지",
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": true,
+      "has_video": true,
+      "has_subtitles": true,
+      "has_audio": true,
+      "body": "사료 선택이 늘 고민이었다면 기준을 좀 더 단순하게 잡아보세요.\n성분표보다 먼저, 우리 아이가 잘 먹을 수 있는지가 출발점이에요.\n\n우리 아이 데일리 사료 기준, 오마이캣에서 확인해보세요 ↓\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\n\nAI 보조 제작\n이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+      "cta": "우리 아이 데일리 사료 기준, 오마이캣에서 확인해보세요 ↓",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#입짧은고양이"
+      ],
+      "image": null,
+      "voice": {
+        "script": "사료 고를 때 성분표부터 펼치시나요? 데일리 사료를 고를 때 집사가 먼저 확인하는 건 의외로 간단해요. 잘 먹는가. 무리 없는가. 계속 급여하기 쉬운가. 이 세 가지만 맞으면 나머지는 따라오더라고요. 오마이캣은 매일 먹이는 기준으로 시작하기 좋은 데일리 사료예요.",
+        "prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림"
+      },
+      "video": {
+        "scenes": [
+          {
+            "id": 1,
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "script": "집사가 사료 고를 때 먼저 보는 건 성분표가 아니에요"
+          },
+          {
+            "id": 2,
+            "timecode": "0:03~0:12",
+            "chapter": "[전환]",
+            "script": "사료 고를 때 성분표부터 펼치시나요?"
+          },
+          {
+            "id": 3,
+            "timecode": "0:12~0:25",
+            "chapter": "[핵심1]",
+            "script": "잘 먹는가, 무리 없는가, 계속 급여하기 쉬운가"
+          },
+          {
+            "id": 4,
+            "timecode": "0:25~0:40",
+            "chapter": "[핵심2]",
+            "script": "이 세 가지만 맞으면 나머지는 따라오더라고요"
+          },
+          {
+            "id": 5,
+            "timecode": "0:40~0:48",
+            "chapter": "[제품]",
+            "script": "오마이캣은 매일 먹이는 기준으로 시작하기 좋은 데일리 사료예요"
+          },
+          {
+            "id": 6,
+            "timecode": "0:48~0:55",
+            "chapter": "[CTA]",
+            "script": "사료 선택이 늘 어렵다면, 이번엔 기준부터 정리해보세요"
+          }
+        ],
+        "prompt": "Vertical 9:16. Scene1: Owner opening ingredient list looking overwhelmed. Scene2: Close-up of cat ignoring food. Scene3: Three simple criteria appearing. Scene4: Cat eating enthusiastically. Scene5: Product beauty shot. Scene6: End CTA. Natural home lighting.",
+        "subtitles": [
+          "먼저 보는 건|성분표가 아니에요",
+          "성분표부터|펼치시나요?",
+          "잘 먹는가|무리 없는가|쉬운가",
+          "세 가지만 맞으면|나머지는 따라와요",
+          "매일 먹이는 기준|데일리 사료",
+          "기준부터|정리해보세요"
+        ]
+      },
+      "audio": {
+        "bgm": {
+          "style": "밝고 경쾌한 어쿠스틱 기타 핑거스타일 루프",
+          "bpm": 120,
+          "volume_pct": 20,
+          "loop_sec": 55,
+          "prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 120 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+          "source_type": "ai_generated"
+        },
+        "sfx": [
+          {
+            "scene_id": 1,
+            "type": "whoosh",
+            "timing": "0.0sec",
+            "duration": "0.5sec"
+          },
+          {
+            "scene_id": 3,
+            "type": "click",
+            "timing": "0.0sec",
+            "duration": "0.2sec"
+          },
+          {
+            "scene_id": 5,
+            "type": "ding",
+            "timing": "0.0sec",
+            "duration": "0.3sec"
+          },
+          {
+            "scene_id": 6,
+            "type": "riser",
+            "timing": "0.0sec",
+            "duration": "1.0sec"
+          }
+        ]
+      },
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "이 영상은 AI 도구의 보조를 받아 제작되었습니다.",
+        "ad_label": null
+      },
+      "prompts": {
+        "voice_prompt": "톤: 밝고 친근함 / 속도: 보통(150자/분) / 강조: 핵심 단어 앞 0.3초 포즈 / 마무리: CTA 직전 톤 올림",
+        "video_prompt": "Vertical 9:16. Scene1: Owner opening ingredient list looking overwhelmed. Scene2: Close-up of cat ignoring food. Scene3: Three simple criteria appearing. Scene4: Cat eating enthusiastically. Scene5: Product beauty shot. Scene6: End CTA. Natural home lighting.",
+        "bgm_prompt": "Bright cheerful acoustic guitar fingerstyle loop, light percussion, 120 BPM, 55sec seamless loop, shortform background, voice-over friendly.",
+        "sfx_summary": "Scene1 whoosh@0.0sec / Scene3 click@0.0sec / Scene5 ding@0.0sec / Scene6 riser@0.0sec"
+      }
+    },
+    {
+      "no": "06",
+      "id": "content_06",
+      "channel": "인스타릴스",
+      "channel_group": "인스타그램",
+      "type": "릴스",
+      "publish_timing": "D+0",
+      "title": null,
+      "short_summary": "사료를 바꾸는 게 어려운 건 실패했을 때의 부담이 크기 때문이에요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": "No.01",
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "사료를 바꾸는 게 어려운 건 실패했을 때의 부담이 크기 때문이에요.\n\n좋아 보여도 안 먹으면 다시 처음부터.\n데일리 사료일수록 잘 먹는 반응과 쉬운 시작이 중요하죠.\n\n오마이캣은 매일 급여하기 좋은 데일리 균형 사료예요.\n\n📌 저장해두고 사료 고를 때 참고하세요\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "📌 저장해두고 사료 고를 때 참고하세요",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#고양이사료추천",
+        "#입짧은고양이",
+        "#고양이집사",
+        "#고양이먹거리",
+        "#반려묘사료",
+        "#데일리사료",
+        "#고양이사료선택",
+        "#고양이일상",
+        "#고양이밥",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이육아",
+        "#사료추천"
+      ],
+      "image": {
+        "type": "cover",
+        "ratio": "9:16",
+        "resolution": "1080×1920px",
+        "position": "릴스 커버 이미지",
+        "prompt_ko": "고양이 사료 그릇 앞에서 고개를 갸웃하며 냄새만 맡는 까다로운 고양이. 따뜻한 실내 조명, 사료 그릇 포커스.",
+        "prompt_en": "A picky cat tilting head sniffing a food bowl without eating, warm indoor lighting, shallow DOF on bowl, upper third composition. vertical 9:16 format.",
+        "flow_params": "9:16 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "고양이 사료 그릇 앞에서 고개를 갸웃하며 냄새만 맡는 까다로운 고양이. 따뜻한 실내 조명, 사료 그릇 포커스.",
+        "image_prompt_en": "A picky cat tilting head sniffing a food bowl without eating, warm indoor lighting, shallow DOF on bowl, upper third composition. vertical 9:16 format."
+      }
+    },
+    {
+      "no": "07",
+      "id": "content_07",
+      "channel": "인스타릴스",
+      "channel_group": "인스타그램",
+      "type": "릴스",
+      "publish_timing": "D+0",
+      "title": null,
+      "short_summary": "매일 급여하는 사료라면 쉽게 이어갈 수 있는 선택이 더 오래가요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": "No.02",
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "매일 급여하는 사료라면 쉽게 이어갈 수 있는 선택이 더 오래가요.\n\n잘 먹는가, 쉬운가, 기본은 갖췄는가.\n이 세 가지부터 확인해보세요.\n\n오마이캣은 데일리 기준에 맞춘 고양이 사료예요.\n\n📌 저장해두고 참고하세요\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "이 세 가지부터 확인해보세요.",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#고양이사료추천",
+        "#입짧은고양이",
+        "#고양이집사",
+        "#고양이먹거리",
+        "#반려묘사료",
+        "#데일리사료",
+        "#고양이사료선택",
+        "#고양이일상",
+        "#고양이밥",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이육아",
+        "#사료추천"
+      ],
+      "image": {
+        "type": "cover",
+        "ratio": "9:16",
+        "resolution": "1080×1920px",
+        "position": "릴스 커버 이미지",
+        "prompt_ko": "깔끔한 주방 테이블 위 사료 그릇과 사료 봉지가 나란히 놓인 미니멀 구도. 밝은 자연광.",
+        "prompt_en": "Minimal composition of cat food bowl and kibble bag on clean kitchen table, bright natural light, cat paw at top. vertical 9:16 format.",
+        "flow_params": "9:16 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "깔끔한 주방 테이블 위 사료 그릇과 사료 봉지가 나란히 놓인 미니멀 구도. 밝은 자연광.",
+        "image_prompt_en": "Minimal composition of cat food bowl and kibble bag on clean kitchen table, bright natural light, cat paw at top. vertical 9:16 format."
+      }
+    },
+    {
+      "no": "08",
+      "id": "content_08",
+      "channel": "인스타릴스",
+      "channel_group": "인스타그램",
+      "type": "릴스",
+      "publish_timing": "D+0",
+      "title": null,
+      "short_summary": "입맛 까다로운 고양이 키우는 집사라면 한 번쯤 겪어본 고민이죠.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": "No.03",
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "입맛 까다로운 고양이 키우는 집사라면 한 번쯤 겪어본 고민이죠.\n\n안 먹으면 다시 처음부터.\n입짧은 아이일수록 기호성과 쉬운 시작이 더 중요해요.\n\n오마이캣은 매일 부담 없이 급여하기 좋은 데일리 선택이에요.\n\n📌 입짧은 고양이 집사라면 저장\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "📌 입짧은 고양이 집사라면 저장",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#고양이사료추천",
+        "#입짧은고양이",
+        "#고양이집사",
+        "#고양이먹거리",
+        "#반려묘사료",
+        "#데일리사료",
+        "#고양이사료선택",
+        "#고양이일상",
+        "#고양이밥",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이육아",
+        "#사료추천"
+      ],
+      "image": {
+        "type": "cover",
+        "ratio": "9:16",
+        "resolution": "1080×1920px",
+        "position": "릴스 커버 이미지",
+        "prompt_ko": "사료 그릇 앞에서 돌아서는 까다로운 고양이와 당혹한 표정의 집사 손. 따뜻한 실내.",
+        "prompt_en": "Picky cat turning away from food bowl, frustrated owner hand visible, warm interior, shallow focus on bowl. vertical 9:16 format.",
+        "flow_params": "9:16 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "사료 그릇 앞에서 돌아서는 까다로운 고양이와 당혹한 표정의 집사 손. 따뜻한 실내.",
+        "image_prompt_en": "Picky cat turning away from food bowl, frustrated owner hand visible, warm interior, shallow focus on bowl. vertical 9:16 format."
+      }
+    },
+    {
+      "no": "09",
+      "id": "content_09",
+      "channel": "인스타릴스",
+      "channel_group": "인스타그램",
+      "type": "릴스",
+      "publish_timing": "D+0",
+      "title": null,
+      "short_summary": "좋은 사료를 찾는 것도 중요하지만, 매일 급여하기 쉬운 사료를 찾는 것도 중요하잖아요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": "No.04",
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "좋은 사료를 찾는 것도 중요하지만, 매일 급여하기 쉬운 사료를 찾는 것도 중요하잖아요.\n\n기본 영양 균형과 기호성을 함께 보는 게 데일리 사료의 현실적인 기준이에요.\n\n오마이캣은 그런 기준으로 시작하기 좋은 사료예요.\n\n📌 저장해두고 사료 고를 때 참고하세요\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "📌 저장해두고 사료 고를 때 참고하세요",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#고양이사료추천",
+        "#입짧은고양이",
+        "#고양이집사",
+        "#고양이먹거리",
+        "#반려묘사료",
+        "#데일리사료",
+        "#고양이사료선택",
+        "#고양이일상",
+        "#고양이밥",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이육아",
+        "#사료추천"
+      ],
+      "image": {
+        "type": "cover",
+        "ratio": "9:16",
+        "resolution": "1080×1920px",
+        "position": "릴스 커버 이미지",
+        "prompt_ko": "여러 종류 사료 봉지가 늘어선 선반 앞에서 고민하는 집사의 뒷모습. 밝은 펫숍 조명.",
+        "prompt_en": "Owner standing confused in front of shelf full of cat food bags, bright pet shop lighting, bags at top third. vertical 9:16 format.",
+        "flow_params": "9:16 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "여러 종류 사료 봉지가 늘어선 선반 앞에서 고민하는 집사의 뒷모습. 밝은 펫숍 조명.",
+        "image_prompt_en": "Owner standing confused in front of shelf full of cat food bags, bright pet shop lighting, bags at top third. vertical 9:16 format."
+      }
+    },
+    {
+      "no": "10",
+      "id": "content_10",
+      "channel": "인스타릴스",
+      "channel_group": "인스타그램",
+      "type": "릴스",
+      "publish_timing": "D+0",
+      "title": null,
+      "short_summary": "데일리 사료를 고를 때 집사가 먼저 확인하는 건 의외로 간단해요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": "No.05",
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "데일리 사료를 고를 때 집사가 먼저 확인하는 건 의외로 간단해요.\n\n잘 먹는가. 무리 없는가. 계속 급여하기 쉬운가.\n이 세 가지만 맞으면 나머지는 따라오더라고요.\n\n오마이캣은 매일 먹이는 기준으로 시작하기 좋은 데일리 사료예요.\n\n📌 사료 고르기 기준 저장해두세요\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "📌 사료 고르기 기준 저장해두세요",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#고양이사료추천",
+        "#입짧은고양이",
+        "#고양이집사",
+        "#고양이먹거리",
+        "#반려묘사료",
+        "#데일리사료",
+        "#고양이사료선택",
+        "#고양이일상",
+        "#고양이밥",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이육아",
+        "#사료추천"
+      ],
+      "image": {
+        "type": "cover",
+        "ratio": "9:16",
+        "resolution": "1080×1920px",
+        "position": "릴스 커버 이미지",
+        "prompt_ko": "고양이가 사료를 맛있게 먹는 클로즈업. 따뜻한 골든아워 조명, 그릇 포커스.",
+        "prompt_en": "Close-up of cat happily eating kibble from bowl, warm golden hour lighting, focus on bowl, cat face at upper third. vertical 9:16 format.",
+        "flow_params": "9:16 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "고양이가 사료를 맛있게 먹는 클로즈업. 따뜻한 골든아워 조명, 그릇 포커스.",
+        "image_prompt_en": "Close-up of cat happily eating kibble from bowl, warm golden hour lighting, focus on bowl, cat face at upper third. vertical 9:16 format."
+      }
+    },
+    {
+      "no": "11",
+      "id": "content_11",
+      "channel": "인스타캐러셀",
+      "channel_group": "인스타그램",
+      "type": "캐러셀",
+      "publish_timing": "D+2~3",
+      "title": "입짧은 고양이 사료 고르는 기준",
+      "short_summary": "입짧은 고양이일수록 사료 선택은 더 조심스러워지죠.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "입짧은 고양이일수록 사료 선택은 더 조심스러워지죠.\n\n슬라이드로 정리했으니 저장해두고 사료 고를 때 참고해보세요.\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "슬라이드로 정리했으니 저장해두고 사료 고를 때 참고해보세요.",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#입짧은고양이",
+        "#고양이집사",
+        "#반려묘사료",
+        "#데일리사료",
+        "#고양이사료추천",
+        "#고양이먹거리",
+        "#사료선택",
+        "#고양이정보",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이육아",
+        "#고양이밥",
+        "#사료추천"
+      ],
+      "image": {
+        "ratio": "1:1",
+        "resolution": "1080×1080px",
+        "slides": 7,
+        "slide_structure": "슬라이드1: 훅 '입짧은 고양이 사료 고르는 기준' / 슬라이드2: 기호성 체크 / 슬라이드3: 급여 편의성 / 슬라이드4: 기본 균형 / 슬라이드5: 가격 부담 / 슬라이드6: 주의점 '성분표만 보면 놓치는 것' / 슬라이드7: 저장 CTA + 오마이캣",
+        "prompt_ko": "파스텔 톤 미니멀 인포그래픽 슬라이드. 각 슬라이드에 아이콘과 핵심 문구 1줄. 고양이 일러스트 포인트.",
+        "prompt_en": "Pastel minimal infographic slides, each with icon and one-line key message, cat illustration accent, clean sans-serif typography. square format.",
+        "flow_params": "1:1 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "파스텔 톤 미니멀 인포그래픽 슬라이드. 각 슬라이드에 아이콘과 핵심 문구 1줄. 고양이 일러스트 포인트.",
+        "image_prompt_en": "Pastel minimal infographic slides, each with icon and one-line key message, cat illustration accent, clean sans-serif typography. square format."
+      }
+    },
+    {
+      "no": "12",
+      "id": "content_12",
+      "channel": "인스타캐러셀",
+      "channel_group": "인스타그램",
+      "type": "캐러셀",
+      "publish_timing": "D+2~3",
+      "title": "매일 먹이는 사료 집사가 보는 포인트",
+      "short_summary": "데일리 사료는 한 번 고르고 끝이 아니라 매일 이어지는 선택이잖아요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "데일리 사료는 한 번 고르고 끝이 아니라 매일 이어지는 선택이잖아요.\n\n기준을 정리해봤으니, 집사 친구한테도 공유해주세요.\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "기준을 정리해봤으니, 집사 친구한테도 공유해주세요.",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#반려묘사료",
+        "#고양이집사",
+        "#데일리사료",
+        "#고양이사료선택",
+        "#고양이먹거리",
+        "#입짧은고양이",
+        "#사료추천",
+        "#고양이정보",
+        "#집사일기",
+        "#냥스타그램",
+        "#고양이일상",
+        "#고양이밥",
+        "#고양이육아"
+      ],
+      "image": {
+        "ratio": "1:1",
+        "resolution": "1080×1080px",
+        "slides": 6,
+        "slide_structure": "슬라이드1: 훅 '매일 먹이는 사료, 집사가 보는 포인트' / 슬라이드2: 잘 먹는가 / 슬라이드3: 무리 없는가 / 슬라이드4: 이어가기 쉬운가 / 슬라이드5: 요약 / 슬라이드6: 공유 CTA + 오마이캣",
+        "prompt_ko": "따뜻한 톤 미니멀 카드 디자인. 각 슬라이드에 고양이 아이콘과 체크리스트 형식. 라이트 베이지 배경.",
+        "prompt_en": "Warm tone minimal card design, cat icon with checklist format per slide, light beige background. square format.",
+        "flow_params": "1:1 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "따뜻한 톤 미니멀 카드 디자인. 각 슬라이드에 고양이 아이콘과 체크리스트 형식. 라이트 베이지 배경.",
+        "image_prompt_en": "Warm tone minimal card design, cat icon with checklist format per slide, light beige background. square format."
+      }
+    },
+    {
+      "no": "13",
+      "id": "content_13",
+      "channel": "인스타단일이미지",
+      "channel_group": "인스타그램",
+      "type": "단일이미지",
+      "publish_timing": "D+7",
+      "title": "매일 먹이는 사료일수록 선택은 더 쉬워야 합니다",
+      "short_summary": "고양이 사료는 정보가 많을수록 오히려 더 어려워질 때가 있어요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "고양이 사료는 정보가 많을수록 오히려 더 어려워질 때가 있어요.\n\n특히 매일 급여하는 사료라면 먼저 봐야 할 기준은 꽤 분명하죠.\n\n✅ 우리 아이가 부담 없이 먹을 수 있는지\n✅ 집사가 계속 급여하기 편한지\n✅ 기본 영양 균형을 갖추고 있는지\n\n오마이캣은 이런 데일리 급여 기준에 맞춘 고양이 사료예요.\n사료 선택이 늘 부담스러웠다면, 이번에는 좀 더 쉽게 시작해보세요.\n\n프로필 링크에서 오마이캣 자세히 보기\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\nAI 보조 제작",
+      "cta": "사료 선택이 늘 부담스러웠다면, 이번에는 좀 더 쉽게 시작해보세요.",
+      "tags": [
+        "#오마이캣",
+        "#고양이사료",
+        "#반려묘사료",
+        "#입짧은고양이",
+        "#데일리사료"
+      ],
+      "image": {
+        "ratio": "1:1",
+        "resolution": "1080×1080px",
+        "position": "단일 피드",
+        "prompt_ko": "데일리 사료 선택 기준 3가지를 체크리스트 형태로 정리한 미니멀 인포그래픽. 파스텔 배경, 고양이 아이콘.",
+        "prompt_en": "Minimal infographic checklist of 3 daily cat food criteria, pastel background, cat icon, clean typography. square format.",
+        "flow_params": "1:1 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "데일리 사료 선택 기준 3가지를 체크리스트 형태로 정리한 미니멀 인포그래픽. 파스텔 배경, 고양이 아이콘.",
+        "image_prompt_en": "Minimal infographic checklist of 3 daily cat food criteria, pastel background, cat icon, clean typography. square format."
+      }
+    },
+    {
+      "no": "14",
+      "id": "content_14",
+      "channel": "스레드정보",
+      "channel_group": "스레드",
+      "type": "정보형",
+      "publish_timing": "D+1",
+      "title": null,
+      "short_summary": "사료를 바꾸기 어려운 건 정보가 부족해서가 아니에요. 한 번 실패하면 안 먹는 사료만 쌓이니까, 그 부담이 더 큰 거죠.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "사료를 바꾸기 어려운 건 정보가 부족해서가 아니에요. 한 번 실패하면 안 먹는 사료만 쌓이니까, 그 부담이 더 큰 거죠.\n\n그래서 데일리 사료는 복잡한 설명보다 '잘 먹는가'부터 확인하게 돼요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": {
+        "ratio": "1:1",
+        "resolution": "1080×1080px",
+        "position": "첨부",
+        "prompt_ko": "사료 그릇 앞에서 냄새만 맡고 돌아서는 고양이. 깔끔한 일러스트.",
+        "prompt_en": "Cat sniffing then turning from food bowl, clean illustration, warm pastels. square format.",
+        "flow_params": "1:1 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "사료 그릇 앞에서 냄새만 맡고 돌아서는 고양이. 깔끔한 일러스트.",
+        "image_prompt_en": "Cat sniffing then turning from food bowl, clean illustration, warm pastels. square format."
+      }
+    },
+    {
+      "no": "15",
+      "id": "content_15",
+      "channel": "스레드정보",
+      "channel_group": "스레드",
+      "type": "정보형",
+      "publish_timing": "D+1",
+      "title": null,
+      "short_summary": "매일 급여하는 사료라면 부담 없이 이어갈 수 있는 게 핵심이에요. 한 끼가 아니라 매일이니까, 잘 먹는 반응과 쉬운 급여가 첫 번째 기준이 되어",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "매일 급여하는 사료라면 부담 없이 이어갈 수 있는 게 핵심이에요. 한 끼가 아니라 매일이니까, 잘 먹는 반응과 쉬운 급여가 첫 번째 기준이 되어야 하거든요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": {
+        "ratio": "1:1",
+        "resolution": "1080×1080px",
+        "position": "첨부",
+        "prompt_ko": "사료 봉지 3개와 체크리스트가 함께 놓인 깔끔한 플랫레이. 밝은 자연광.",
+        "prompt_en": "Flat lay of three cat food bags with checklist paper, bright natural light, clean composition. square format.",
+        "flow_params": "1:1 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "사료 봉지 3개와 체크리스트가 함께 놓인 깔끔한 플랫레이. 밝은 자연광.",
+        "image_prompt_en": "Flat lay of three cat food bags with checklist paper, bright natural light, clean composition. square format."
+      }
+    },
+    {
+      "no": "16",
+      "id": "content_16",
+      "channel": "스레드공감",
+      "channel_group": "스레드",
+      "type": "공감형",
+      "publish_timing": "D+1",
+      "title": null,
+      "short_summary": "사료 바꾸면 안 먹을까 봐 무서워서 결국 또 같은 거 시키는 집사, 저만 그런가요.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "사료 바꾸면 안 먹을까 봐 무서워서 결국 또 같은 거 시키는 집사, 저만 그런가요.\n\n입맛 까다로운 고양이는 사료 하나 바꾸는 것도 집사한테 꽤 큰 결정이에요. 안 먹으면 버리는 게 아니라, 마음이 무거워지거든요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "17",
+      "id": "content_17",
+      "channel": "스레드공감",
+      "channel_group": "스레드",
+      "type": "공감형",
+      "publish_timing": "D+2~3",
+      "title": null,
+      "short_summary": "사료 검색하다 보면 성분표 비교만 3시간째인 집사 여기 또 있습니다.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "사료 검색하다 보면 성분표 비교만 3시간째인 집사 여기 또 있습니다.\n\n근데 결국 우리 아이가 안 먹으면 다 소용없잖아요. 어느 순간부터 기호성이 1순위가 됐어요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "18",
+      "id": "content_18",
+      "channel": "스레드반전논쟁",
+      "channel_group": "스레드",
+      "type": "반전·논쟁형",
+      "publish_timing": "D+2~3",
+      "title": null,
+      "short_summary": "비싼 사료가 좋은 사료라고요?",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "비싼 사료가 좋은 사료라고요?\n\n우리 아이가 안 먹으면 그건 그냥 비싼 재고예요. 데일리 사료에서 진짜 중요한 건 가격이 아니라, 매일 먹는 반응이에요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "19",
+      "id": "content_19",
+      "channel": "스레드스토리텔링",
+      "channel_group": "스레드",
+      "type": "스토리텔링형",
+      "publish_timing": "D+2~3",
+      "title": null,
+      "short_summary": "지난달 새 사료 3종을 샀어요. 리뷰도 좋고 성분도 괜찮았는데, 셋 다 실패.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "지난달 새 사료 3종을 샀어요. 리뷰도 좋고 성분도 괜찮았는데, 셋 다 실패.\n\n그릇 앞에서 냄새만 맡고 돌아서는 우리 냥이를 보면서 깨달았어요. 복잡하게 고르지 말고, 잘 먹는지부터 보자.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "20",
+      "id": "content_20",
+      "channel": "스레드한줄선언",
+      "channel_group": "스레드",
+      "type": "한줄선언형",
+      "publish_timing": "D+4~5",
+      "title": null,
+      "short_summary": "매일 먹이는 사료는 쉬운 선택이 더 오래 갑니다.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "매일 먹이는 사료는 쉬운 선택이 더 오래 갑니다.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "21",
+      "id": "content_21",
+      "channel": "스레드리스트",
+      "channel_group": "스레드",
+      "type": "리스트형",
+      "publish_timing": "D+4~5",
+      "title": null,
+      "short_summary": "집사가 데일리 사료에서 먼저 확인하는 것 3가지.",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "집사가 데일리 사료에서 먼저 확인하는 것 3가지.\n\n→ 잘 먹는가\n→ 무리 없는가\n→ 계속 급여하기 쉬운가\n\n이 세 가지가 되면 나머진 따라오더라고요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "22",
+      "id": "content_22",
+      "channel": "스레드큐레이션",
+      "channel_group": "스레드",
+      "type": "큐레이션형",
+      "publish_timing": "D+4~5",
+      "title": null,
+      "short_summary": "데일리 사료 vs 특수 사료 — 뭐가 다를까?",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "데일리 사료 vs 특수 사료 — 뭐가 다를까?\n\n매일 급여 기준이라면 기호성·편의성·기본 균형, 이 세 가지가 우선이에요. 특수 사료는 특정 상황에 맞추는 거고, 데일리는 매일 이어가는 거니까요.\n\nAI 보조 제작",
+      "cta": null,
+      "tags": [],
+      "image": {
+        "ratio": "1:1",
+        "resolution": "1080×1080px",
+        "position": "첨부",
+        "prompt_ko": "데일리 사료 vs 특수 사료 비교 카드. 미니멀 디자인, 두 칼럼 레이아웃, 파스텔 배경.",
+        "prompt_en": "Daily food vs special food comparison card, minimal design, two-column layout, pastel background. square format.",
+        "flow_params": "1:1 / Nano Banana 2"
+      },
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_prompt_ko": "데일리 사료 vs 특수 사료 비교 카드. 미니멀 디자인, 두 칼럼 레이아웃, 파스텔 배경.",
+        "image_prompt_en": "Daily food vs special food comparison card, minimal design, two-column layout, pastel background. square format."
+      }
+    },
+    {
+      "no": "23",
+      "id": "content_23",
+      "channel": "스레드질문참여",
+      "channel_group": "스레드",
+      "type": "질문·참여형",
+      "publish_timing": "D+7",
+      "title": null,
+      "short_summary": "입짧은 고양이 키우는 집사분들, 사료 고를 때 기호성이 먼저인가요? 성분이 먼저인가요?",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": false,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "입짧은 고양이 키우는 집사분들, 사료 고를 때 기호성이 먼저인가요? 성분이 먼저인가요?\n\n저는 예전엔 성분부터 봤는데, 결국 안 먹으면 의미 없더라고요. 요즘은 기호성부터 확인해요.\n\n여러분은 어떠세요? 댓글로 알려주세요 👇\n\nAI 보조 제작",
+      "cta": "여러분은 어떠세요? 댓글로 알려주세요 👇",
+      "tags": [],
+      "image": null,
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": null,
+        "ai_label": "AI 보조 제작",
+        "ad_label": null
+      },
+      "prompts": null
+    },
+    {
+      "no": "24",
+      "id": "content_24",
+      "channel": "네이버블로그",
+      "channel_group": "네이버",
+      "type": "파생 포스트",
+      "publish_timing": "D+3~4",
+      "title": "매일 먹이는 고양이 사료, 고르기 전에 이것부터 확인하세요",
+      "short_summary": "고양이 사료를 검색하면 수십 가지 브랜드와 성분 비교표가 쏟아져요. 정보가 많을수록 오히려 선택은 더 어려워지죠. 특히 매일 급여하는 데일리 사",
+      "hook_type": null,
+      "angle": null,
+      "shared_video_ref": null,
+      "has_image": true,
+      "has_voice": false,
+      "has_video": false,
+      "has_subtitles": false,
+      "has_audio": false,
+      "body": "고양이 사료를 검색하면 수십 가지 브랜드와 성분 비교표가 쏟아져요. 정보가 많을수록 오히려 선택은 더 어려워지죠. 특히 매일 급여하는 데일리 사료라면, 화려한 성분 리스트보다 먼저 확인해야 할 것들이 있어요.\n\n[IMAGE:1]\n\n■ 데일리 사료, 왜 기준이 달라야 할까\n\n특수 사료는 특정 건강 상태에 맞춰 설계된 거예요. 반면 데일리 사료는 매일 급여하는 기본 식사이기 때문에, 지속 가능한 선택이 핵심이에요. 한 번 먹이고 끝나는 게 아니라 매일 이어가야 하니까, 복잡한 스펙보다 실제로 먹는 반응이 더 중요해지죠.\n\n📌 체크포인트: 데일리 사료는 '최고'보다 '매일 잘 먹는' 사료가 현실적인 기준이에요.\n\n[IMAGE:2]\n\n■ 집사가 먼저 확인하는 3가지\n\n데일리 사료를 고를 때 경험 있는 집사들이 먼저 보는 건 의외로 단순해요.\n\n첫째, 잘 먹는가. 아무리 좋은 성분이어도 고양이가 안 먹으면 의미가 없어요. 기호성이 가장 기본적인 출발점이에요.\n\n둘째, 무리 없는가. 소화에 문제가 없고 컨디션 변화 없이 유지되는지 확인해야 해요.\n\n셋째, 계속 급여하기 쉬운가. 구매 편의성, 가격 부담, 급여 방법이 일상에 무리 없이 이어질 수 있는지가 데일리 사료에서는 꽤 큰 비중이에요.\n\n📌 체크포인트: 성분표 분석 전에 이 세 가지부터 확인해보세요.\n\n[IMAGE:3]\n\n■ 오마이캣은 데일리 기준에 맞춘 선택이에요\n\n오마이캣은 매일 급여하기 좋은 데일리 균형 사료예요. 기본 영양 설계와 기호성을 함께 갖춘 사료를 찾는 집사에게 잘 맞는 시작점이 될 수 있어요. 사료 선택이 늘 부담스러웠다면, 이번에는 좀 더 쉽게 시작해보세요.\n\n📌 체크포인트: 어렵게 고르는 것보다, 매일 잘 먹는 걸 찾는 게 데일리 사료의 핵심이에요.\n\n[IMAGE:4]\n\n반려동물 건강 문제는 수의사 상담을 권장합니다.\n본 글은 AI 도구를 활용하여 작성되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📐 블로그 서식 적용 가이드\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[제목] 크기: 28~32px / 굵게 / 가운데 또는 왼쪽 정렬\n[소제목 H2] 크기: 22~24px / 굵게 / ■ 앞 표시\n[본문] 크기: 16~18px / 줄간격: 180~200% / 단락 간격: 한 줄 띄우기\n[핵심 강조] 굵게(Bold): 문장 내 핵심 단어만\n[📌 체크포인트] 인용구 블록으로 처리 / 배경색: 연한 회색(#f5f5f5)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "cta": "📌 체크포인트: 데일리 사료는 '최고'보다 '매일 잘 먹는' 사료가 현실적인 기준이에요.",
+      "tags": [
+        "고양이사료",
+        "고양이사료추천",
+        "입짧은고양이",
+        "데일리사료",
+        "고양이사료선택",
+        "반려묘사료",
+        "고양이집사",
+        "고양이먹거리",
+        "사료추천",
+        "고양이밥",
+        "고양이영양",
+        "고양이건강",
+        "고양이사료고르기",
+        "오마이캣",
+        "고양이육아"
+      ],
+      "image": [
+        {
+          "index": 1,
+          "ratio": "3:2",
+          "resolution": "1200×800px",
+          "position": "제목 아래 / 대표이미지 설정 필수",
+          "prompt_ko": "고양이 사료 그릇 옆에 앉아 있는 고양이와 집사의 손. 따뜻한 자연광, 밝고 청결한 분위기, 플랫레이 구도.",
+          "prompt_en": "Cat sitting beside food bowl with owner hand, warm natural light, bright clean atmosphere, flat lay composition. 3:2 horizontal format.",
+          "flow_params": "3:2 / Nano Banana 2"
+        },
+        {
+          "index": 2,
+          "ratio": "1:1",
+          "resolution": "800×800px",
+          "position": "핵심 개념 설명 직후",
+          "prompt_ko": "데일리 사료 선택 기준 3가지를 아이콘으로 표현한 미니멀 인포그래픽. 파스텔 배경.",
+          "prompt_en": "Minimal infographic with 3 icons for daily food criteria, pastel background. square format.",
+          "flow_params": "1:1 / Nano Banana 2"
+        },
+        {
+          "index": 3,
+          "ratio": "16:9",
+          "resolution": "1280×720px",
+          "position": "중간 섹션 하단",
+          "prompt_ko": "데일리 사료와 특수 사료를 좌우 비교하는 구도. 깔끔한 배경.",
+          "prompt_en": "Side-by-side comparison of daily food bag vs special food bag, clean background. widescreen 16:9 format.",
+          "flow_params": "16:9 / Nano Banana 2"
+        },
+        {
+          "index": 4,
+          "ratio": "3:2",
+          "resolution": "1200×800px",
+          "position": "마무리 하단",
+          "prompt_ko": "집사가 고양이를 안고 사료 그릇을 바라보는 따뜻한 라이프스타일 장면. 골든아워 자연광, 배경 아웃포커스.",
+          "prompt_en": "Owner holding cat looking at food bowl, warm lifestyle scene, golden hour natural light, background bokeh. 3:2 horizontal format.",
+          "flow_params": "3:2 / Nano Banana 2"
+        }
+      ],
+      "voice": null,
+      "video": null,
+      "audio": null,
+      "legal": {
+        "disclaimer": "반려동물 건강 문제는 수의사 상담을 권장합니다.",
+        "ai_label": "본 글은 AI 도구를 활용하여 작성되었습니다.",
+        "ad_label": null
+      },
+      "prompts": {
+        "image_1_prompt_ko": "고양이 사료 그릇 옆에 앉아 있는 고양이와 집사의 손. 따뜻한 자연광, 밝고 청결한 분위기, 플랫레이 구도.",
+        "image_1_prompt_en": "Cat sitting beside food bowl with owner hand, warm natural light, bright clean atmosphere, flat lay composition. 3:2 horizontal format.",
+        "image_2_prompt_ko": "데일리 사료 선택 기준 3가지를 아이콘으로 표현한 미니멀 인포그래픽. 파스텔 배경.",
+        "image_2_prompt_en": "Minimal infographic with 3 icons for daily food criteria, pastel background. square format.",
+        "image_3_prompt_ko": "데일리 사료와 특수 사료를 좌우 비교하는 구도. 깔끔한 배경.",
+        "image_3_prompt_en": "Side-by-side comparison of daily food bag vs special food bag, clean background. widescreen 16:9 format.",
+        "image_4_prompt_ko": "집사가 고양이를 안고 사료 그릇을 바라보는 따뜻한 라이프스타일 장면. 골든아워 자연광, 배경 아웃포커스.",
+        "image_4_prompt_en": "Owner holding cat looking at food bowl, warm lifestyle scene, golden hour natural light, background bokeh. 3:2 horizontal format."
+      }
+    }
+  ],
+  "validation": {
+    "total_items_match": true,
+    "total_items": 24,
+    "missing_nos": "없음",
+    "duplicate_nos": "없음",
+    "invalid_channels": "없음",
+    "invalid_shared_refs": "없음",
+    "image_rule_violations": "없음",
+    "missing_shared_video_ref": "없음"
+  }
+}

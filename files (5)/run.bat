@@ -1,9 +1,7 @@
 @echo off
-echo Blog Studio 실행 중...
-echo.
-echo 브라우저에서 http://localhost:8080 열기
-echo 종료하려면 Ctrl+C 누르세요
-echo.
-cd /d "%~dp0"
-python -m http.server 8080
+echo Blog Studio 로컬 서버 (포트 3333)
+echo http://localhost:3333/blog-studio-v7.html
+echo 종료: Ctrl+C
+cd /d "%~dp0\.."
+call npx --yes serve "files (5)" -l 3333
 pause

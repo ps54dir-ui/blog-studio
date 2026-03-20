@@ -1,0 +1,2991 @@
+{
+  "meta": {
+    "version": "3.0",
+    "description": "콘텐츠 템플릿 라이브러리 v3. 블로그 3개 플랫폼 고정 이미지 배치 폐지 → image_strategy(자율 배치 판단 기준) 전환. v14 지침 연동.",
+    "schema_version": "1.0",
+    "last_updated": "2026-03-19",
+    "total_templates": 77,
+    "channel_counts_note": "각 채널 코드별 실제 템플릿 수",
+    "channel_counts": {
+      "T-SA": 4,
+      "T-YT": 3,
+      "T-IGR": 3,
+      "T-IGC": 1,
+      "T-TT": 4,
+      "T-STC": 3,
+      "T-CAR": 5,
+      "T-SGL": 3,
+      "T-BLG": 4,
+      "T-CAF": 3,
+      "T-QNA": 3,
+      "T-MID": 3,
+      "T-LNG": 2,
+      "T-FB": 3,
+      "T-TW": 4,
+      "T-WP": 2,
+      "T-TS": 3,
+      "T-THI": 3,
+      "T-THL": 3,
+      "T-THQ": 3,
+      "T-THE": 3,
+      "T-THT": 3,
+      "T-THS": 3,
+      "T-THO": 3,
+      "T-THC": 3
+    },
+    "usage_note": "신규 템플릿 추가 시 해당 채널 channel_counts +1, total_templates +1, last_updated 갱신",
+    "channel_code_map": {
+      "T-SA": "숏폼공통에셋",
+      "T-YT": "유튜브숏츠",
+      "T-IGR": "인스타릴스",
+      "T-IGC": "인스타캐러셀 (구코드, 호환유지)",
+      "T-TT": "틱톡메인",
+      "T-STC": "틱톡스티치",
+      "T-CAR": "인스타캐러셀",
+      "T-SGL": "인스타단일이미지",
+      "T-THI": "스레드정보",
+      "T-THL": "스레드리스트",
+      "T-THQ": "스레드질문참여",
+      "T-THE": "스레드공감",
+      "T-THT": "스레드반전논쟁",
+      "T-THS": "스레드스토리텔링",
+      "T-THO": "스레드한줄선언",
+      "T-THC": "스레드큐레이션",
+      "T-BLG": "네이버블로그",
+      "T-CAF": "네이버카페",
+      "T-QNA": "네이버QA",
+      "T-MID": "유튜브미들폼",
+      "T-LNG": "유튜브롱폼",
+      "T-FB": "페이스북",
+      "T-TW": "트위터X",
+      "T-WP": "워드프레스",
+      "T-TS": "티스토리"
+    }
+  },
+  "templates": [
+    {
+      "template_id": "T-SA-001",
+      "channel": "숏폼공통에셋",
+      "label": "손해 프레이밍형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "손해프레이밍",
+        "일반대중",
+        "얕고짧음",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "shortform": "이거 모르면 [구체적 손해] 생깁니다"
+      },
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "direction": "손해 경고 직격"
+          },
+          {
+            "timecode": "0:03~0:15",
+            "chapter": "[핵심1]",
+            "direction": "문제 상황 수치·사례"
+          },
+          {
+            "timecode": "0:15~0:35",
+            "chapter": "[핵심2]",
+            "direction": "해결법·올바른 방법"
+          },
+          {
+            "timecode": "0:35~0:48",
+            "chapter": "[핵심3]",
+            "direction": "적용 결과·주의사항"
+          },
+          {
+            "timecode": "0:48~0:55",
+            "chapter": "[CTA]",
+            "direction": "저장·팔로우 유도"
+          }
+        ],
+        "image": {
+          "ratio": "9:16",
+          "resolution": "1080×1920px",
+          "composition": "상단1/3 훅텍스트+반투명바 / 중간1/3 주피사체(자연광) / 하단1/3 자막공간(어두운반투명바)",
+          "color_tone": "밝고 선명 / 경고색(빨강·주황) 포인트 허용"
+        },
+        "design_system": {
+          "hook_text": "굵은고딕 / 흰색or노란색 / 검정외곽선3px",
+          "subtitle": "흰색 굵은고딕 / 검정외곽선2px / 하단중앙",
+          "overlay": "검정 40% 반투명"
+        },
+        "bgm": {
+          "style": "upbeat lo-fi pop",
+          "bpm": 100,
+          "volume_pct": 20,
+          "loop_sec": 50
+        },
+        "sfx": [
+          {
+            "timing": "0:00",
+            "type": "whoosh"
+          },
+          {
+            "timing": "0:03",
+            "type": "impact"
+          },
+          {
+            "timing": "핵심전환",
+            "type": "soft click"
+          },
+          {
+            "timing": "CTA직전",
+            "type": "short riser"
+          },
+          {
+            "timing": "엔딩",
+            "type": "soft fade-out"
+          }
+        ]
+      }
+    },
+    {
+      "template_id": "T-SA-002",
+      "channel": "숏폼공통에셋",
+      "label": "반전·팩트체크형",
+      "match_tags": [
+        "데이터형",
+        "비교형",
+        "논쟁형",
+        "반전형",
+        "일반대중",
+        "문제인식자",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "shortform": "[널리 알려진 믿음]이라고요? 사실은 반대입니다"
+      },
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "direction": "통념 반박 선언"
+          },
+          {
+            "timecode": "0:03~0:15",
+            "chapter": "[핵심1]",
+            "direction": "통념 제시 + 왜 틀렸는지"
+          },
+          {
+            "timecode": "0:15~0:35",
+            "chapter": "[핵심2]",
+            "direction": "실제 데이터·근거"
+          },
+          {
+            "timecode": "0:35~0:48",
+            "chapter": "[핵심3]",
+            "direction": "올바른 정보 + 실생활 적용"
+          },
+          {
+            "timecode": "0:48~0:55",
+            "chapter": "[CTA]",
+            "direction": "댓글 참여 유도"
+          }
+        ],
+        "image": {
+          "ratio": "9:16",
+          "resolution": "1080×1920px",
+          "composition": "상단 X표시or취소선텍스트 / 중간 좌(오해)vs우(사실)비교 / 하단 자막공간",
+          "color_tone": "강한대비 / 오해=회색 / 사실=파랑·초록"
+        },
+        "design_system": {
+          "hook_text": "굵은고딕 / 빨간취소선+초록정답 텍스트",
+          "subtitle": "흰색 굵은고딕 / 외곽선2px",
+          "background": "딥블루 #1A1A2E or 뉴트럴그레이 그라데이션"
+        },
+        "bgm": {
+          "style": "suspenseful lo-fi",
+          "bpm": 90,
+          "volume_pct": 20,
+          "loop_sec": 50
+        },
+        "sfx": [
+          {
+            "timing": "0:00",
+            "type": "record scratch"
+          },
+          {
+            "timing": "핵심1끝",
+            "type": "dramatic sting"
+          },
+          {
+            "timing": "핵심2",
+            "type": "data reveal whoosh"
+          },
+          {
+            "timing": "CTA",
+            "type": "soft chime"
+          }
+        ]
+      }
+    },
+    {
+      "template_id": "T-SA-003",
+      "channel": "숏폼공통에셋",
+      "label": "직접 호출형",
+      "match_tags": [
+        "모든소재유형",
+        "직접호출형",
+        "특정연령",
+        "문제인식자",
+        "얕고짧음",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "shortform": "[타겟 명시]이신 분들, 꼭 보세요"
+      },
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "direction": "타겟 명시 직접 호출"
+          },
+          {
+            "timecode": "0:03~0:12",
+            "chapter": "[공감]",
+            "direction": "타겟 상황·고민 묘사"
+          },
+          {
+            "timecode": "0:12~0:35",
+            "chapter": "[핵심]",
+            "direction": "해결법·핵심정보 2가지"
+          },
+          {
+            "timecode": "0:35~0:48",
+            "chapter": "[결과]",
+            "direction": "적용 시 달라지는 점"
+          },
+          {
+            "timecode": "0:48~0:55",
+            "chapter": "[CTA]",
+            "direction": "저장+공유 유도"
+          }
+        ],
+        "image": {
+          "ratio": "9:16",
+          "resolution": "1080×1920px",
+          "composition": "상단 타겟명시텍스트(크고굵게·강조색배경바) / 중간 타겟동일시생활밀착이미지 / 하단 자막공간",
+          "color_tone": "따뜻한 중성 톤 / 과도한 채도 금지"
+        },
+        "design_system": {
+          "accent_color": "#F59E0B 앰버 or #10B981 그린",
+          "hook_text": "굵은고딕 / 흰·크림",
+          "subtitle": "흰색 굵은고딕 / 외곽선2px"
+        },
+        "bgm": {
+          "style": "warm acoustic pop",
+          "bpm": 95,
+          "volume_pct": 20,
+          "loop_sec": 50
+        },
+        "sfx": [
+          {
+            "timing": "0:00",
+            "type": "soft chime"
+          },
+          {
+            "timing": "공감구간",
+            "type": "부드러운 ambient"
+          },
+          {
+            "timing": "CTA",
+            "type": "밝은 ding"
+          }
+        ]
+      }
+    },
+    {
+      "template_id": "T-SA-004",
+      "channel": "숏폼공통에셋",
+      "label": "감성 호출형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "일반대중",
+        "특정연령",
+        "얕고짧음"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "shortform": "[공감 유발 경험] 해보신 적 있으신가요?"
+      },
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:03",
+            "chapter": "[훅]",
+            "direction": "공감 경험 질문"
+          },
+          {
+            "timecode": "0:03~0:15",
+            "chapter": "[공감]",
+            "direction": "감성적 상황 묘사"
+          },
+          {
+            "timecode": "0:15~0:40",
+            "chapter": "[핵심]",
+            "direction": "감성 연결 정보·팁"
+          },
+          {
+            "timecode": "0:40~0:50",
+            "chapter": "[여운]",
+            "direction": "짧은 인사이트·감성마무리"
+          },
+          {
+            "timecode": "0:50~0:55",
+            "chapter": "[CTA]",
+            "direction": "저장 유도"
+          }
+        ],
+        "image": {
+          "ratio": "9:16",
+          "resolution": "1080×1920px",
+          "composition": "풀블리드 감성이미지(자연광·골든아워·일상소품) / 하단30% 반투명그라데이션+자막 / 상단텍스트 없음or최소",
+          "color_tone": "따뜻한 파스텔 / 필름그레인 텍스처 허용"
+        },
+        "design_system": {
+          "hook_text": "얇은세리프 or 손글씨느낌 / 흰·베이지",
+          "subtitle": "얇은고딕 / 흰색 / 외곽선1px",
+          "overlay": "하단만 그라데이션 검정30%",
+          "accent_color": "#D4A574 웜골드 or #A8C5B5 세이지"
+        },
+        "bgm": {
+          "style": "gentle acoustic or lo-fi chill",
+          "bpm": 72,
+          "volume_pct": 18,
+          "loop_sec": 55
+        },
+        "sfx": [
+          {
+            "timing": "최소화원칙",
+            "type": "soft ambient wind·rain·cafe 선택"
+          },
+          {
+            "timing": "CTA",
+            "type": "soft fade-out"
+          }
+        ]
+      }
+    },
+    {
+      "template_id": "T-YT-001",
+      "channel": "유튜브숏츠캡션",
+      "label": "SEO 최적화형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "전문형",
+        "손해프레이밍",
+        "직접호출형",
+        "문제인식자",
+        "전문가"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "youtube_title": "핵심키워드 + 숫자or질문형 | 부가키워드"
+      },
+      "structure": {
+        "caption": {
+          "structure": "제목(키워드+숫자or질문) / 핵심요약2~3줄 / 구독+알림CTA",
+          "char_limit": null,
+          "hashtag_count": 3,
+          "hashtag_pattern": "검색의도키워드1 + 분야키워드1 + 저장·유입키워드1",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-YT-002",
+      "channel": "유튜브숏츠캡션",
+      "label": "참여 유도형",
+      "match_tags": [
+        "논쟁형",
+        "감성형",
+        "반전형",
+        "감성호출형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "youtube_title": "질문형 or 반전형 제목 (~가 맞을까요?)"
+      },
+      "structure": {
+        "caption": {
+          "structure": "질문·반전형 제목 / 핵심1~2줄 + 댓글유도 / 구독+알림CTA",
+          "char_limit": null,
+          "hashtag_count": 3,
+          "hashtag_pattern": "분야키워드1 + 참여유도1 + 관련키워드1",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-YT-003",
+      "channel": "유튜브숏츠캡션",
+      "label": "정보 나열형",
+      "match_tags": [
+        "튜토리얼형",
+        "비교형",
+        "직접호출형",
+        "특정연령",
+        "일반대중",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "youtube_title": "N가지 [핵심정보]"
+      },
+      "structure": {
+        "caption": {
+          "structure": "숫자형 제목 / 핵심포인트 번호나열3줄 / 끝까지보면[얻을것]CTA",
+          "char_limit": null,
+          "hashtag_count": 3,
+          "hashtag_pattern": "#정보 + #꿀팁 + #분야키워드",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-IGR-001",
+      "channel": "인스타릴스캡션",
+      "label": "정보·저장 유도형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "손해프레이밍",
+        "직접호출형",
+        "일반대중",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "instagram_first_line": "이거 모르면 [손해 상황] — 저장 필수 👇"
+      },
+      "structure": {
+        "caption": {
+          "structure": "훅1줄(접힌상태노출) / 핵심요약2~3줄 / 저장CTA / 해시태그",
+          "char_limit": 150,
+          "hashtag_count": 15,
+          "hashtag_pattern": "메인키워드2 + 분야4 + 타겟3 + 생활3 + 저장유도3 / #저장 #꿀팁 #알아두면좋은것 필수",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-IGR-002",
+      "channel": "인스타릴스캡션",
+      "label": "감성·공유 유도형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "일반대중",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "instagram_first_line": "감성적 공감 한 줄 (질문 or 감탄형)"
+      },
+      "structure": {
+        "caption": {
+          "structure": "감성훅1줄(접힌상태노출) / 감성텍스트2~3줄 / 공유CTA / 해시태그",
+          "char_limit": 100,
+          "hashtag_count": 15,
+          "hashtag_pattern": "감성5 + 라이프스타일5 + 공감3 + 저장유도2",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-IGR-003",
+      "channel": "인스타릴스캡션",
+      "label": "논쟁·참여형",
+      "match_tags": [
+        "비교형",
+        "논쟁형",
+        "반전형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "instagram_first_line": "A vs B — 당신의 선택은? 👇"
+      },
+      "structure": {
+        "caption": {
+          "structure": "논쟁훅1줄(접힌상태노출) / 비교포인트2~3줄 / 참여CTA / 해시태그",
+          "char_limit": 150,
+          "hashtag_count": 15,
+          "hashtag_pattern": "논쟁3 + 분야5 + 참여유도4 + 저장3",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-IGC-001",
+      "channel": "인스타릴스커버이미지",
+      "label": "기본 커버 이미지형",
+      "match_tags": [
+        "모든소재유형",
+        "모든훅전략",
+        "모든타겟",
+        "모든분량"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "image": {
+          "ratio": "9:16",
+          "resolution": "1080×1920px",
+          "composition": "중앙상단 핵심키워드텍스트(굵은고딕2줄이내) / 중앙 대표이미지or영상썸네일 / 하단 계정명(선택)",
+          "color_tone": "소재유형별 상단컬러바: 데이터형#1D4ED8 / 감성형#C8956C / 튜토리얼형#10B981 / 논쟁형#DC2626"
+        },
+        "design_system": {
+          "text": "굵은고딕 / 흰색or강조색",
+          "overlay": "영상첫프레임 + 검정30% 반투명",
+          "crop_note": "피드노출시 중앙1:1크롭 → 핵심요소를 중앙1:1영역 안에 배치"
+        }
+      }
+    },
+    {
+      "template_id": "T-TT-001",
+      "channel": "틱톡메인캡션",
+      "label": "임팩트 직구형",
+      "match_tags": [
+        "데이터형",
+        "논쟁형",
+        "손해프레이밍",
+        "반전형",
+        "일반대중",
+        "얕고짧음"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "tiktok_hook": "[충격사실or손해경고] (20자이내)"
+      },
+      "structure": {
+        "caption": {
+          "structure": "훅1줄(20자이내) / 핵심3줄 / 해시태그",
+          "char_limit": 100,
+          "hashtag_count": 4,
+          "hashtag_pattern": "#분야2 + #생활키워드1 + #저장or#꿀팁1",
+          "line_break_limit": 3,
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-TT-002",
+      "channel": "틱톡메인캡션",
+      "label": "공감·스토리형",
+      "match_tags": [
+        "감성형",
+        "직접호출형",
+        "감성호출형",
+        "특정연령",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "tiktok_hook": "[공감상황]인 분 손 🙋"
+      },
+      "structure": {
+        "caption": {
+          "structure": "공감훅1줄 / 감성연결2줄 / 해시태그",
+          "char_limit": 80,
+          "hashtag_count": 4,
+          "hashtag_pattern": "#공감계열 + #분야 + #일상",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-TT-003",
+      "channel": "틱톡메인캡션",
+      "label": "참여 투표형",
+      "match_tags": [
+        "논쟁형",
+        "비교형",
+        "반전형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "tiktok_hook": "A vs B — 댓글로 투표해주세요 👇"
+      },
+      "structure": {
+        "caption": {
+          "structure": "투표훅1줄 / 선택기준1줄 / 해시태그",
+          "char_limit": 60,
+          "hashtag_count": 3,
+          "hashtag_pattern": "#투표or#댓글 + #분야키워드",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-TT-004",
+      "channel": "틱톡메인캡션",
+      "label": "튜토리얼 예고형",
+      "match_tags": [
+        "튜토리얼형",
+        "직접호출형",
+        "특정연령",
+        "문제인식자",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "tiktok_hook": "이것만 따라 하면 됩니다 👇"
+      },
+      "structure": {
+        "caption": {
+          "structure": "따라하기훅1줄 / 단계수명시1줄 / 저장CTA1줄 / 해시태그",
+          "char_limit": 80,
+          "hashtag_count": 4,
+          "hashtag_pattern": "#따라하기 + #분야 + #저장",
+          "forbidden_tags": [
+            "#fyp",
+            "#viral",
+            "#trending"
+          ]
+        }
+      }
+    },
+    {
+      "template_id": "T-STC-001",
+      "channel": "틱톡스티치",
+      "label": "논쟁 유발형",
+      "match_tags": [
+        "논쟁형",
+        "데이터형",
+        "반전형",
+        "문제인식자",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "caption": {
+          "structure": "논쟁질문1~2줄 / 스티치로알려주세요👇 / 해시태그3개",
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-STC-002",
+      "channel": "틱톡스티치",
+      "label": "비교 참여형",
+      "match_tags": [
+        "비교형",
+        "튜토리얼형",
+        "직접호출형"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "caption": {
+          "structure": "A vs B 질문1줄 / 경험공유요청1줄 / 스티치로알려주세요👇 / 해시태그3개",
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-STC-003",
+      "channel": "틱톡스티치",
+      "label": "반전 도전형",
+      "match_tags": [
+        "반전형",
+        "논쟁형",
+        "감성호출형",
+        "직접호출형"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "caption": {
+          "structure": "반전제시1줄 / 경험도전질문1줄 / 스티치로알려주세요👇 / 해시태그3개",
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-CAR-001",
+      "channel": "인스타캐러셀",
+      "label": "데이터·정보 폭로형",
+      "match_tags": [
+        "데이터형",
+        "반전형",
+        "손해프레이밍",
+        "문제인식자",
+        "일반대중",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "carousel_slide1": "[충격 수치 or 사실] 대부분 모릅니다"
+      },
+      "structure": {
+        "slides": [
+          {
+            "index": 1,
+            "role": "훅",
+            "direction": "충격수치·사실 직격"
+          },
+          {
+            "index": 2,
+            "role": "핵심1",
+            "direction": "문제상황 데이터 인포그래픽"
+          },
+          {
+            "index": 3,
+            "role": "핵심2",
+            "direction": "원인분석 아이콘+설명"
+          },
+          {
+            "index": 4,
+            "role": "핵심3",
+            "direction": "해결책 3단계or체크리스트"
+          },
+          {
+            "index": 5,
+            "role": "반전",
+            "direction": "주의사항·함정"
+          },
+          {
+            "index": 6,
+            "role": "CTA",
+            "direction": "저장유도 + 계정워터마크"
+          }
+        ],
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px"
+        },
+        "design_system": {
+          "background": "#1A1A2E 딥네이비 or #2D2D2D 다크그레이",
+          "primary_text": "#FFFFFF",
+          "accent_color": "#F5A623 오렌지 or #00D4FF 시안",
+          "headline_size": "48~64px Impact계열",
+          "title_font": "굵은고딕 32px",
+          "body_font": "고딕 18px",
+          "margin": "상하좌우 40px",
+          "icon_style": "라인아이콘 or 픽토그램 단색"
+        },
+        "caption": {
+          "structure": "훅1줄 + 핵심요약3줄 + 저장CTA",
+          "hashtag_count": 15,
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-CAR-002",
+      "channel": "인스타캐러셀",
+      "label": "감성·라이프스타일형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "직접호출형",
+        "일반대중",
+        "특정연령",
+        "얕고짧음",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "carousel_slide1": "감성 문구 + 풀블리드 이미지"
+      },
+      "structure": {
+        "slides": [
+          {
+            "index": 1,
+            "role": "훅",
+            "direction": "감성문구+풀블리드이미지"
+          },
+          {
+            "index": 2,
+            "role": "핵심1",
+            "direction": "첫번째포인트 미니멀텍스트+감성이미지"
+          },
+          {
+            "index": 3,
+            "role": "핵심2",
+            "direction": "두번째포인트"
+          },
+          {
+            "index": 4,
+            "role": "핵심3",
+            "direction": "세번째포인트"
+          },
+          {
+            "index": 5,
+            "role": "여운",
+            "direction": "인사이트한줄+감성배경"
+          },
+          {
+            "index": 6,
+            "role": "CTA",
+            "direction": "저장하고천천히읽어보세요🤍"
+          }
+        ],
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px"
+        },
+        "design_system": {
+          "background_palette": [
+            "#FFF5E4+#C8956C(크림+테라코타)",
+            "#E8F4F0+#8BAF9A(민트+세이지)",
+            "#F0E8FF+#9B7EC8(라벤더+퍼플)"
+          ],
+          "primary_text": "#2C2C2C",
+          "font": "세련된세리프 or 손글씨느낌고딕 / 제목28px / 본문16px",
+          "margin": "상하좌우 50px",
+          "image_layout": "하단40% 이미지 / 상단60% 텍스트"
+        },
+        "caption": {
+          "structure": "감성훅1줄 + 공유CTA",
+          "hashtag_count": 15,
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-CAR-003",
+      "channel": "인스타캐러셀",
+      "label": "비교·분석형",
+      "match_tags": [
+        "비교형",
+        "데이터형",
+        "반전형",
+        "전문가",
+        "문제인식자",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "carousel_slide1": "A vs B — 뭐가 나을까요?"
+      },
+      "structure": {
+        "slides": [
+          {
+            "index": 1,
+            "role": "훅",
+            "direction": "A vs B 대비레이아웃"
+          },
+          {
+            "index": 2,
+            "role": "A분석",
+            "direction": "A 핵심특징·장점3개"
+          },
+          {
+            "index": 3,
+            "role": "B분석",
+            "direction": "B 핵심특징·장점3개"
+          },
+          {
+            "index": 4,
+            "role": "비교표",
+            "direction": "기준별 A vs B 표"
+          },
+          {
+            "index": 5,
+            "role": "결론",
+            "direction": "이럴때A / 저럴때B 상황별추천"
+          },
+          {
+            "index": 6,
+            "role": "CTA",
+            "direction": "댓글참여유도"
+          }
+        ],
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px"
+        },
+        "design_system": {
+          "background": "#FFFFFF",
+          "A_color": "#3B82F6 / A배경 #DBEAFE",
+          "B_color": "#EF4444 or #F59E0B / B배경 #FEF3C7",
+          "text": "#111827",
+          "table_border": "#E2E8F0 1px",
+          "cell_padding": "12px",
+          "font": "모던고딕 / 헤더20px / 셀14px",
+          "margin": "40px"
+        },
+        "caption": {
+          "structure": "비교핵심+참여CTA",
+          "hashtag_count": 15,
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-CAR-004",
+      "channel": "인스타캐러셀",
+      "label": "튜토리얼·단계별형",
+      "match_tags": [
+        "튜토리얼형",
+        "직접호출형",
+        "손해프레이밍",
+        "문제인식자",
+        "특정연령",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "carousel_slide1": "이것만 따라 하면 됩니다 — STEP N개"
+      },
+      "structure": {
+        "slides": [
+          {
+            "index": 1,
+            "role": "훅",
+            "direction": "STEP수 명시"
+          },
+          {
+            "index": 2,
+            "role": "STEP1",
+            "direction": "준비단계 아이콘+설명"
+          },
+          {
+            "index": 3,
+            "role": "STEP2",
+            "direction": "핵심실행 스크린샷or일러스트"
+          },
+          {
+            "index": 4,
+            "role": "STEP3",
+            "direction": "마무리단계"
+          },
+          {
+            "index": 5,
+            "role": "주의점",
+            "direction": "이것만은피하세요 실수방지"
+          },
+          {
+            "index": 6,
+            "role": "CTA",
+            "direction": "저장해두고따라해보세요✅"
+          }
+        ],
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px"
+        },
+        "design_system": {
+          "background": "#F8FAFC or #FFFFFF",
+          "step_badge": "원형 #3B82F6 + 흰번호 28px",
+          "text": "#1E293B",
+          "done_color": "#10B981",
+          "warning_color": "#EF4444",
+          "font": "모던고딕 / STEP타이틀24px / 본문15px",
+          "margin": "40px"
+        },
+        "caption": {
+          "structure": "단계수명시+저장CTA",
+          "hashtag_count": 15,
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-CAR-005",
+      "channel": "인스타캐러셀",
+      "label": "논쟁·이슈형",
+      "match_tags": [
+        "논쟁형",
+        "반전형",
+        "일반대중",
+        "문제인식자",
+        "얕고짧음",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "carousel_slide1": "아직도 이렇게 알고 계신가요?"
+      },
+      "structure": {
+        "slides": [
+          {
+            "index": 1,
+            "role": "훅",
+            "direction": "도발형 질문"
+          },
+          {
+            "index": 2,
+            "role": "통념",
+            "direction": "대부분이믿는것 취소선디자인"
+          },
+          {
+            "index": 3,
+            "role": "사실1",
+            "direction": "반박근거1 데이터·사례"
+          },
+          {
+            "index": 4,
+            "role": "사실2",
+            "direction": "반박근거2"
+          },
+          {
+            "index": 5,
+            "role": "결론",
+            "direction": "그러니이렇게하세요 행동지침"
+          },
+          {
+            "index": 6,
+            "role": "CTA",
+            "direction": "댓글참여유도"
+          }
+        ],
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px"
+        },
+        "design_system": {
+          "background": "홀수슬라이드 #1A1A2E / 짝수 #FFFFFF 교차",
+          "myth_text": "취소선 + #9CA3AF 흐린회색",
+          "fact_text": "#22C55E or #FACC15",
+          "headline_size": "36~48px 굵은고딕",
+          "margin": "40px"
+        },
+        "caption": {
+          "structure": "논쟁핵심+댓글유도",
+          "hashtag_count": 15,
+          "publish_timing": "D+2~3"
+        }
+      }
+    },
+    {
+      "template_id": "T-SGL-001",
+      "channel": "인스타단일이미지",
+      "label": "숫자 인포그래픽형",
+      "match_tags": [
+        "데이터형",
+        "손해프레이밍",
+        "반전형",
+        "일반대중",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px",
+          "layout": "상단 수치맥락설명(18px이하얇은폰트) / 중앙 핵심수치초대형(80~96px)+단위 / 하단 수치의미1줄(16px)+출처(12px회색) / 우하단 계정워터마크"
+        },
+        "design_system": {
+          "background": "#1A1A2E or #DC2626 or #1D4ED8 강렬한단색",
+          "number_color": "#FFFFFF or #FACC15",
+          "sub_text": "#CBD5E1",
+          "font": "수치 Impact계열 / 설명 고딕",
+          "margin": "상하좌우 48px"
+        },
+        "caption": {
+          "structure": "수치의미확장설명+저장CTA",
+          "hashtag_count": 5,
+          "hashtag_pattern": "데이터+분야+저장",
+          "publish_timing": "D+7"
+        }
+      }
+    },
+    {
+      "template_id": "T-SGL-002",
+      "channel": "인스타단일이미지",
+      "label": "비교표형",
+      "match_tags": [
+        "비교형",
+        "튜토리얼형",
+        "반전형",
+        "문제인식자",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px",
+          "layout": "상단 비교주제제목(굵은고딕24px) / 중앙 2열비교표(A vs B / 전vs후 / ✅❌아이콘) / 하단 핵심결론1줄(강조색)"
+        },
+        "design_system": {
+          "background": "#FFFFFF",
+          "header_row": "#3B82F6 + 흰텍스트",
+          "A_col": "#EFF6FF",
+          "B_col": "#FFF7ED",
+          "border": "#E2E8F0 1px",
+          "font": "모던고딕 / 헤더20px / 셀14px",
+          "cell_padding": "12px",
+          "check_icon": "✅ #22C55E / ❌ #EF4444",
+          "margin": "40px"
+        },
+        "caption": {
+          "structure": "비교핵심요약+저장CTA",
+          "hashtag_count": 5,
+          "publish_timing": "D+7"
+        }
+      }
+    },
+    {
+      "template_id": "T-SGL-003",
+      "channel": "인스타단일이미지",
+      "label": "한 줄 인사이트형",
+      "match_tags": [
+        "감성형",
+        "논쟁형",
+        "전문형",
+        "감성호출형",
+        "반전형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "image": {
+          "ratio": "1:1",
+          "resolution": "1080×1080px",
+          "layout": "배경 풀블리드감성이미지or미니멀텍스처 / 중앙 인사이트한줄(15자이내)40~56px / 하단 계정명12px"
+        },
+        "design_system": {
+          "background_optionA": "감성이미지 + 검정오버레이30~40%",
+          "background_optionB": "단색텍스처 (종이·콘크리트·그라데이션)",
+          "text": "흰색or다크 (배경대비에따라)",
+          "font": "세리프 or 손글씨느낌 / 36~56px",
+          "text_area_note": "텍스트가 전체면적의 30% 이하"
+        },
+        "caption": {
+          "structure": "인사이트확장설명2~3줄+저장CTA",
+          "hashtag_count": 5,
+          "publish_timing": "D+7"
+        }
+      }
+    },
+    {
+      "template_id": "T-BLG-001",
+      "channel": "네이버블로그",
+      "label": "정보·데이터형",
+      "match_tags": [
+        "데이터형",
+        "비교형",
+        "손해프레이밍",
+        "반전형",
+        "일반대중",
+        "문제인식자",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "[숫자or의문형] + 핵심키워드"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "숫자형or의문형 + 핵심키워드",
+          "section_count": 3,
+          "section_structure": "도입(문제상황+공감) / ■소제목1(문제정의+데이터)+📌체크포인트 / ■소제목2(원인분석)+📌 / ■소제목3(해결책+적용법)+📌 / 마무리(요약+댓글CTA+AI표시)",
+          "char_range": "800~1200"
+        },
+        "design_system": {
+          "platform": "네이버블로그",
+          "font": "나눔고딕",
+          "h1": "24~28px 볼드",
+          "h2": "18~20px 볼드 / ■ 앞에",
+          "body": "15~16px / 볼드없음",
+          "bold_rule": "소제목전체 + 본문핵심키워드 단락당1~2개만 / 문단전체볼드금지",
+          "line_height": "180~200%",
+          "emphasis_box": "#EEF4FF 쿨톤",
+          "ai_disclosure": "본문맨마지막 필수"
+        },
+        "seo": {
+          "tag_count": 15,
+          "tag_pattern": "메인+변형+서브+타겟+행동의도"
+        },
+        "publish_timing": "D+3~4 / 서치어드바이저즉시색인요청 / 원본복붙금지",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "데이터/수치 → 인포그래픽",
+            "비교 대상 → 비교 이미지",
+            "시각 쉼 간격 준수"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-BLG-002",
+      "channel": "네이버블로그",
+      "label": "경험·공감형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "직접호출형",
+        "일반대중",
+        "특정연령",
+        "얕고짧음",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "경험공유형 (~해봤더니 / ~했더니달라진것들)"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "경험공유형 (~해봤더니·~했더니달라진것들)",
+          "section_count": 3,
+          "char_range": "800~1200"
+        },
+        "design_system": {
+          "emphasis_box": "#FFF7ED 웜톤",
+          "accent_color": "#C8956C 테라코타 or #8BAF9A 세이지그린",
+          "emoji_style": "📌🌿✨🍀 분위기에맞게"
+        },
+        "publish_timing": "D+3~4",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "감성/경험 → 라이프스타일 컷",
+            "비포애프터 → 전후 비교",
+            "시각 쉼 간격 준수"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-BLG-003",
+      "channel": "네이버블로그",
+      "label": "비교·분석형",
+      "match_tags": [
+        "비교형",
+        "전문형",
+        "반전형",
+        "전문가",
+        "문제인식자",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "A vs B — [기준]으로 비교해봤습니다"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "A vs B — [기준]으로 비교해봤습니다",
+          "section_count": 3,
+          "char_range": "1000~1500",
+          "comparison_table": "반드시삽입 / 헤더배경색구분필수"
+        },
+        "design_system": {
+          "A_col": "#DBEAFE",
+          "B_col": "#FEF3C7",
+          "cell_font": "15px / 패딩10px"
+        },
+        "publish_timing": "D+3~4",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "비교 대상 → 비교 이미지",
+            "데이터 → 인포그래픽",
+            "각 항목 → 제품/실물 사진"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-BLG-004",
+      "channel": "네이버블로그",
+      "label": "전문·심화형",
+      "match_tags": [
+        "전문형",
+        "데이터형",
+        "모든훅전략",
+        "전문가",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "전문키워드 중심 완결형 제목"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "전문키워드 중심 완결형",
+          "section_count": 4,
+          "faq_section": "자주묻는질문2~3개(롱테일SEO)",
+          "char_range": "2000~4000"
+        },
+        "design_system": {
+          "emphasis_box": "#F1F5F9 쿨톤뉴트럴",
+          "term_style": "볼드+괄호안쉬운설명병기"
+        },
+        "publish_timing": "D+3~4",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "기술 설명 → 다이어그램",
+            "데이터 → 차트/인포그래픽",
+            "FAQ → 요약 인포그래픽"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-CAF-001",
+      "channel": "네이버카페",
+      "label": "경험 공유형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "데이터형",
+        "감성호출형",
+        "직접호출형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "title_pattern": "경험형 (~하셨나요? / 저도그랬어요 / ~해봤는데요)",
+          "structure": "경험도입(1인칭대화체)2~3줄 / 핵심정보2~3줄 / 질문마무리1줄 / →[블로그URL]",
+          "char_range": "300~500",
+          "tone": "대화체 1인칭",
+          "forbidden": "특정브랜드명언급금지"
+        },
+        "publish_timing": "D+4~5 / 동일카페동일주제1주일재발행금지"
+      }
+    },
+    {
+      "template_id": "T-CAF-002",
+      "channel": "네이버카페",
+      "label": "정보 알림형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "손해프레이밍",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "title_pattern": "이거알고계셨나요? or 정보알림형",
+          "structure": "정보도입1~2줄 / 핵심내용3줄이내 / 마무리질문 / →[블로그URL]",
+          "char_range": "300~400",
+          "forbidden": "특정브랜드명언급금지"
+        },
+        "publish_timing": "D+4~5"
+      }
+    },
+    {
+      "template_id": "T-CAF-003",
+      "channel": "네이버카페",
+      "label": "질문 유도형",
+      "match_tags": [
+        "논쟁형",
+        "비교형",
+        "반전형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "title_pattern": "여러분은어떻게하시나요? 질문형",
+          "structure": "상황제시2줄 / 내선택1줄 / 독자경험요청1줄 / →[블로그URL]",
+          "char_range": "250~400",
+          "forbidden": "특정브랜드명언급금지"
+        },
+        "publish_timing": "D+4~5"
+      }
+    },
+    {
+      "template_id": "T-QNA-001",
+      "channel": "네이버QNA",
+      "label": "문제 해결형",
+      "match_tags": [
+        "튜토리얼형",
+        "데이터형",
+        "직접호출형",
+        "손해프레이밍",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "title_pattern": "검색의도직접반영 (~하면어떻게되나요? / ~하는방법이있나요?)",
+          "structure": "핵심답변1줄(결론우선) / 상세설명3~5줄 / 블로그링크",
+          "char_range": "300~500",
+          "note": "1No.=1검색의도 / 원고에서뽑히는질문수만큼독립No.부여"
+        },
+        "publish_timing": "D+3~4 (블로그와동시or직후)"
+      }
+    },
+    {
+      "template_id": "T-QNA-002",
+      "channel": "네이버QNA",
+      "label": "비교 추천형",
+      "match_tags": [
+        "비교형",
+        "전문형",
+        "반전형",
+        "문제인식자",
+        "전문가"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "title_pattern": "A와B중어떤게나을까요?",
+          "structure": "상황별추천1줄 / 상세비교기준2~3가지 / 블로그링크+채택요청",
+          "char_range": "400~600"
+        },
+        "publish_timing": "D+3~4"
+      }
+    },
+    {
+      "template_id": "T-QNA-003",
+      "channel": "네이버QNA",
+      "label": "개념 설명형",
+      "match_tags": [
+        "전문형",
+        "데이터형",
+        "모든훅전략",
+        "전문가",
+        "문제인식자",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "title_pattern": "[개념]이정확히무엇인가요?",
+          "structure": "핵심정의1~2줄(쉬운말로) / 상세설명배경·예시4~6줄 / 주의사항1줄(있을경우) / 블로그링크+채택요청",
+          "char_range": "350~550"
+        },
+        "publish_timing": "D+3~4"
+      }
+    },
+    {
+      "template_id": "T-MID-001",
+      "channel": "유튜브미들폼",
+      "label": "정보·데이터형",
+      "match_tags": [
+        "데이터형",
+        "비교형",
+        "전문형",
+        "반전형",
+        "손해프레이밍",
+        "전문가",
+        "문제인식자",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:15",
+            "chapter": "[훅]",
+            "direction": "충격수치or대부분모르는사실"
+          },
+          {
+            "timecode": "0:15~0:45",
+            "chapter": "[인트로]",
+            "direction": "얻을것3가지명시(약속형)"
+          },
+          {
+            "timecode": "0:45~2:30",
+            "chapter": "[챕터1]",
+            "direction": "문제정의+데이터"
+          },
+          {
+            "timecode": "2:30~4:00",
+            "chapter": "[챕터2]",
+            "direction": "원인분석"
+          },
+          {
+            "timecode": "4:00~5:30",
+            "chapter": "[챕터3]",
+            "direction": "해결책+적용법"
+          },
+          {
+            "timecode": "5:30~6:00",
+            "chapter": "[아웃트로]",
+            "direction": "핵심요약+다음편예고+구독CTA"
+          }
+        ],
+        "thumbnail": {
+          "ratio": "16:9",
+          "resolution": "1280×720px",
+          "composition": "좌측인물(놀람표정)+우측핵심수치텍스트대형",
+          "text_style": "2줄이내 / Impact계열 / 흰색+검정외곽선"
+        },
+        "design_system": {
+          "thumbnail_text": "72px이상 Impact계열",
+          "subtitle": "흰색굵은고딕 / 하단중앙",
+          "chapter_title": "배경바+흰텍스트 / 챕터시작3초유지",
+          "palette": "#1E3A5F / #2D2D2D / #F97316"
+        },
+        "bgm": {
+          "style": "calm lo-fi documentary",
+          "bpm": 75,
+          "volume_pct": 10,
+          "loop_sec": 180
+        },
+        "seo": {
+          "tag_count": "15~20"
+        },
+        "publish_timing": "D+7 / 챕터타임스탬프설명란필수"
+      }
+    },
+    {
+      "template_id": "T-MID-002",
+      "channel": "유튜브미들폼",
+      "label": "감성·라이프스타일형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "직접호출형",
+        "일반대중",
+        "특정연령",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:20",
+            "chapter": "[훅]",
+            "direction": "감성장면묘사+공감질문"
+          },
+          {
+            "timecode": "0:20~0:50",
+            "chapter": "[인트로]",
+            "direction": "이야기배경(개인경험연결)"
+          },
+          {
+            "timecode": "0:50~2:30",
+            "chapter": "[챕터1]",
+            "direction": "감성스토리+핵심정보1"
+          },
+          {
+            "timecode": "2:30~4:00",
+            "chapter": "[챕터2]",
+            "direction": "전환점or발견"
+          },
+          {
+            "timecode": "4:00~5:30",
+            "chapter": "[챕터3]",
+            "direction": "변화·결과+독자적용팁"
+          },
+          {
+            "timecode": "5:30~6:00",
+            "chapter": "[아웃트로]",
+            "direction": "여운마무리+댓글유도"
+          }
+        ],
+        "bgm": {
+          "style": "gentle acoustic or cinematic",
+          "bpm": 70,
+          "volume_pct": 15,
+          "loop_sec": 150
+        },
+        "publish_timing": "D+7"
+      }
+    },
+    {
+      "template_id": "T-MID-003",
+      "channel": "유튜브미들폼",
+      "label": "튜토리얼·단계별형",
+      "match_tags": [
+        "튜토리얼형",
+        "데이터형",
+        "손해프레이밍",
+        "직접호출형",
+        "문제인식자",
+        "특정연령",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:15",
+            "chapter": "[훅]",
+            "direction": "이것만따라하면됩니다 직접약속"
+          },
+          {
+            "timecode": "0:15~0:45",
+            "chapter": "[인트로]",
+            "direction": "결과물먼저보여주기(Before→After)"
+          },
+          {
+            "timecode": "0:45~2:00",
+            "chapter": "[STEP1]",
+            "direction": "준비단계"
+          },
+          {
+            "timecode": "2:00~3:30",
+            "chapter": "[STEP2]",
+            "direction": "핵심실행"
+          },
+          {
+            "timecode": "3:30~5:00",
+            "chapter": "[STEP3]",
+            "direction": "마무리·검증"
+          },
+          {
+            "timecode": "5:00~5:30",
+            "chapter": "[요약]",
+            "direction": "전체단계빠른리뷰"
+          },
+          {
+            "timecode": "5:30~6:00",
+            "chapter": "[아웃트로]",
+            "direction": "다음콘텐츠예고+구독CTA"
+          }
+        ],
+        "bgm": {
+          "style": "minimal electronic tutorial",
+          "bpm": 85,
+          "volume_pct": 10,
+          "loop_sec": 180
+        },
+        "publish_timing": "D+7 / 챕터타임스탬프필수"
+      }
+    },
+    {
+      "template_id": "T-LNG-001",
+      "channel": "유튜브롱폼",
+      "label": "완결 심화형",
+      "match_tags": [
+        "전문형",
+        "데이터형",
+        "튜토리얼형",
+        "전문가",
+        "문제인식자",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:15",
+            "chapter": "[훅]",
+            "direction": "결과물or핵심약속"
+          },
+          {
+            "timecode": "0:15~1:00",
+            "chapter": "[인트로]",
+            "direction": "채널소개+챕터예고(로드맵)"
+          },
+          {
+            "timecode": "1:00~4:00",
+            "chapter": "[챕터1]",
+            "direction": "문제정의+배경"
+          },
+          {
+            "timecode": "4:00~8:00",
+            "chapter": "[챕터2]",
+            "direction": "핵심분석or방법"
+          },
+          {
+            "timecode": "8:00~12:00",
+            "chapter": "[챕터3]",
+            "direction": "심화적용or사례"
+          },
+          {
+            "timecode": "12:00~14:00",
+            "chapter": "[챕터4]",
+            "direction": "주의사항+FAQ"
+          },
+          {
+            "timecode": "14:00~15:00",
+            "chapter": "[아웃트로]",
+            "direction": "다음편예고+구독CTA"
+          }
+        ],
+        "design_system": {
+          "chapter_card": "슬레이트#334155배경+흰텍스트+원형번호배지",
+          "subtitle": "흰색굵은고딕 / 하단중앙",
+          "thumbnail_text": "Impact계열 / 72px이상 / 흰색+검정외곽선4px"
+        },
+        "publish_timing": "D+7 / 챕터타임스탬프필수"
+      }
+    },
+    {
+      "template_id": "T-LNG-002",
+      "channel": "유튜브롱폼",
+      "label": "다큐멘터리·스토리형",
+      "match_tags": [
+        "감성형",
+        "전문형",
+        "데이터형",
+        "반전형",
+        "전문가",
+        "일반대중",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "video_scenes": [
+          {
+            "timecode": "0:00~0:30",
+            "chapter": "[오프닝]",
+            "direction": "감성장면+내레이션훅"
+          },
+          {
+            "timecode": "0:30~2:00",
+            "chapter": "[배경]",
+            "direction": "이야기설정+문제제시"
+          },
+          {
+            "timecode": "2:00~7:00",
+            "chapter": "[전개1]",
+            "direction": "사건·사례깊이파고들기"
+          },
+          {
+            "timecode": "7:00~12:00",
+            "chapter": "[전개2]",
+            "direction": "반전or심화"
+          },
+          {
+            "timecode": "12:00~14:00",
+            "chapter": "[결론]",
+            "direction": "인사이트+독자메시지"
+          },
+          {
+            "timecode": "14:00~15:00",
+            "chapter": "[아웃트로]",
+            "direction": "다음편예고"
+          }
+        ],
+        "design_system": {
+          "chapter_card": "검정페이드인+흰세리프텍스트(다큐스타일)",
+          "palette": "#0F0F0F / #1C1410 / #C9A84C골드"
+        },
+        "publish_timing": "D+7"
+      }
+    },
+    {
+      "template_id": "T-FB-001",
+      "channel": "페이스북",
+      "label": "심화 정보·데이터형",
+      "match_tags": [
+        "데이터형",
+        "전문형",
+        "비교형",
+        "손해프레이밍",
+        "반전형",
+        "일반대중",
+        "문제인식자",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "훅1줄 / 배경설명3~5줄 / 핵심정보5~8줄 / 적용팁2~3줄 / 댓글유도+공유CTA",
+          "char_range": "500~1000"
+        },
+        "image": {
+          "ratio": "1:1 / 1080×1080px 또는 16:9 / 1280×720px",
+          "attachment": "1장권장"
+        }
+      }
+    },
+    {
+      "template_id": "T-FB-002",
+      "channel": "페이스북",
+      "label": "커뮤니티 공감형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "직접호출형",
+        "일반대중",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "공감상황묘사2~3줄 / 경험·이야기5~7줄 / 공감질문+공유CTA",
+          "char_range": "400~700"
+        },
+        "image": {
+          "ratio": "1:1 / 1080×1080px",
+          "content": "감성적일상장면 / 자연광"
+        }
+      }
+    },
+    {
+      "template_id": "T-FB-003",
+      "channel": "페이스북",
+      "label": "논쟁·토론 유도형",
+      "match_tags": [
+        "논쟁형",
+        "비교형",
+        "반전형",
+        "일반대중",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "도발주장·사실1~2줄 / 근거4~6줄 / 반대의견인정1줄(균형) / 토론유도+공유CTA",
+          "char_range": "400~800"
+        }
+      }
+    },
+    {
+      "template_id": "T-TW-001",
+      "channel": "트위터X",
+      "label": "핵심 수치 폭로형",
+      "match_tags": [
+        "데이터형",
+        "반전형",
+        "손해프레이밍",
+        "일반대중",
+        "문제인식자",
+        "얕고짧음"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "수치·사실직격1줄(60자이내) / 맥락설명1줄 / 링크(선택)",
+          "char_limit": 140,
+          "note": "1트윗=임팩트있는수치·사실1개 / 복수트윗시각각독립No."
+        }
+      }
+    },
+    {
+      "template_id": "T-TW-002",
+      "channel": "트위터X",
+      "label": "논쟁 유발형",
+      "match_tags": [
+        "논쟁형",
+        "비교형",
+        "반전형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "도발주장or질문1줄 / 선택지or근거1줄(선택)",
+          "char_limit": 100
+        }
+      }
+    },
+    {
+      "template_id": "T-TW-003",
+      "channel": "트위터X",
+      "label": "인사이트 한 줄형",
+      "match_tags": [
+        "전문형",
+        "감성형",
+        "모든훅전략",
+        "전문가",
+        "일반대중",
+        "얕고짧음"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "핵심인사이트1줄 (함축적이고공유하고싶은문장)",
+          "char_limit": 70,
+          "note": "텍스트만 / 팔로우유도"
+        }
+      }
+    },
+    {
+      "template_id": "T-TW-004",
+      "channel": "트위터X",
+      "label": "단계 요약형",
+      "match_tags": [
+        "튜토리얼형",
+        "데이터형",
+        "직접호출형",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "N단계로요약하면: / 번호나열3~4줄(각줄30자이내) / 링크or팔로우CTA",
+          "char_limit": 140
+        }
+      }
+    },
+    {
+      "template_id": "T-WP-001",
+      "channel": "WordPress",
+      "label": "SEO 전문 롱폼형",
+      "match_tags": [
+        "전문형",
+        "데이터형",
+        "비교형",
+        "전문가",
+        "문제인식자",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "영문키워드포함가능 / SEO최적화 제목"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "영문키워드 포함 SEO 최적화",
+          "section_count": "H2 4~6개",
+          "faq_section": "롱테일키워드답변3~5개",
+          "char_range": "2000~4000"
+        },
+        "seo": {
+          "meta_title": "60자이내",
+          "meta_description": "155자이내",
+          "internal_links": "2~3개",
+          "external_links": "1~2개(권위있는출처)"
+        },
+        "publish_timing": "D+3~4 / 구글서치콘솔색인요청",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "H2 섹션별 설명 → 섹션 이미지",
+            "데이터 → 인포그래픽",
+            "FAQ → 요약 그래픽"
+          ],
+          "representative_image": {
+            "ratio": "16:9",
+            "resolution": "1200×675px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-WP-002",
+      "channel": "WordPress",
+      "label": "비교·리뷰형",
+      "match_tags": [
+        "비교형",
+        "데이터형",
+        "반전형",
+        "문제인식자",
+        "전문가",
+        "중간",
+        "깊고김"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "최고의 [카테고리] N선 — [연도] 완전 비교"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "최고의[카테고리]N선 — [연도]완전비교",
+          "structure": "선택기준제시 / H2각항목(장단점·가격·추천대상) / 비교표(필수) / 상황별최종추천",
+          "char_range": "2500~5000"
+        },
+        "publish_timing": "D+3~4 / 구글서치콘솔색인요청",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "각 비교 항목 → 항목 이미지",
+            "비교표 → 비교 인포그래픽",
+            "시각 쉼 간격 준수"
+          ],
+          "representative_image": {
+            "ratio": "16:9",
+            "resolution": "1200×675px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-TS-001",
+      "channel": "Tistory",
+      "label": "친근 경험 정보형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "데이터형",
+        "감성호출형",
+        "직접호출형",
+        "일반대중",
+        "얕고짧음",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "생활밀착형·경험공유형 제목"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "생활밀착형·경험공유형",
+          "structure": "1인칭경험도입5~8줄(~요말투) / 소제목3~4개(각200~400자) / 독자경험요청+CTA",
+          "char_range": "1500~2500"
+        },
+        "design_system": {
+          "emphasis_box": "#FFF7ED 웜톤 or 인용구블록"
+        },
+        "publish_timing": "D+3~4",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "감성/경험 → 라이프스타일 컷",
+            "결과물 → 결과 이미지",
+            "시각 쉼 간격 준수"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-TS-002",
+      "channel": "Tistory",
+      "label": "정보·리스트형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "손해프레이밍",
+        "일반대중",
+        "문제인식자",
+        "중간"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "N가지 [핵심정보]"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "N가지[핵심정보] 리스트형",
+          "structure": "문제공감도입3~5줄 / 번호소제목N개(각150~300자) / 요약+CTA",
+          "char_range": "1200~2000"
+        },
+        "publish_timing": "D+3~4",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "리스트 항목 → 핵심 인포그래픽",
+            "데이터 → 차트",
+            "시각 쉼 간격 준수"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-TS-003",
+      "channel": "Tistory",
+      "label": "비교·후기형",
+      "match_tags": [
+        "비교형",
+        "전문형",
+        "반전형",
+        "문제인식자",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "기본 템플릿",
+      "created_at": "2026-03-07",
+      "hook_copy": {
+        "blog_title": "직접 써봤습니다 — A vs B 솔직 후기"
+      },
+      "structure": {
+        "text_body": {
+          "title_pattern": "직접써봤습니다 — A vs B 솔직후기",
+          "structure": "비교계기도입3~5줄 / A후기(장단점솔직) / B후기(장단점솔직) / 총평(추천대상명시) / CTA",
+          "char_range": "1500~2500"
+        },
+        "design_system": {
+          "comparison_table": "권장 / A열#DBEAFE / B열#FEF3C7"
+        },
+        "publish_timing": "D+3~4",
+        "image_strategy": {
+          "rule": "배치 판단 기준 Layer 2 적용",
+          "priority_patterns": [
+            "각 비교 항목 → 항목 이미지",
+            "비교표 → 비교 인포그래픽",
+            "전후 비교 → before/after"
+          ],
+          "representative_image": {
+            "ratio": "3:2",
+            "resolution": "1200×800px",
+            "required": true
+          },
+          "min_images": 1,
+          "max_images": null
+        }
+      }
+    },
+    {
+      "template_id": "T-THI-001",
+      "channel": "스레드정보",
+      "label": "핵심 팩트 직격형",
+      "match_tags": [
+        "데이터형",
+        "논쟁형",
+        "손해프레이밍",
+        "반전형",
+        "일반대중",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "핵심 팩트·데이터 1개를 직격 전달 (전부 말하지 않는다)"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "훅1줄 / (빈줄) / 근거·수치2~3줄 / (빈줄) / 여운1줄",
+          "char_range": "300자 이내",
+          "hashtag": "없음",
+          "attachment": "이미지 or 숏폼클립 권장 (정보 신뢰도 강화)"
+        },
+        "image": {
+          "ratio": "1:1 / 1080×1080px 또는 16:9 / 1280×720px",
+          "content": "핵심수치 or 데이터 시각화"
+        },
+        "publish_timing": "D+1"
+      }
+    },
+    {
+      "template_id": "T-THI-002",
+      "channel": "스레드정보",
+      "label": "인사이트 공유형",
+      "match_tags": [
+        "전문형",
+        "데이터형",
+        "직접호출형",
+        "전문가",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "업계·분야의 숨은 인사이트 1개를 쉬운 말로 전달"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "인사이트1줄 / (빈줄) / 배경·이유2줄 / (빈줄) / 시사점1줄",
+          "char_range": "300자 이내",
+          "hashtag": "없음",
+          "attachment": "이미지 권장"
+        },
+        "image": {
+          "ratio": "1:1 / 1080×1080px",
+          "content": "인사이트 요약 그래픽"
+        },
+        "publish_timing": "D+1"
+      }
+    },
+    {
+      "template_id": "T-THI-003",
+      "channel": "스레드정보",
+      "label": "수치 임팩트형",
+      "match_tags": [
+        "데이터형",
+        "비교형",
+        "손해프레이밍",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "놀라운 수치 1개로 시작 → 맥락 설명"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "수치훅1줄 / (빈줄) / 맥락·의미2줄 / (빈줄) / 한줄정리",
+          "char_range": "250자 이내",
+          "hashtag": "없음",
+          "attachment": "숫자 강조 이미지 권장"
+        },
+        "image": {
+          "ratio": "1:1 / 1080×1080px",
+          "content": "핵심 숫자 크게 배치"
+        },
+        "publish_timing": "D+1"
+      }
+    },
+    {
+      "template_id": "T-THL-001",
+      "channel": "스레드리스트",
+      "label": "기준 정리형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "비교형",
+        "문제인식자",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "기준·포인트를 3~5개로 깔끔하게 정리"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "주제1줄 / (빈줄) / → 포인트1 / → 포인트2 / → 포인트3 / (빈줄) / 마무리1줄",
+          "char_range": "300자 이내",
+          "point_count": "3~5개",
+          "each_point": "한 줄",
+          "hashtag": "없음",
+          "attachment": "텍스트 위주 / 이미지 선택"
+        },
+        "publish_timing": "D+1~4"
+      }
+    },
+    {
+      "template_id": "T-THL-002",
+      "channel": "스레드리스트",
+      "label": "체크리스트형",
+      "match_tags": [
+        "튜토리얼형",
+        "데이터형",
+        "직접호출형",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "확인해야 할 항목을 체크 형태로 나열"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "상황도입1줄 / (빈줄) / ✓ 항목1 / ✓ 항목2 / ✓ 항목3 / (빈줄) / 결론1줄",
+          "char_range": "300자 이내",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+4~5"
+      }
+    },
+    {
+      "template_id": "T-THL-003",
+      "channel": "스레드리스트",
+      "label": "단계별 정리형",
+      "match_tags": [
+        "튜토리얼형",
+        "전문형",
+        "직접호출형",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "순서가 있는 단계를 번호로 정리"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "도입1줄 / (빈줄) / 1. 단계1 / 2. 단계2 / 3. 단계3 / (빈줄) / 핵심정리1줄",
+          "char_range": "300자 이내",
+          "hashtag": "없음",
+          "attachment": "이미지 선택"
+        },
+        "publish_timing": "D+1~4"
+      }
+    },
+    {
+      "template_id": "T-THQ-001",
+      "channel": "스레드질문참여",
+      "label": "경험 고백형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "일반대중",
+        "특정연령"
+      ],
+      "source_template": "T-TH3-001",
+      "created_from": "v12 8유형 확장 (구 TH3-001 이관)",
+      "created_at": "2026-03-16",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "나의경험·실패 솔직공개2줄 / (빈줄) / 변화·깨달음1줄 / (빈줄) / 독자경험질문1줄 / 댓글로알려주세요👇",
+          "char_range": "200~300자",
+          "format": "텍스트만 / 이미지금지",
+          "rule": "단순질문금지 — 반드시 선공개 후 질문",
+          "hashtag": "없음"
+        },
+        "publish_timing": "D+7"
+      }
+    },
+    {
+      "template_id": "T-THQ-002",
+      "channel": "스레드질문참여",
+      "label": "양자택일형",
+      "match_tags": [
+        "비교형",
+        "논쟁형",
+        "직접호출형",
+        "일반대중"
+      ],
+      "source_template": "T-TH3-003",
+      "created_from": "v12 8유형 확장 (구 TH3-003 이관)",
+      "created_at": "2026-03-16",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "상황설명1~2줄 / (빈줄) / A vs B 선택지 제시 / (빈줄) / 댓글로알려주세요👇",
+          "char_range": "200자 내외",
+          "format": "텍스트만",
+          "rule": "단순질문금지 — 맥락 제시 후 양자택일",
+          "hashtag": "없음"
+        },
+        "publish_timing": "D+7"
+      }
+    },
+    {
+      "template_id": "T-THQ-003",
+      "channel": "스레드질문참여",
+      "label": "생각 공개 도발형",
+      "match_tags": [
+        "논쟁형",
+        "데이터형",
+        "반전형",
+        "문제인식자",
+        "일반대중"
+      ],
+      "source_template": "T-TH3-002",
+      "created_from": "v12 8유형 확장 (구 TH3-002 이관)",
+      "created_at": "2026-03-16",
+      "hook_copy": {},
+      "structure": {
+        "text_body": {
+          "structure": "도발적의견1줄 / (빈줄) / 근거·논리2줄 / (빈줄) / 여러분은어떠세요? 댓글로알려주세요👇",
+          "char_range": "250자 내외",
+          "format": "텍스트만",
+          "hashtag": "없음"
+        },
+        "publish_timing": "D+7"
+      }
+    },
+    {
+      "template_id": "T-THE-001",
+      "channel": "스레드공감",
+      "label": "나만그래형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "일반대중",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "나만 그래? → 공감 포인트 1개"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "1인칭경험도입1~2줄 / (빈줄) / 공감포인트1줄 / (빈줄) / 여운1줄",
+          "char_range": "200~300자",
+          "tone": "나만그래? / 이거공감되면OO맞음",
+          "hashtag": "없음",
+          "attachment": "텍스트 위주 / 이미지 선택"
+        },
+        "publish_timing": "D+1"
+      }
+    },
+    {
+      "template_id": "T-THE-002",
+      "channel": "스레드공감",
+      "label": "일상고충형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "직접호출형",
+        "특정연령",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "일상의 반복되는 고충을 솔직하게 꺼냄"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "상황묘사1~2줄 / (빈줄) / 반복되는고충1줄 / (빈줄) / 체념or유머1줄",
+          "char_range": "200~300자",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+2~3"
+      }
+    },
+    {
+      "template_id": "T-THE-003",
+      "channel": "스레드공감",
+      "label": "집단공감형",
+      "match_tags": [
+        "감성형",
+        "직접호출형",
+        "일반대중",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "특정 집단의 공통 경험을 대변"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "OO하는사람들은다아는도입1줄 / (빈줄) / 공통경험2줄 / (빈줄) / 공감마무리1줄",
+          "char_range": "250자 이내",
+          "hashtag": "없음",
+          "attachment": "텍스트 위주"
+        },
+        "publish_timing": "D+4~5"
+      }
+    },
+    {
+      "template_id": "T-THT-001",
+      "channel": "스레드반전논쟁",
+      "label": "통념뒤집기형",
+      "match_tags": [
+        "논쟁형",
+        "비교형",
+        "반전형",
+        "일반대중",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "~라고요? / ~인 줄 알았는데 → 반전 포인트"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "통념뒤집기훅1줄(~라고요?) / (빈줄) / 반전근거2~3줄 / (빈줄) / 결론1줄",
+          "char_range": "300자 이내",
+          "hashtag": "없음",
+          "attachment": "텍스트 위주"
+        },
+        "publish_timing": "D+2~3"
+      }
+    },
+    {
+      "template_id": "T-THT-002",
+      "channel": "스레드반전논쟁",
+      "label": "도발질문형",
+      "match_tags": [
+        "논쟁형",
+        "데이터형",
+        "반전형",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "논쟁적 질문으로 시작 → 의외의 답"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "도발질문1줄 / (빈줄) / 의외의답변·근거2줄 / (빈줄) / 여운1줄",
+          "char_range": "250자 이내",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+3~5"
+      }
+    },
+    {
+      "template_id": "T-THT-003",
+      "channel": "스레드반전논쟁",
+      "label": "상식파괴형",
+      "match_tags": [
+        "데이터형",
+        "논쟁형",
+        "손해프레이밍",
+        "전문가"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "모두가 믿는 상식을 데이터로 부정"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "상식제시1줄 / (빈줄) / 실제데이터·반례2줄 / (빈줄) / 결론전환1줄",
+          "char_range": "300자 이내",
+          "hashtag": "없음",
+          "attachment": "이미지 선택"
+        },
+        "publish_timing": "D+2~5"
+      }
+    },
+    {
+      "template_id": "T-THS-001",
+      "channel": "스레드스토리텔링",
+      "label": "실패담형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "실패 경험 → 깨달음 구조"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "상황도입1~2줄 / (빈줄) / 전개·실패과정2줄 / (빈줄) / 깨달음·결론1줄",
+          "char_range": "300자 이내",
+          "rule": "구체적 장면묘사 1개 이상 필수",
+          "hashtag": "없음",
+          "attachment": "텍스트 위주"
+        },
+        "publish_timing": "D+2~3"
+      }
+    },
+    {
+      "template_id": "T-THS-002",
+      "channel": "스레드스토리텔링",
+      "label": "비포애프터형",
+      "match_tags": [
+        "감성형",
+        "튜토리얼형",
+        "직접호출형",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "변화 전후를 대비시키는 에피소드"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "과거상황1~2줄 / (빈줄) / 변화계기1줄 / (빈줄) / 현재결과1~2줄",
+          "char_range": "300자 이내",
+          "rule": "구체적 장면묘사 필수",
+          "hashtag": "없음",
+          "attachment": "이미지 선택"
+        },
+        "publish_timing": "D+3~5"
+      }
+    },
+    {
+      "template_id": "T-THS-003",
+      "channel": "스레드스토리텔링",
+      "label": "에피소드형",
+      "match_tags": [
+        "감성형",
+        "라이프스타일",
+        "감성호출형",
+        "일반대중",
+        "특정연령"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "짧지만 인상 깊은 한 장면"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "장면묘사2~3줄 / (빈줄) / 감정·생각1줄 / (빈줄) / 여운1줄",
+          "char_range": "250자 이내",
+          "rule": "구체적 장면묘사 필수",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+2~5"
+      }
+    },
+    {
+      "template_id": "T-THO-001",
+      "channel": "스레드한줄선언",
+      "label": "격언형",
+      "match_tags": [
+        "감성형",
+        "논쟁형",
+        "모든훅전략",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "기억에 남는 한 줄 — 여운 남기기"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "임팩트 단문 1개",
+          "char_range": "50자 이내",
+          "rule": "부연설명 없음 / 한 문장으로 끝",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+0~7 (언제든)"
+      }
+    },
+    {
+      "template_id": "T-THO-002",
+      "channel": "스레드한줄선언",
+      "label": "정의형",
+      "match_tags": [
+        "전문형",
+        "데이터형",
+        "반전형",
+        "전문가"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "OO란 ~이다. 식 정의 한 줄"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "정의 단문 1개",
+          "char_range": "50자 이내",
+          "rule": "부연 없음",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+0~7"
+      }
+    },
+    {
+      "template_id": "T-THO-003",
+      "channel": "스레드한줄선언",
+      "label": "반전선언형",
+      "match_tags": [
+        "논쟁형",
+        "반전형",
+        "일반대중",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "예상을 뒤집는 한 문장"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "반전 단문 1개",
+          "char_range": "50자 이내",
+          "rule": "부연 없음 / 여운",
+          "hashtag": "없음",
+          "attachment": "텍스트만"
+        },
+        "publish_timing": "D+0~7"
+      }
+    },
+    {
+      "template_id": "T-THC-001",
+      "channel": "스레드큐레이션",
+      "label": "A vs B 비교형",
+      "match_tags": [
+        "비교형",
+        "데이터형",
+        "직접호출형",
+        "문제인식자",
+        "일반대중"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "A vs B — 기준별 비교 정리"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "A vs B 제목1줄 / (빈줄) / 기준1비교 / 기준2비교 / 기준3비교 / (빈줄) / 결론1줄",
+          "char_range": "300자 이내",
+          "format": "비교·요약 형식",
+          "hashtag": "없음",
+          "attachment": "이미지 선택"
+        },
+        "publish_timing": "D+4~7"
+      }
+    },
+    {
+      "template_id": "T-THC-002",
+      "channel": "스레드큐레이션",
+      "label": "N가지 정리형",
+      "match_tags": [
+        "데이터형",
+        "튜토리얼형",
+        "비교형",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "~하는 N가지 / N가지 정리"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "N가지정리 제목1줄 / (빈줄) / 항목별 한줄씩 / (빈줄) / 핵심결론1줄",
+          "char_range": "300자 이내",
+          "format": "요약 카드 형식",
+          "hashtag": "없음",
+          "attachment": "이미지 선택"
+        },
+        "publish_timing": "D+4~7"
+      }
+    },
+    {
+      "template_id": "T-THC-003",
+      "channel": "스레드큐레이션",
+      "label": "요약카드형",
+      "match_tags": [
+        "데이터형",
+        "전문형",
+        "직접호출형",
+        "전문가",
+        "문제인식자"
+      ],
+      "source_template": "new",
+      "created_from": "v12 8유형 확장",
+      "created_at": "2026-03-16",
+      "hook_copy": {
+        "thread_hook": "복잡한 정보를 한눈에 요약"
+      },
+      "structure": {
+        "text_body": {
+          "structure": "주제1줄 / (빈줄) / 요약포인트3~4개 / (빈줄) / 한줄결론",
+          "char_range": "300자 이내",
+          "format": "구조적 정리",
+          "hashtag": "없음",
+          "attachment": "이미지 권장"
+        },
+        "publish_timing": "D+5~7"
+      }
+    }
+  ]
+}

@@ -15,8 +15,16 @@ npx serve -p 8080
 ```
 브라우저에서 http://localhost:8080 접속
 
+또는 레포 루트에서 `npm run serve`(또는 `npx serve -l 3333 -c serve.json`)로 `files (5)`를 사이트에 올립니다. 루트의 `serve.json`은 폴더명 `(5)`가 `serve`의 path-to-regexp와 충돌하지 않도록 이스케이프해 두었습니다.
+
 **Netlify 배포:**
 [https://kaleidoscopic-gnome-c77113.netlify.app](https://kaleidoscopic-gnome-c77113.netlify.app)
+
+배포는 `netlify.toml`에서 `files (5)`를 사이트 루트로 쓰고, 빌드 시 레포 루트의 `guidelines/v10/`을 그 안으로 복사합니다. 배포 후 `…/guidelines/v10/SKILL-v10.md`가 열리면 블로그 스튜디오 AI 번들 fetch가 정상입니다.
+
+**로컬에서 Netlify와 같은 폴더 만들기:** 레포 루트에서 `npm run build:dist` → `dist/`에 `files (5)` 전본 + `dist/guidelines/v10/`이 생깁니다. 미리보기는 `npm run serve:dist`(또는 `npx serve dist -l 3333`).
+
+**지침을 빠짐없이 넣기:** 앱은 기본적으로 v10·공용 지침을 잘라내지 않고 주입합니다(`BS_*_INJECT_MAX_CHARS = 0`). 공용 지침이 매우 길면 모델 컨텍스트 한도 또는 요금에 걸릴 수 있으니, 필요할 때만 `blog-studio-v7.html`에서 상한을 숫자로 설정하세요. **v10 파일을 못 불러오면에도 AI가 도는 것을 막으려면** `?strictGuidelines=1` 또는 `localStorage bs_strict_guidelines=1`을 켭니다. (모델이 지침을 100% 위반 없이 따른다는 보장은 기술적으로 불가능합니다—인간 검수·체크리스트 자동화 등이 별도로 필요합니다.)
 
 ---
 
