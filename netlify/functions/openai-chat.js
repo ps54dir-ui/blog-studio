@@ -46,6 +46,11 @@ exports.handler = async (event) => {
   const messages = body.messages;
   const temperature =
     typeof body.temperature === 'number' ? body.temperature : 0.35;
+  /** 짧을수록 응답·과금 빠름. Netlify 무료 Functions ~10s 제한에 자주 걸림 → 기본 보수적 */
+  let max_tokens = 4096;
+  if (typeof body.max_tokens === 'number' && Number.isFinite(body.max_tokens)) {
+    max_tokens = Math.min(16384, Math.max(256, Math.floor(body.max_tokens)));
+  }
   if (!Array.isArray(messages) || !messages.length) {
     return {
       statusCode: 400,
@@ -61,7 +66,7 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify({ model, messages, temperature })
+      body: JSON.stringify({ model, messages, temperature, max_tokens })
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {

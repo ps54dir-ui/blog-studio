@@ -6482,7 +6482,8 @@ type이 blog면 본문 구조를 body에 반영하고 imageKo에 대표 이미�
 Instagram/Threads→sns, YouTube→video, 네이버/티스토리→blog.`;
 }
 function csClassifyBlobFromTexts(texts){
-  return texts.map(({name,text})=>`--- FILE: ${name} ---\n${String(text||'').slice(0,14000)}`).join('\n\n').slice(0,100000);
+  /* Netlify Functions 무료 ~10s: 입력·출력 과다 시 504 → 파일당·합계 상한 축소 */
+  return texts.map(({name,text})=>`--- FILE: ${name} ---\n${String(text||'').slice(0,7000)}`).join('\n\n').slice(0,45000);
 }
 function csCardsFromClassifyJson(text,texts){
   return csCardsFromClassifyJsonParsed(csExtractJsonFromModel(text),texts);
@@ -6526,10 +6527,12 @@ function csCardsFromClassifyJsonParsed(jsonStr,texts){
     };
   });
 }
-async function csOpenAIChat(messages){
+async function csOpenAIChat(messages, chatOpts){
   if(!csCanUseAiApis()){
     throw new Error('로그인이 필요합니다. index.html에서 회원·관리자로 로그인하세요. (로컬 개발 전용: config devAllowAiWithoutLogin 또는 ?devAi=1)');
   }
+  const o=chatOpts&&typeof chatOpts==='object'?chatOpts:{};
+  const max_tokens=typeof o.max_tokens==='number'&&o.max_tokens>0?Math.min(16384,Math.floor(o.max_tokens)):8192;
   const mode=csOpenAIUsageMode();
   const cfgKey=csGetOpenAIKey();
   const memKey=csGetMemberOpenAIKey();
@@ -6545,7 +6548,7 @@ async function csOpenAIChat(messages){
   const r=await fetch('/api/openai/chat',{
     method:'POST',
     headers,
-    body:JSON.stringify({model:'gpt-4o-mini',messages,temperature:0.35})
+    body:JSON.stringify({model:'gpt-4o-mini',messages,temperature:0.35,max_tokens})
   });
   const data=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(typeof data.error==='string'?data.error:(data.error&&data.error.message)||JSON.stringify(data.error||data));
@@ -6692,7 +6695,7 @@ async function csStudioAiSend(){
   try{
     let raw='';
     if(getWritingAiProvider()==='claude') raw=await csAnthropicChat(sys,user);
-    else raw=await csOpenAIChat([{role:'system',content:sys},{role:'user',content:user}]);
+    else raw=await csOpenAIChat([{role:'system',content:sys},{role:'user',content:user}],{max_tokens:4096});
     const patch=csParseAiStudioPatch(raw);
     csApplyStudioAiPatch(c,patch);
     csPrompts=csExtractPrompts(csCards,[]);
@@ -6715,7 +6718,7 @@ async function csClassifyWithOpenAI(texts){
   await bsEnsureAiGuidelinesCachesOrAbort(false);
   const system=bsSharedGuidelinesSystemPrefix()+csClassifySystemPrompt();
   const blob=csClassifyBlobFromTexts(texts);
-  const out=await csOpenAIChat([{role:'system',content:system},{role:'user',content:`다음은 파일 모음입니다:\n\n${blob}`}]);
+  const out=await csOpenAIChat([{role:'system',content:system},{role:'user',content:`다음은 파일 모음입니다:\n\n${blob}`}],{max_tokens:4096});
   return csCardsFromClassifyJson(out,texts);
 }
 async function csClassifyWithClaude(texts){
@@ -7692,7 +7695,7 @@ async function renewOcrCaptureToText(file, onStatus){
         { type:'text', text:userPrompt },
         { type:'image_url', image_url:{ url:dataUrl, detail:'high' } }
       ]}
-    ]);
+    ],{max_tokens:8192});
   };
   const runClaude = async ()=>{
     st('🖼 Claude 비전으로 캡처 추출 중…');
@@ -7867,7 +7870,7 @@ async function renewRunAiAnalysis(){
   try{
     let textOut = '';
     if(getWritingAiProvider()==='claude') textOut = await csAnthropicChat(sys, user);
-    else textOut = await csOpenAIChat([{ role:'system', content:sys }, { role:'user', content:user }]);
+    else textOut = await csOpenAIChat([{ role:'system', content:sys }, { role:'user', content:user }],{max_tokens:6144});
     if(out) out.value = String(textOut||'').trim();
     if(st) st.textContent = '완료';
     toast('AI 분석을 저장했습니다.','ok');
@@ -7942,7 +7945,7 @@ async function renewGenerateManuscript(){
   try{
     let textOut = '';
     if(getWritingAiProvider()==='claude') textOut = await csAnthropicChat(sys, user);
-    else textOut = await csOpenAIChat([{ role:'system', content:sys }, { role:'user', content:user }]);
+    else textOut = await csOpenAIChat([{ role:'system', content:sys }, { role:'user', content:user }],{max_tokens:8192});
     if(out) out.value = String(textOut||'').trim();
     if(st) st.textContent = '완료';
     toast('리뉴얼 원고를 만들었습니다.','ok');
