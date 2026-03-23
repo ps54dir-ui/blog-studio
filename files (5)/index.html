@@ -55,6 +55,7 @@ body::before{
 
 .card{
   position:relative;
+  z-index:1;
   width:420px;
   background:var(--card);
   border:1px solid var(--border);
@@ -290,7 +291,7 @@ h1{
     <h1>팀 블로그 스튜디오에<br>오신 것을 환영합니다</h1>
     <p class="sub">구글 계정으로 로그인하면<br>팀원과 프로젝트를 공유할 수 있습니다</p>
 
-    <button class="google-btn" onclick="signInWithGoogle()">
+    <button type="button" class="google-btn" onclick="signInWithGoogle()">
       <svg class="google-logo" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -299,6 +300,14 @@ h1{
       </svg>
       Google 계정으로 로그인
     </button>
+
+    <div id="googleClientIdHint" style="display:none;margin-top:14px;padding:12px 14px;background:rgba(192,68,30,.1);border:1px solid rgba(192,68,30,.28);border-radius:8px;font-size:11px;color:#e8a090;text-align:left;line-height:1.65;">
+      <strong style="color:#f0b090">OAuth 클라이언트 ID가 없습니다.</strong><br>
+      Google Cloud → 사용자 인증 정보 → <strong>웹 애플리케이션</strong> 클라이언트 ID(…<code>.apps.googleusercontent.com</code>)를 복사한 뒤:<br>
+      · 이 브라우저: 아래「⚙ Google API 설정 안내」에서 붙여넣고 <strong>설정 저장</strong><br>
+      · 로컬 서버: 프로젝트 루트 <code>.env</code>의 <code>GOOGLE_CLIENT_ID=</code> 뒤에 붙이고 <code>node server.js</code>로 접속<br>
+      · Netlify: Site → Environment variables 에 <code>GOOGLE_CLIENT_ID</code> 추가 후 재배포
+    </div>
 
     <div id="alreadyLoggedInBanner" style="display:none;margin-bottom:16px;padding:12px 16px;background:rgba(45,106,74,.15);border:1px solid rgba(45,106,74,.3);border-radius:8px;text-align:center;font-size:12px;">
       ✓ 이미 로그인되어 있습니다.
@@ -339,9 +348,8 @@ h1{
     </div>
 
     <div class="setup-link" onclick="openSetupModal()">⚙ Google API 설정 안내</div>
-    <div style="margin-top:12px;text-align:center;display:flex;flex-direction:column;gap:6px;">
-      <a href="./blog-studio-v7.html" style="font-size:11px;color:#7c6bc4;text-decoration:underline;">로그인 없이 원고 작업만(AI는 불가) →</a>
-      <a href="admin-skip.html" style="font-size:11px;color:var(--muted);">🛡 관리자 모드 스킵 (개발용) →</a>
+    <div style="margin-top:14px;text-align:center">
+      <a href="./blog-studio-v7.html?dev=1" onclick="localStorage.setItem('bs_user_id','user_001')" style="font-size:12px;padding:8px 20px;border-radius:8px;background:#7c6bc4;color:#fff;text-decoration:none;display:inline-block;font-weight:600">개발 모드로 진입 →</a>
     </div>
   </div>
 
@@ -391,8 +399,9 @@ h1{
       <h3>OAuth 클라이언트 ID 발급</h3>
       <p>사용자 인증 정보 → + 사용자 인증 정보 만들기 → OAuth 클라이언트 ID<br>
       애플리케이션 유형: 웹 애플리케이션<br><br>
-      <strong>승인된 JavaScript 원본</strong>에 추가:<br>
+      <strong>승인된 JavaScript 원본</strong>에 <b>지금 사이트 주소와 정확히 일치</b>하게 추가 (배포 URL이 바뀌면 여기도 수정):<br>
       <code style="display:block;margin:4px 0">https://kaleidoscopic-gnome-c77113.netlify.app</code><br>
+      <code style="display:block;margin:4px 0">https://본인-도메인.netlify.app</code> (실제 배포 주소)<br>
       <code style="display:block;margin:4px 0">http://localhost:8080</code> (로컬 8080 포트)<br>
       <code style="display:block;margin:4px 0">http://localhost:3000</code> (로컬 3000 포트)<br>
       <code style="display:block;margin:4px 0">http://localhost</code> (포트 없이 사용 시)<br><br>
@@ -407,7 +416,8 @@ h1{
     <div class="step-num">5</div>
     <div class="step-content">
       <h3>클라이언트 ID를 아래에 입력</h3>
-      <p>발급받은 클라이언트 ID를 붙여넣으세요. <strong>입력 즉시 저장</strong>되어 다음에도 사용됩니다.</p>
+      <p>발급받은 클라이언트 ID를 붙여넣으세요. <strong>입력 즉시 저장</strong>되어 이 브라우저에서만 이어집니다.<br><br>
+      <strong>팀 전체</strong>가 따로 입력하지 않게 하려면: (1) <code>node server.js</code>로 접속하고 서버 루트 <code>.env</code>에 <code>GOOGLE_CLIENT_ID</code>를 넣거나, (2) 배포용 <code>index.html</code>의 <code>SITE_GOOGLE_CLIENT_ID</code>에 같은 ID를 넣으면 됩니다.</p>
       <input class="input-field" id="clientIdInput" placeholder="예: 123456789-abc.apps.googleusercontent.com" type="text" onblur="autoSaveConfig()">
       <div style="margin-top:12px;font-size:11px;color:var(--muted)">관리자 이메일 (쉼표로 여러 명 가능)</div>
       <input class="input-field" id="adminEmailInput" placeholder="예: admin@gmail.com, ceo@company.com" type="text" onblur="autoSaveConfig()">
@@ -430,8 +440,100 @@ h1{
 // ══════════════════════════════════════
 const CONFIG_KEY = 'bs_google_config';
 
+/**
+ * 팀원 전원이 로그인하려면 이 값을 채운 뒤 배포하세요.
+ * localStorage는 PC마다 다르므로, 관리자만 설정에 저장해도 다른 사람 브라우저에는 전달되지 않습니다.
+ * (웹 클라이언트 ID는 공개되어도 되는 값입니다.)
+ */
+const SITE_GOOGLE_CLIENT_ID = '';
+
+/** node server.js 로 서빙할 때 /api/blog-studio/google-client-config 에서 채워짐 */
+let serverGoogleClientId = '';
+let serverGoogleAdmins = '';
+let serverGoogleConfigPromise = null;
+/** idle | loading | ok | empty | network | bad_json | http_NNN */
+let googleConfigFetchStatus = 'idle';
+
+function fetchServerGoogleConfig(){
+  if(serverGoogleConfigPromise) return serverGoogleConfigPromise;
+  googleConfigFetchStatus = 'loading';
+  var urls = [
+    '/api/blog-studio/google-client-config',
+    '/.netlify/functions/blog-studio-google-client-config'
+  ];
+  serverGoogleConfigPromise = (async function(){
+    var saw404 = false;
+    for(var i = 0; i < urls.length; i++){
+      try{
+        var r = await fetch(urls[i], { credentials: 'same-origin' });
+        if(!r.ok){
+          if(r.status === 404) saw404 = true;
+          googleConfigFetchStatus = 'http_' + r.status;
+          continue;
+        }
+        var j = await r.json();
+        if(j && j.ok){
+          if(String(j.clientId || '').trim()){
+            serverGoogleClientId = String(j.clientId).trim();
+            googleConfigFetchStatus = 'ok';
+          }else{
+            googleConfigFetchStatus = 'empty';
+          }
+          if(j.admins) serverGoogleAdmins = String(j.admins).trim();
+          return;
+        }
+        googleConfigFetchStatus = 'bad_json';
+        return;
+      }catch(e){
+        googleConfigFetchStatus = 'network';
+      }
+    }
+    if(saw404 && !serverGoogleClientId && googleConfigFetchStatus !== 'empty'){
+      googleConfigFetchStatus = 'http_404';
+    }
+  })();
+  return serverGoogleConfigPromise;
+}
+
+function googleConfigDiagnosticHtml(){
+  switch(googleConfigFetchStatus){
+    case 'empty':
+      return '<br><br><small style="color:var(--muted)"><strong>진단:</strong> 서버는 응답했지만 <code>GOOGLE_CLIENT_ID</code>가 비어 있습니다. <code>.env</code> 또는 Netlify 환경 변수에 웹 클라이언트 ID를 넣었는지 확인하세요.</small>';
+    case 'network':
+      return '<br><br><small style="color:var(--muted)"><strong>진단:</strong> API에 연결하지 못했습니다. <code>file://</code>로 연 파일이면 로그인할 수 없습니다. <code>http://localhost:3333</code>처럼 서버 주소로 여세요.</small>';
+    case 'http_404':
+      return '<br><br><small style="color:var(--muted)"><strong>진단:</strong> API 404 — Git 연동 배포 후 <code>scripts/inject-google-client-id.cjs</code>가 빌드에서 <code>GOOGLE_CLIENT_ID</code>를 HTML에 넣는지, Functions 탭에 <code>blog-studio-google-client-config</code>가 있는지 확인하세요.</small>';
+    default:
+      if(String(googleConfigFetchStatus).indexOf('http_') === 0){
+        return '<br><br><small style="color:var(--muted)"><strong>진단:</strong> API HTTP ' + googleConfigFetchStatus.replace('http_', '') + '</small>';
+      }
+      return '';
+  }
+}
+
+function refreshGoogleClientIdHint(){
+  var el = document.getElementById('googleClientIdHint');
+  if(!el) return;
+  fetchServerGoogleConfig().then(function(){
+    el.style.display = getConfig().clientId ? 'none' : 'block';
+  });
+}
+
 function getConfig(){
-  try{ return JSON.parse(localStorage.getItem(CONFIG_KEY))||{}; }catch{ return {}; }
+  const embedded = (SITE_GOOGLE_CLIENT_ID || '').trim();
+  const fromServerId = (serverGoogleClientId || '').trim();
+  const fromServerAdmins = (serverGoogleAdmins || '').trim();
+  try{
+    const stored = JSON.parse(localStorage.getItem(CONFIG_KEY))||{};
+    const fromLs = (stored.clientId && String(stored.clientId).trim()) || '';
+    const fromLsAdmins = (stored.admins && String(stored.admins).trim()) || '';
+    return {
+      clientId: fromLs || fromServerId || embedded,
+      admins: fromLsAdmins || fromServerAdmins,
+    };
+  }catch{
+    return { clientId: fromServerId || embedded, admins: fromServerAdmins };
+  }
 }
 function autoSaveConfig(){
   const clientId = document.getElementById('clientIdInput')?.value?.trim();
@@ -454,10 +556,17 @@ function saveConfig(){
 // ══════════════════════════════════════
 // 구글 로그인
 // ══════════════════════════════════════
-function signInWithGoogle(){
+async function signInWithGoogle(){
+  const errEl = document.getElementById('errorBox');
+  if(errEl) errEl.style.display = 'none';
+
+  await fetchServerGoogleConfig();
+
   const cfg = getConfig();
   if(!cfg.clientId){
-    showError('Google API 설정이 필요합니다.<br>아래 "⚙ Google API 설정 안내"를 클릭해 설정해주세요.');
+    showError('<strong>Google OAuth 클라이언트 ID가 없습니다.</strong> (버튼을 눌러도 팝업이 안 뜨는 주된 원인입니다.)<br><br><strong>① 이 PC만 빨리 쓰기:</strong> 아래「⚙ Google API 설정 안내」→ 클라이언트 ID 붙여넣기 → <strong>설정 저장</strong><br><br><strong>② 로컬 서버:</strong> 프로젝트 루트 <code>.env</code>에서 <code>GOOGLE_CLIENT_ID=</code> <u>뒤에</u> 웹 클라이언트 ID를 넣고, <code>node server.js</code>로 연 주소에서 열기<br><br><strong>③ Netlify:</strong> Environment variables 에 <code>GOOGLE_CLIENT_ID</code> 추가 → 재배포' + googleConfigDiagnosticHtml());
+    const box = document.getElementById('errorBox');
+    if(box){ box.style.display='block'; box.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
     return;
   }
   showLoading(true);
@@ -499,6 +608,16 @@ async function handleToken(accessToken){
       headers:{ Authorization: 'Bearer '+accessToken }
     });
     const user = await res.json();
+    if(!res.ok){
+      showLoading(false);
+      showError('프로필을 가져오지 못했습니다.<br><code style="font-size:10px;word-break:break-all">'+(user.error?.message||res.status)+'</code><br>OAuth 동의 화면에 테스트 사용자를 추가했는지, 범위에 email/profile이 있는지 확인하세요.');
+      return;
+    }
+    if(!user.email){
+      showLoading(false);
+      showError('구글 계정 이메일을 읽을 수 없습니다. OAuth 동의 화면을 저장한 뒤 다시 시도하세요.');
+      return;
+    }
 
     const cfg = getConfig();
     const adminList = (cfg.admins||'').split(',').map(e=>e.trim().toLowerCase()).filter(Boolean);
@@ -515,15 +634,25 @@ async function handleToken(accessToken){
     };
     sessionStorage.setItem('bs_session', JSON.stringify(session));
 
-    // 드라이브 폴더 초기화
-    await initDriveFolder(accessToken, user.email);
+    // 드라이브 폴더 초기화 (실패해도 세션은 유지 — 수동으로 스튜디오 이동 가능)
+    try{
+      await initDriveFolder(accessToken, user.email);
+    }catch(driveErr){
+      showLoading(false);
+      showError('구글 로그인은 되었으나 <b>드라이브 폴더</b>를 만들 수 없습니다.<br>'+
+        String(driveErr.message||driveErr)+
+        '<br><br>→ Google Cloud에서 <b>Google Drive API</b> 사용 설정, OAuth 클라이언트의 <b>JavaScript 원본</b>에 지금 주소(<code style="font-size:9px">'+location.origin+'</code>)가 들어가 있는지 확인하세요.'+
+        '<br><br><a href="./blog-studio-v7.html" style="display:inline-block;margin-top:10px;padding:8px 16px;background:var(--purple);color:#fff;border-radius:8px;text-decoration:none;font-weight:600">드라이브 없이 스튜디오로 이동</a>');
+      return;
+    }
 
     // 리다이렉트
     window.location.href = './blog-studio-v7.html';
 
   }catch(e){
     showLoading(false);
-    showError('사용자 정보를 가져오는데 실패했습니다.<br>'+e.message);
+    showError('로그인 처리 중 오류가 났습니다.<br>'+String(e.message||e)+
+      '<br><br><small style="color:var(--muted)">file:// 로 열면 구글 로그인이 막힐 수 있습니다. 로컬 서버(npm run dev 등)로 http(s) 주소에서 여세요.</small>');
   }
 }
 
@@ -546,8 +675,8 @@ async function initDriveFolder(token, email){
 }
 
 async function findOrCreateFolder(token, name, parentId){
-  // 존재하는 폴더 찾기
-  let query = `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  const esc = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  let query = `name='${esc}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
   if(parentId) query += ` and '${parentId}' in parents`;
 
   const searchRes = await fetch(
@@ -555,12 +684,14 @@ async function findOrCreateFolder(token, name, parentId){
     { headers:{ Authorization:'Bearer '+token }}
   );
   const searchData = await searchRes.json();
+  if(!searchRes.ok){
+    throw new Error('Drive 검색 거부: '+(searchData.error?.message||searchRes.status+' '+searchRes.statusText));
+  }
 
   if(searchData.files && searchData.files.length > 0){
     return searchData.files[0].id;
   }
 
-  // 없으면 생성
   const meta = { name, mimeType:'application/vnd.google-apps.folder' };
   if(parentId) meta.parents = [parentId];
 
@@ -570,6 +701,12 @@ async function findOrCreateFolder(token, name, parentId){
     body: JSON.stringify(meta)
   });
   const created = await createRes.json();
+  if(!createRes.ok){
+    throw new Error((created.error&&created.error.message)||'Drive 폴더 생성 실패 '+createRes.status);
+  }
+  if(!created.id){
+    throw new Error('Drive 응답 오류: '+JSON.stringify(created).slice(0,200));
+  }
   return created.id;
 }
 
@@ -586,9 +723,11 @@ function showError(msg){
   el.style.display = 'block';
 }
 function openSetupModal(){
+  let stored = {};
+  try{ stored = JSON.parse(localStorage.getItem(CONFIG_KEY))||{}; }catch{}
   const cfg = getConfig();
-  if(cfg.clientId) document.getElementById('clientIdInput').value = cfg.clientId;
-  if(cfg.admins)   document.getElementById('adminEmailInput').value = cfg.admins;
+  document.getElementById('clientIdInput').value = (stored.clientId && String(stored.clientId).trim()) || cfg.clientId || '';
+  document.getElementById('adminEmailInput').value = (stored.admins || cfg.admins || '');
   document.getElementById('setupOverlay').style.display='flex';
 }
 function closeSetupModal(){
@@ -618,6 +757,12 @@ function clearSessionAndReload(){
     }catch{}
   }
 })();
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', function(){ refreshGoogleClientIdHint(); });
+}else{
+  refreshGoogleClientIdHint();
+}
 </script>
 </body>
 </html>

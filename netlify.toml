@@ -1,8 +1,9 @@
 [build]
   publish = "files (5)"
   # v10 지침은 레포 루트 guidelines/에 두고, 배포 루트(files (5))로 복사 → /guidelines/v10/*.md 200
-  command = "mkdir -p \"files (5)/guidelines/v10\" && cp -r guidelines/v10/. \"files (5)/guidelines/v10/\""
+  command = "mkdir -p \"files (5)/guidelines/v10\" && cp -r guidelines/v10/. \"files (5)/guidelines/v10/\" && node scripts/inject-google-client-id.cjs"
   # index.html, blog-studio-v7.html, admin.html이 루트에 있도록 함
+  # GOOGLE_CLIENT_ID 가 있으면 빌드 시 index.html 에 SITE_GOOGLE_CLIENT_ID 로 주입 (Functions 없어도 로그인 가능)
 
 [functions]
   directory = "netlify/functions"
@@ -23,6 +24,13 @@
 [[redirects]]
   from = "/api/shared-guidelines"
   to = "/.netlify/functions/shared-guidelines"
+  status = 200
+  force = true
+
+# 브라우저 Google 로그인: GOOGLE_CLIENT_ID 등은 Netlify 환경 변수
+[[redirects]]
+  from = "/api/blog-studio/google-client-config"
+  to = "/.netlify/functions/blog-studio-google-client-config"
   status = 200
   force = true
 
