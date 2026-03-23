@@ -35,6 +35,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/blog-studio/verify-team-email"
+  to = "/.netlify/functions/blog-studio-verify-team-email"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/"
   to = "/index.html"
   status = 200

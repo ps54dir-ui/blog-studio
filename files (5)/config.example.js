@@ -15,6 +15,8 @@
 window.BS_CONFIG = {
   openaiKey: '',
   anthropicKey: '',
+  /** (선택) Google Picker용 브라우저 API 키 — 비우면 드라이브 연결 시 폴더 URL 입력으로만 지정 */
+  googlePickerApiKey: '',
   anthropicModel: 'claude-sonnet-4-20250514', // API에 없으면 claude-3-5-sonnet-20241022 등으로 변경
   /**
    * 로컬 개발 전용: localhost에서만 비로그인 AI 호출 허용 (운영 배포 시 false 유지).

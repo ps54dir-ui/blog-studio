@@ -30,6 +30,19 @@ body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--ink);heigh
 .top-right{display:flex;align-items:center;gap:6px;}
 .top-settings-btn{font-size:9px;padding:4px 10px;background:rgba(107,79,160,.15);border:1px solid rgba(107,79,160,.4);color:#c4b5e8;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;}
 .top-settings-btn:hover{background:rgba(107,79,160,.25);}
+.top-ai-usage-pill{display:none;align-items:center;gap:5px;padding:3px 9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:6px;font-size:8px;color:rgba(255,255,255,.78);font-family:'DM Mono',monospace;flex-shrink:0;max-width:min(220px,42vw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;}
+.top-ai-usage-gpt{color:#a8d4ff;}
+.top-ai-usage-claude{color:#e4c4ff;}
+.top-ai-usage-sep{opacity:.35;padding:0 1px;}
+.bs-drive-fallback-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3100;align-items:center;justify-content:center;padding:16px;}
+.bs-drive-fallback-backdrop.on{display:flex;}
+.bs-drive-fallback-dialog{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-width:420px;width:100%;padding:16px 18px 18px;}
+.bs-drive-fallback-dialog .bs-dfm-ttl{font-size:12px;font-weight:800;color:var(--ink);margin:0 0 8px;font-family:'DM Mono',monospace;}
+.bs-drive-fallback-dialog .bs-dfm-desc{font-size:9px;color:var(--muted);line-height:1.5;margin:0 0 12px;}
+.bs-drive-fallback-dialog .bs-dfm-input{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--border);border-radius:6px;font-size:10px;font-family:'DM Mono',monospace;margin-bottom:10px;}
+.bs-drive-fallback-dialog .bs-dfm-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 2px rgba(107,79,160,.12);}
+.bs-drive-fallback-dialog .bs-dfm-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.bs-drive-fallback-dialog .bs-dfm-hint{font-size:8px;color:var(--red);margin-top:8px;line-height:1.4;min-height:1.2em;}
 .ai-settings-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:2999;top:46px;}
 .ai-settings-panel{display:none;position:fixed;top:50px;right:12px;width:min(380px,calc(100vw - 20px));max-height:min(78vh,560px);overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,.22);z-index:3000;padding:14px 16px 16px;}
 .ai-set-ttl{font-size:11px;font-weight:800;color:var(--ink);margin:0 0 4px;font-family:'DM Mono',monospace;}
@@ -1242,6 +1255,11 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
   <div class="logo">✦ Blog Studio <span class="logo-v" title="이 표시가 v7.1이면 최신 파일입니다">v7.1</span> <span style="color:rgba(255,255,255,.25)">×</span> <span class="logo-c">Claude</span></div>
   <div id="topFileIndicator" style="flex:1;margin:0 16px;font-size:10px;color:rgba(255,255,255,.6);display:none;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📄 <span id="topFileName"></span></div>
   <div class="top-right">
+    <div id="topAiUsagePill" class="top-ai-usage-pill" title="">
+      <span class="top-ai-usage-gpt" id="topAiUsageGpt">GPT ~$0.000</span>
+      <span class="top-ai-usage-sep">·</span>
+      <span class="top-ai-usage-claude" id="topAiUsageClaude">Claude ~$0.000</span>
+    </div>
     <!-- 로그인 사용자 정보 -->
     <div id="userPill" style="display:none;align-items:center;gap:6px;padding:3px 10px 3px 4px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;">
       <img id="topUserAvatar" src="" style="width:22px;height:22px;border-radius:50%;display:none">
@@ -1250,6 +1268,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
     </div>
     <button id="adminBtn" onclick="window.location.href='admin.html'" style="display:none;font-size:9px;padding:4px 10px;background:rgba(192,68,30,.1);border:1px solid rgba(192,68,30,.3);color:#e08a6a;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;">🛡 관리자</button>
     <button type="button" id="topAiSettingsBtn" class="top-settings-btn" onclick="toggleAiSettingsPanel()">⚙ 설정</button>
+    <button type="button" id="topDriveBackupBtn" class="top-settings-btn" onclick="bsDriveSaveScope('all')" title="지침·원고·발행원고 등 전체를 구글 드라이브 JSON으로 저장">💾 드라이브 백업</button>
     <button id="logoutBtn" onclick="doLogout()" style="font-size:9px;padding:4px 10px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;">로그아웃</button>
   </div>
 </div>
@@ -1295,15 +1314,29 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
   </div>
   <hr class="ai-set-hr">
   <div class="cs-api_panel" style="margin-top:0">
-    <div class="cs-api-ttl" style="margin-bottom:6px">📁 구글 드라이브 <span style="font-weight:400;color:var(--muted)">(회원)</span></div>
-    <p class="cs-api-desc" style="margin-top:0">로그인 시 폴더 생성에 실패했거나, 나중에 연결하려면 아래에서 구글 계정을 다시 허용하세요. <code style="font-size:8px">bs_projects.json</code> · <code style="font-size:8px">bs_characters.json</code>이 본인 드라이브에 저장됩니다.</p>
+    <div class="cs-api-ttl" style="margin-bottom:6px">📁 구글 드라이브 <span style="font-weight:400;color:var(--muted)">(회원)</span> <span style="font-weight:600;color:var(--green);font-size:9px">→ 백업 폴더는 아래 초록 버튼</span></div>
+    <p class="cs-api-desc" style="margin-top:0"><b>백업 폴더</b>는 아래 <b>「📂 백업 폴더 선택·변경」</b>으로 지정합니다. 구글 <b>폴더 선택 창</b>이 뜨거나, 폴더 <b>주소(URL) 입력</b> 창이 열립니다. (선택) <code style="font-size:8px">GOOGLE_API_KEY</code>·Picker API가 있으면 클릭으로 고를 수 있습니다.</p>
     <div id="csDriveSettingsStatus" class="cs-api-status" style="margin-bottom:8px"></div>
+    <div class="cs-api-row" style="margin-bottom:8px">
+      <button type="button" class="cs-api-btn" style="background:var(--green);color:#fff;border-color:var(--green);font-weight:700" onclick="csPickOrChangeDriveFolder()">📂 백업 폴더 선택·변경</button>
+    </div>
     <div class="cs-api-row">
       <button type="button" class="cs-api-btn" onclick="csConnectGoogleDrive(false)">드라이브 연결</button>
       <button type="button" class="cs-api-btn ghost" onclick="csConnectGoogleDrive(true)">권한 새로 받기</button>
       <button type="button" class="cs-api-btn ghost" onclick="csDisconnectGoogleDriveFolders()">폴더 연결만 해제</button>
     </div>
-    <p class="cs-api-note" style="margin-top:8px;padding-top:0">클라이언트 ID는 사이트와 동일하게 <code>/api/blog-studio/google-client-config</code> 또는 빌드 주입값을 사용합니다. 로그인 페이지에서 한 번도 구글을 쓰지 않았다면 「드라이브 연결」이 곧 계정 연동입니다.</p>
+    <p class="cs-api-note" style="margin-top:8px;padding-top:0">클라이언트 ID·API 키는 <code>/api/blog-studio/google-client-config</code>에서 내려받습니다. 로그인 페이지에서 구글을 쓰지 않았다면 「드라이브 연결」에서 계정 허용 후 폴더를 고르세요.</p>
+    <div class="cs-api-ttl" style="margin-top:14px;margin-bottom:6px">수동 드라이브 백업</div>
+    <p class="cs-api-desc" style="margin-top:0">자동 저장 외에, 지금 메모리·localStorage 내용을 구글 드라이브 JSON으로 올립니다.</p>
+    <button type="button" class="cs-api-btn" style="width:100%;margin-bottom:8px" onclick="bsDriveSaveScope('all')">전체 백업 (모든 JSON)</button>
+    <div class="cs-api-row" style="flex-wrap:wrap">
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveSaveScope('guidelines')">지침·캐릭터</button>
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveSaveScope('gallery')">원고갤러리</button>
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveSaveScope('publish_files')">발행원고</button>
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveSaveScope('channels_meta')">채널·블록</button>
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveSaveScope('templates')">템플릿</button>
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveSaveScope('renew')">리뉴얼 지침</button>
+    </div>
   </div>
   <div id="aiSettingsAdminNote" class="cs-api-note" style="display:none">
     <b>관리자</b>: OpenAI는 서버 <code>OPENAI_API_KEY</code> 또는 <code>config.js</code> <code>openaiKey</code>. Claude는 <code>ANTHROPIC_API_KEY</code> 또는 <code>anthropicKey</code>.
@@ -1350,6 +1383,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
           <span>분류</span>
         </button>
         <button type="button" class="cs-save-gallery-btn" id="csSaveGalleryBtn" onclick="csSaveFilesToGallery()" disabled title="발행 원고 관리(localStorage)에 저장">저장</button>
+        <button type="button" class="cs-save-gallery-btn" id="csDriveSavePubBtn" onclick="bsDriveSaveScope('publish_files')" title="발행 원고 목록을 구글 드라이브(bs_publish_manuscripts.json)에 저장">드라이브</button>
       </div>
       <div id="pmSavedFilesBundle" class="pm-saved-files-bundle" style="display:none" aria-label="저장된 발행 원고 파일">
         <div class="pm-saved-ttl">📌 저장된 원고 (파일명)</div>
@@ -1410,6 +1444,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
         <span style="display:flex;gap:6px;align-items:center">
           <button type="button" class="cs-cards-collapse-btn" id="csCardsCollapseBtn" onclick="csToggleCardsCollapsed()">카드 접기</button>
           <button type="button" class="cs-cards-collapse-btn" id="csSaveAllCardsBtn" onclick="csSaveAllCards()" style="background:var(--purple);color:#fff;font-weight:700;display:none" title="수정된 모든 카드를 발행 원고에 저장">전체 저장</button>
+          <button type="button" class="cs-cards-collapse-btn" onclick="bsDriveSaveScope('publish_files')" style="display:none;font-size:8px" id="csDriveAfterCardsBtn" title="발행 원고 목록을 구글 드라이브에 저장">💾 드라이브</button>
         </span>
       </div>
       <!-- upper: card grid -->
@@ -1539,6 +1574,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
         <input type="search" id="msGallerySearchInput" class="ms-gallery-search-input" placeholder="날짜·주제·내용·선정 기준 검색…" autocomplete="off" enterkeyhint="search" aria-label="원고 목록 검색" oninput="onMsGallerySearchInput()">
         <button type="button" class="ms-gallery-search-clear" id="msGallerySearchClear" onclick="clearMsGallerySearch()" title="검색어 지우기">✕</button>
         <span class="ms-gallery-search-count" id="msGallerySearchMeta" aria-live="polite"></span>
+        <button type="button" class="pub-bulk-btn" style="margin-left:6px;padding:4px 10px;font-size:8px;flex-shrink:0" onclick="bsDriveSaveScope('gallery')" title="원고 목록·분야를 드라이브에 저장">💾 갤러리→드라이브</button>
       </div>
     </div>
     <div id="msListArea" class="ms-list-wrap">
@@ -1581,6 +1617,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
           <option value="">계정 선택</option>
         </select>
         <button type="button" class="pub-bulk-btn" onclick="document.getElementById('pubChannelPanel').style.display=document.getElementById('pubChannelPanel').style.display==='none'?'block':'none'">채널 관리</button>
+        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:3px 8px" onclick="bsDriveSaveScope('channels_meta')" title="채널·블록 캔버스 로컬 데이터를 드라이브에 저장">💾 채널→드라이브</button>
       </div>
     </div>
     <div id="pubChannelPanel" style="display:none;background:var(--card);border-bottom:1px solid var(--border);padding:12px 14px">
@@ -1647,6 +1684,9 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
         </select>
       </div>
       <div class="pm-meta" id="pmListMeta"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="bsDriveSaveScope('publish_files')" title="발행 원고 스냅샷을 드라이브에 저장">💾 발행원고→드라이브</button>
+      </div>
     </div>
     <div id="pmStageHost" class="pm-stage-host" aria-live="polite">
       <div class="pm-stage-placeholder">왼쪽 패널 <b>저장된 원고</b>에서 파일명을 선택하면 이 영역에 <b>카드</b>와 <b>관리 여부</b>(발행완료·발행전·수정중)가 표시됩니다.</div>
@@ -1744,6 +1784,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
       <button type="button" class="pub-bulk-btn primary" id="renewGenBtn" onclick="renewGenerateManuscript()">리뉴얼 원고 만들기</button>
       <button type="button" class="pub-bulk-btn" onclick="renewCopyOutput()">결과 복사</button>
       <button type="button" class="pub-bulk-btn" onclick="renewClearAll()">초기화</button>
+      <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="bsDriveSaveScope('renew')" title="리뉴얼 추가 지침(localStorage)을 드라이브에 저장">💾 리뉴얼 지침→드라이브</button>
       <span id="renewGenStatus" style="font-size:9px;color:var(--muted);"></span>
     </div>
   </div>
@@ -1760,6 +1801,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
         <span style="flex:1"></span>
         <span id="tplCountLabel" style="font-size:9px;color:var(--muted)"></span>
         <button type="button" class="tpl-add-btn" onclick="tplStartNew()">+ 새 템플릿</button>
+        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="bsDriveSaveScope('templates')" title="커스텀 템플릿을 드라이브에 저장">💾 템플릿→드라이브</button>
       </div>
     </div>
     <div class="tpl-body">
@@ -1848,6 +1890,18 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="bsDriveFolderBackdrop" class="bs-drive-fallback-backdrop" onclick="bsDriveFolderFallbackCancel()" aria-hidden="true">
+  <div class="bs-drive-fallback-dialog" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="bsDriveFolderDlgTtl">
+    <div id="bsDriveFolderDlgTtl" class="bs-dfm-ttl">백업할 드라이브 폴더 지정</div>
+    <p class="bs-dfm-desc">Google Drive에서 폴더를 연 뒤 주소창 URL을 복사해 붙여넣거나, 폴더 ID만 입력하세요.</p>
+    <input type="text" id="bsDriveFolderUrlInput" class="bs-dfm-input" placeholder="https://drive.google.com/drive/folders/..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();bsDriveFolderFallbackSubmit();}" />
+    <div class="bs-dfm-row">
+      <button type="button" class="cs-api-btn" onclick="bsDriveFolderFallbackSubmit()">이 폴더 사용</button>
+      <button type="button" class="cs-api-btn ghost" onclick="bsDriveFolderFallbackCancel()">취소</button>
+    </div>
+    <div id="bsDriveFolderFallbackHint" class="bs-dfm-hint"></div>
+  </div>
+</div>
 
 <script>
 // ════════════════════════════════════════════════════
@@ -4661,8 +4715,7 @@ function bsSharedGuidelinesSystemPrefix(){
   return chunks.length ? chunks.join('\n\n') + '\n\n' : '';
 }
 
-// ── 설정 패널: 구글 드라이브 연결 (index.html 과 동일 스코프·폴더 구조)
-const BS_DRIVE_ROOT_NAME = 'Blog Studio';
+// ── 설정 패널: 구글 드라이브 연결 (OAuth + Google Picker로 폴더 지정)
 function bsGoogleOAuthScopeString(){
   return [
     'https://www.googleapis.com/auth/drive.file',
@@ -4671,55 +4724,187 @@ function bsGoogleOAuthScopeString(){
     'https://www.googleapis.com/auth/userinfo.profile',
   ].join(' ');
 }
-async function bsFetchGoogleClientConfig(){
+async function bsFetchGoogleDriveConfig(){
+  let clientId = '';
+  let apiKey = '';
   const urls = ['/api/blog-studio/google-client-config', '/.netlify/functions/blog-studio-google-client-config'];
   for(let i=0;i<urls.length;i++){
     try{
       const r = await fetch(urls[i], { credentials:'same-origin' });
       if(!r.ok) continue;
       const j = await r.json();
-      if(j && j.ok && String(j.clientId||'').trim()) return String(j.clientId).trim();
+      if(j && j.ok){
+        if(String(j.clientId||'').trim()) clientId = String(j.clientId).trim();
+        if(String(j.apiKey||'').trim()) apiKey = String(j.apiKey).trim();
+        break;
+      }
     }catch(_){}
   }
   try{
     const cfg = JSON.parse(localStorage.getItem('bs_google_config')||'{}');
-    if(cfg && cfg.clientId) return String(cfg.clientId).trim();
+    if(cfg){
+      if(!clientId && cfg.clientId) clientId = String(cfg.clientId).trim();
+      if(!apiKey && cfg.apiKey) apiKey = String(cfg.apiKey).trim();
+    }
   }catch(_){}
+  try{
+    if(!apiKey && window.BS_CONFIG && String(BS_CONFIG.googlePickerApiKey||'').trim())
+      apiKey = String(BS_CONFIG.googlePickerApiKey).trim();
+  }catch(_){}
+  return { clientId, apiKey };
+}
+let __bsPickerApiPromise = null;
+function bsLoadGooglePickerApi(){
+  if(__bsPickerApiPromise) return __bsPickerApiPromise;
+  __bsPickerApiPromise = new Promise(function(resolve, reject){
+    function pickReady(){
+      try{
+        gapi.load('picker', function(){
+          if(typeof google !== 'undefined' && google.picker) resolve();
+          else { __bsPickerApiPromise = null; reject(new Error('Picker API 없음')); }
+        });
+      }catch(e){
+        __bsPickerApiPromise = null;
+        reject(e);
+      }
+    }
+    if(typeof gapi !== 'undefined' && typeof gapi.load === 'function'){
+      pickReady();
+      return;
+    }
+    if(document.querySelector('script[data-bs-gapi-api="1"]')){
+      const t0 = Date.now();
+      const iv = setInterval(function(){
+        if(typeof gapi !== 'undefined' && gapi.load){
+          clearInterval(iv);
+          pickReady();
+        }else if(Date.now() - t0 > 20000){
+          clearInterval(iv);
+          __bsPickerApiPromise = null;
+          reject(new Error('Google API 로드 시간 초과'));
+        }
+      }, 40);
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = 'https://apis.google.com/js/api.js';
+    s.async = true;
+    s.dataset.bsGapiApi = '1';
+    s.onload = pickReady;
+    s.onerror = function(){
+      __bsPickerApiPromise = null;
+      reject(new Error('Google API 스크립트를 불러오지 못했습니다.'));
+    };
+    document.head.appendChild(s);
+  });
+  return __bsPickerApiPromise;
+}
+/** drive.file 스코프에서 Picker로 고른 폴더에만 쓰기 권한이 생김 */
+function bsOpenDriveFolderPicker(accessToken, developerKey){
+  return new Promise(function(resolve, reject){
+    if(!accessToken){
+      reject(new Error('토큰 없음'));
+      return;
+    }
+    const devK = developerKey && String(developerKey).trim() ? String(developerKey).trim() : '';
+    const pickerCallback = function(data){
+      const action = data[google.picker.Response.ACTION];
+      if(action === google.picker.Action.PICKED){
+        const docs = data[google.picker.Response.DOCUMENTS];
+        const d0 = docs && docs[0];
+        if(d0 && d0.id){
+          const mt = d0.mimeType || '';
+          if(mt && mt !== 'application/vnd.google-apps.folder'){
+            reject(new Error('폴더만 선택할 수 있습니다. 파일이 아니라 폴더를 고르세요.'));
+            return;
+          }
+          resolve({ id: d0.id, name: (d0.name && String(d0.name)) || '' });
+        }else{
+          reject(new Error('폴더를 읽지 못했습니다.'));
+        }
+      }else if(action === google.picker.Action.CANCEL){
+        reject(new Error('__PICKER_CANCEL__'));
+      }
+    };
+    const view = new google.picker.DocsView()
+      .setIncludeFolders(true)
+      .setSelectFolderEnabled(true);
+    const builder = new google.picker.PickerBuilder()
+      .addView(view)
+      .setOAuthToken(accessToken)
+      .setTitle('Blog Studio — 백업할 드라이브 폴더 선택')
+      .setCallback(pickerCallback);
+    if(devK) builder.setDeveloperKey(devK);
+    try{ builder.setLocale('ko'); }catch(_){}
+    builder.build().setVisible(true);
+  });
+}
+let __bsDffResolver = null;
+let __bsDffToken = '';
+function bsParseDriveFolderId(text){
+  const t = String(text||'').trim();
+  if(!t) return '';
+  const m = t.match(/drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\/([a-zA-Z0-9_-]+)/);
+  if(m) return m[1];
+  const open = t.match(/\/open\?id=([a-zA-Z0-9_-]+)/);
+  if(open) return open[1];
+  if(/^[a-zA-Z0-9_-]{15,}$/.test(t)) return t;
   return '';
 }
-async function bsFindOrCreateDriveFolder(token, name, parentId){
-  const esc = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  let query = `name='${esc}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
-  if(parentId) query += ` and '${parentId}' in parents`;
-  const searchRes = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`,
-    { headers:{ Authorization:'Bearer '+token }});
-  const searchData = await searchRes.json();
-  if(!searchRes.ok){
-    throw new Error((searchData.error&&searchData.error.message)||('Drive 검색 거부: '+searchRes.status));
-  }
-  if(searchData.files && searchData.files.length) return searchData.files[0].id;
-  const meta = { name, mimeType:'application/vnd.google-apps.folder' };
-  if(parentId) meta.parents = [parentId];
-  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
-    method:'POST',
-    headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' },
-    body: JSON.stringify(meta)
+async function bsVerifyDriveFolder(accessToken, folderId){
+  const fid = String(folderId||'').trim();
+  if(!fid) throw new Error('폴더 ID를 찾을 수 없습니다.');
+  const r = await fetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fid)+'?fields=id,name,mimeType', {
+    headers:{ Authorization:'Bearer '+accessToken }
   });
-  const created = await createRes.json();
-  if(!createRes.ok){
-    throw new Error((created.error&&created.error.message)||('Drive 폴더 생성 실패 '+createRes.status));
-  }
-  if(!created.id) throw new Error('Drive 응답 오류');
-  return created.id;
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error((j.error&&j.error.message)||('Drive API 오류 '+r.status));
+  if(j.mimeType && j.mimeType !== 'application/vnd.google-apps.folder')
+    throw new Error('폴더가 아닙니다. 「폴더」 화면의 링크를 복사했는지 확인하세요.');
+  return { id:j.id, name:String(j.name||'') };
 }
-async function bsInitDriveFolderForStudio(token, email){
-  const rootId = await bsFindOrCreateDriveFolder(token, BS_DRIVE_ROOT_NAME, null);
-  const userFolder = await bsFindOrCreateDriveFolder(token, email, rootId);
-  const teamFolder = await bsFindOrCreateDriveFolder(token, '_team_shared', rootId);
-  sessionStorage.setItem('bs_drive_root', rootId);
-  sessionStorage.setItem('bs_drive_user', userFolder);
-  sessionStorage.setItem('bs_drive_team', teamFolder);
+function bsOpenDriveFolderFallbackUi(accessToken){
+  __bsDffToken = accessToken || '';
+  return new Promise(function(resolve){
+    __bsDffResolver = resolve;
+    const bd = document.getElementById('bsDriveFolderBackdrop');
+    const inp = document.getElementById('bsDriveFolderUrlInput');
+    const hint = document.getElementById('bsDriveFolderFallbackHint');
+    if(hint) hint.textContent = '';
+    if(inp) inp.value = '';
+    if(bd){ bd.classList.add('on'); bd.setAttribute('aria-hidden','false'); }
+    if(inp) setTimeout(function(){ try{ inp.focus(); }catch(_){} }, 80);
+  });
+}
+function bsDriveFolderFallbackCancel(){
+  const bd = document.getElementById('bsDriveFolderBackdrop');
+  if(bd){ bd.classList.remove('on'); bd.setAttribute('aria-hidden','true'); }
+  const fn = __bsDffResolver;
+  __bsDffResolver = null;
+  __bsDffToken = '';
+  if(fn) fn(null);
+}
+async function bsDriveFolderFallbackSubmit(){
+  const inp = document.getElementById('bsDriveFolderUrlInput');
+  const hint = document.getElementById('bsDriveFolderFallbackHint');
+  const raw = (inp && inp.value || '').trim();
+  const id = bsParseDriveFolderId(raw);
+  if(!id){
+    if(hint) hint.textContent = '폴더 URL(…/folders/…) 또는 폴더 ID를 입력하세요.';
+    return;
+  }
+  if(hint) hint.textContent = '확인 중…';
+  try{
+    const v = await bsVerifyDriveFolder(__bsDffToken, id);
+    const bd = document.getElementById('bsDriveFolderBackdrop');
+    if(bd){ bd.classList.remove('on'); bd.setAttribute('aria-hidden','true'); }
+    const fn = __bsDffResolver;
+    __bsDffResolver = null;
+    __bsDffToken = '';
+    if(fn) fn(v);
+  }catch(e){
+    if(hint) hint.textContent = String(e.message||e);
+  }
 }
 function bsReloadDriveSessionFromStorage(){
   try{ driveSession = JSON.parse(sessionStorage.getItem('bs_session')); }catch{ driveSession=null; }
@@ -4754,9 +4939,103 @@ function bsApplySessionToTopbar(){
     if(adminBtn) adminBtn.style.display='none';
   }
   if(logoutBtn) logoutBtn.style.display='';
+  try{ if(typeof bsUpdateTopAiUsageVisibility==='function') bsUpdateTopAiUsageVisibility(); }catch(_){}
+}
+/** .env / Netlify 에 BLOG_STUDIO_ALLOWED_EMAILS 가 있으면 목록 외 이메일은 세션 무효 후 로그인으로 돌림 */
+async function bsEnforceTeamEmailIfConfigured(){
+  try{
+    const s = JSON.parse(sessionStorage.getItem('bs_session')||'{}');
+    const em = String(s.email||'').trim();
+    if(!em) return;
+    const vr = await fetch('/api/blog-studio/verify-team-email', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      credentials:'same-origin',
+      body: JSON.stringify({ email: em })
+    });
+    if(!vr.ok) return;
+    const vj = await vr.json().catch(()=>({}));
+    if(vj.restricted && vj.ok === false){
+      try{
+        sessionStorage.removeItem('bs_session');
+        sessionStorage.removeItem('bs_drive_user');
+        sessionStorage.removeItem('bs_drive_user_label');
+        sessionStorage.removeItem('bs_drive_root');
+        sessionStorage.removeItem('bs_drive_team');
+      }catch(_){}
+      window.location.href = 'index.html';
+    }
+  }catch(_){}
+}
+/**
+ * Picker → 실패 시 URL 입력 모달.
+ * @param opts.forceReselect true면 Picker 취소 시에도 기존 폴더 유지하지 않고 URL 입력으로 진행
+ * @returns {Promise<{id:string,name:string}|null|'keep'>}
+ */
+async function bsRunDriveFolderPickFlow(accessToken, gcfg, opts){
+  const o = opts && typeof opts === 'object' ? opts : {};
+  const forceReselect = !!o.forceReselect;
+  const fresh = await bsFetchGoogleDriveConfig();
+  const apiKey = (fresh.apiKey || (gcfg && gcfg.apiKey) || '').trim();
+  let picked = null;
+  try{
+    await bsLoadGooglePickerApi();
+    picked = await bsOpenDriveFolderPicker(accessToken, apiKey);
+  }catch(pe){
+    const msg = String(pe && pe.message ? pe.message : pe);
+    if(msg === '__PICKER_CANCEL__'){
+      if(!forceReselect && sessionStorage.getItem('bs_drive_user')){
+        return 'keep';
+      }
+      toast('폴더 주소(URL) 입력 창에서 백업 폴더를 지정해 주세요.','ok');
+    }else{
+      console.warn('[Drive Picker]', pe);
+      toast('폴더 선택 창을 쓸 수 없어 주소 입력으로 진행합니다.','warn');
+    }
+  }
+  if(!picked){
+    picked = await bsOpenDriveFolderFallbackUi(accessToken);
+  }
+  if(!picked || !picked.id) return null;
+  return picked;
+}
+function bsApplyPickedDriveFolder(picked){
+  sessionStorage.setItem('bs_drive_user', picked.id);
+  sessionStorage.removeItem('bs_drive_root');
+  sessionStorage.removeItem('bs_drive_team');
+  if(picked.name) sessionStorage.setItem('bs_drive_user_label', picked.name);
+  else sessionStorage.removeItem('bs_drive_user_label');
+}
+/** 이미 구글 토큰이 있을 때: 폴더만 다시 고름 */
+async function csPickOrChangeDriveFolder(){
+  bsReloadDriveSessionFromStorage();
+  if(!driveSession || !driveSession.accessToken){
+    toast('먼저 「드라이브 연결」로 구글 계정을 허용한 뒤 다시 눌러 주세요.','warn');
+    return;
+  }
+  try{
+    const gcfg = await bsFetchGoogleDriveConfig();
+    const result = await bsRunDriveFolderPickFlow(driveSession.accessToken, gcfg, { forceReselect:true });
+    if(result === 'keep'){
+      return;
+    }
+    if(!result){
+      toast('백업 폴더가 선택되지 않았습니다.','warn');
+      csRefreshDriveSettingsUi();
+      return;
+    }
+    bsApplyPickedDriveFolder(result);
+    toast('✓ 백업 폴더: '+(result.name || result.id)+' — 이 폴더에 JSON이 저장됩니다.','ok');
+    saveProjects();
+    csRefreshDriveSettingsUi();
+    bsApplySessionToTopbar();
+  }catch(e){
+    toast('폴더 지정 실패: '+(e.message||e),'err');
+  }
 }
 async function csConnectGoogleDrive(forceConsent){
-  const cid = await bsFetchGoogleClientConfig();
+  const gcfg = await bsFetchGoogleDriveConfig();
+  const cid = gcfg.clientId;
   if(!cid){
     toast('Google 클라이언트 ID를 찾을 수 없습니다. Netlify 환경 변수·빌드 주입 또는 로그인 페이지 설정을 확인하세요.','warn');
     return;
@@ -4787,8 +5066,8 @@ async function csConnectGoogleDrive(forceConsent){
         try{ prev = JSON.parse(sessionStorage.getItem('bs_session')||'{}'); }catch(_){}
         let adminList = [];
         try{
-          const cfg = JSON.parse(localStorage.getItem('bs_google_config')||'{}');
-          adminList = String(cfg.admins||'').split(',').map(function(e){ return e.trim().toLowerCase(); }).filter(Boolean);
+          const cfgLs = JSON.parse(localStorage.getItem('bs_google_config')||'{}');
+          adminList = String(cfgLs.admins||'').split(',').map(function(e){ return e.trim().toLowerCase(); }).filter(Boolean);
         }catch(_){}
         const isAdmin = adminList.indexOf(String(user.email).toLowerCase())>=0 || !!prev.isAdmin;
         const session = {
@@ -4800,14 +5079,29 @@ async function csConnectGoogleDrive(forceConsent){
           loginAt: Date.now(),
         };
         sessionStorage.setItem('bs_session', JSON.stringify(session));
-        await bsInitDriveFolderForStudio(accessToken, user.email);
         driveSession = session;
-        toast('✓ 구글 드라이브가 연결되었습니다. 지침·캐릭터를 저장하면 드라이브에도 반영됩니다.','ok');
+
+        const result = await bsRunDriveFolderPickFlow(accessToken, gcfg, { forceReselect:false });
+        if(result === 'keep'){
+          toast('기존에 연결된 드라이브 폴더를 유지합니다.','ok');
+          saveProjects();
+          csRefreshDriveSettingsUi();
+          bsApplySessionToTopbar();
+          return;
+        }
+        if(!result){
+          toast('드라이브 백업 폴더가 지정되지 않았습니다. 「📂 백업 폴더 선택·변경」 또는 「드라이브 연결」을 다시 시도해 주세요.','warn');
+          csRefreshDriveSettingsUi();
+          bsApplySessionToTopbar();
+          return;
+        }
+        bsApplyPickedDriveFolder(result);
+        toast('✓ 드라이브 폴더 연결: '+(result.name || result.id)+' — 저장·백업 시 이 폴더를 사용합니다.','ok');
         saveProjects();
         csRefreshDriveSettingsUi();
         bsApplySessionToTopbar();
       }catch(e){
-        toast('드라이브 폴더 설정 실패: '+(e.message||e),'err');
+        toast('드라이브 연결 실패: '+(e.message||e),'err');
       }
     },
     error_callback: function(){ toast('로그인이 취소되었거나 오류가 났습니다.','warn'); }
@@ -4821,6 +5115,7 @@ async function csConnectGoogleDrive(forceConsent){
 function csDisconnectGoogleDriveFolders(){
   sessionStorage.removeItem('bs_drive_root');
   sessionStorage.removeItem('bs_drive_user');
+  sessionStorage.removeItem('bs_drive_user_label');
   sessionStorage.removeItem('bs_drive_team');
   bsReloadDriveSessionFromStorage();
   toast('드라이브 폴더 ID만 제거했습니다. 로그인 세션은 유지됩니다.','ok');
@@ -4835,7 +5130,10 @@ function csRefreshDriveSettingsUi(){
   const em = (driveSession && driveSession.email) ? driveSession.email : '';
   if(hasTok && folder){
     el.className = 'cs-api-status';
-    el.textContent = '✓ 연결됨 · '+(em||'구글 계정')+' · 드라이브 폴더 준비됨';
+    const lab = sessionStorage.getItem('bs_drive_user_label');
+    const fid = String(folder);
+    const idHint = fid.length > 12 ? ('ID …'+fid.slice(-10)) : ('ID '+fid);
+    el.textContent = '✓ 연결됨 · '+(em||'구글 계정')+' · 백업 폴더: '+(lab ? lab+' ('+idHint+')' : idHint);
   }else if(hasTok && !folder){
     el.className = 'cs-api-status warn';
     el.textContent = '△ 토큰은 있으나 드라이브 폴더가 없습니다. 「드라이브 연결」을 눌러 주세요.';
@@ -4845,42 +5143,96 @@ function csRefreshDriveSettingsUi(){
   }
 }
 
-// 드라이브에 JSON 파일 저장
+// 드라이브에 JSON 파일 저장 — 성공 시 true
 async function saveToDrive(filename, data){
-  if(!driveSession) return;
+  bsReloadDriveSessionFromStorage();
+  if(!driveSession) return false;
   const token = driveSession.accessToken;
   const folderId = sessionStorage.getItem('bs_drive_user');
-  if(!token || !folderId) return;
+  if(!token || !folderId) return false;
   try{
-    // 기존 파일 찾기
     const q = `name='${filename}' and '${folderId}' in parents and trashed=false`;
     const searchRes = await fetch(
       `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)`,
       { headers:{ Authorization:'Bearer '+token }}
     );
-    if(!searchRes.ok){ if(searchRes.status===401){ sessionStorage.removeItem('bs_session'); driveSession=null; if(typeof toast==='function')toast('로그인이 만료되었습니다. 다시 로그인해 주세요.','err'); } return; }
+    if(!searchRes.ok){
+      if(searchRes.status===401){ sessionStorage.removeItem('bs_session'); driveSession=null; if(typeof toast==='function')toast('로그인이 만료되었습니다. 다시 로그인해 주세요.','err'); }
+      return false;
+    }
     const searchData = await searchRes.json();
     const content = JSON.stringify(data, null, 2);
     const blob = new Blob([content], {type:'application/json'});
 
     if(searchData.files && searchData.files.length > 0){
-      // 업데이트
       const fileId = searchData.files[0].id;
-      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+      const up = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
         method:'PATCH', headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' },
         body: content
       });
-    } else {
-      // 신규 생성
-      const meta = JSON.stringify({ name:filename, parents:[folderId] });
-      const form = new FormData();
-      form.append('metadata', new Blob([meta],{type:'application/json'}));
-      form.append('file', blob);
-      await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method:'POST', headers:{ Authorization:'Bearer '+token }, body:form
-      });
+      if(!up.ok){ console.warn('Drive PATCH', filename, up.status); return false; }
+      return true;
     }
-  }catch(e){ console.warn('Drive 저장 실패, localStorage 사용:', e); }
+    const meta = JSON.stringify({ name:filename, parents:[folderId] });
+    const form = new FormData();
+    form.append('metadata', new Blob([meta],{type:'application/json'}));
+    form.append('file', blob);
+    const up = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method:'POST', headers:{ Authorization:'Bearer '+token }, body:form
+    });
+    if(!up.ok){ console.warn('Drive POST', filename, up.status); return false; }
+    return true;
+  }catch(e){ console.warn('Drive 저장 실패:', e); return false; }
+}
+
+function bsDriveReady(){
+  bsReloadDriveSessionFromStorage();
+  return !!(driveSession && driveSession.accessToken && sessionStorage.getItem('bs_drive_user'));
+}
+
+/** scope: guidelines | gallery | publish_files | channels_meta | templates | renew | all */
+async function bsDriveSaveScope(scope){
+  if(!bsDriveReady()){
+    toast('⚙ 설정에서 구글 드라이브를 먼저 연결하세요.','warn');
+    return;
+  }
+  let ok = 0, fail = 0;
+  async function bump(name, payload){
+    if(await saveToDrive(name, payload)) ok++; else fail++;
+  }
+  try{
+    if(scope==='guidelines' || scope==='all'){
+      await bump('bs_projects.json', projects);
+      await bump('bs_characters.json', characters);
+    }
+    if(scope==='gallery' || scope==='all'){
+      await bump('bs_manuscripts.json', manuscripts);
+      await bump('bs_ms_categories.json', msCategories);
+    }
+    if(scope==='publish_files' || scope==='all'){
+      await bump('bs_publish_manuscripts.json', publishManuscripts);
+    }
+    if(scope==='channels_meta' || scope==='all'){
+      await bump('bs_channels.json', memberChannels);
+      await bump('bs_blockcanvas.json', blockCanvas);
+    }
+    if(scope==='templates' || scope==='all'){
+      const tpl = (typeof tplCustomTemplates!=='undefined' && Array.isArray(tplCustomTemplates)) ? tplCustomTemplates : [];
+      await bump('bs_templates_custom.json', tpl);
+    }
+    if(scope==='renew' || scope==='all'){
+      let t = '';
+      try{ t = localStorage.getItem(RENEW_SUPPLEMENT_SK)||''; }catch(_){}
+      await bump('bs_renew_supplement.json', { text: t, savedAt: new Date().toISOString() });
+    }
+    if(fail){
+      toast('드라이브 저장: 성공 '+ok+' · 실패 '+fail+' (권한·네트워크 확인)','warn');
+    }else{
+      toast('✓ 드라이브에 저장했습니다 ('+ok+'개 파일)','ok');
+    }
+  }catch(e){
+    toast('드라이브 저장 오류: '+(e.message||e),'err');
+  }
 }
 
 // 드라이브에서 JSON 파일 읽기
@@ -7123,6 +7475,99 @@ function getWritingAiProvider(){
 function getWritingAiLabel(){
   return getWritingAiProvider()==='claude'?'Claude':'OpenAI (GPT)';
 }
+/** 로그인 이메일(또는 anon)별 누적 — 공식 청구서와 다를 수 있는 추정치 */
+function bsAiUsageLedgerKey(){
+  try{
+    const s=JSON.parse(sessionStorage.getItem('bs_session')||'{}');
+    const e=String(s.email||s.userEmail||'').trim().toLowerCase();
+    return e?('bs_ai_usage_'+e):'bs_ai_usage_anon';
+  }catch(_){ return 'bs_ai_usage_anon'; }
+}
+function bsLoadAiUsageLedger(){
+  try{
+    const d=JSON.parse(localStorage.getItem(bsAiUsageLedgerKey())||'{}');
+    return{
+      openai:{ usd:+d.openai?.usd||0, inTok:+d.openai?.inTok||0, outTok:+d.openai?.outTok||0 },
+      anthropic:{ usd:+d.anthropic?.usd||0, inTok:+d.anthropic?.inTok||0, outTok:+d.anthropic?.outTok||0 }
+    };
+  }catch(_){
+    return{ openai:{ usd:0,inTok:0,outTok:0 }, anthropic:{ usd:0,inTok:0,outTok:0 } };
+  }
+}
+function bsSaveAiUsageLedger(L){
+  try{ localStorage.setItem(bsAiUsageLedgerKey(), JSON.stringify(L)); }catch(_){}
+}
+/** USD per 1M tokens — 대략값(공급사 가격 변동 시 코드·config 조정) */
+function bsOpenAiPricePerM(model){
+  const m=String(model||'').toLowerCase();
+  if(m.indexOf('gpt-4o-mini')>=0) return{ in:0.15, out:0.60 };
+  if(m.indexOf('gpt-4o')>=0&&!m.includes('mini')) return{ in:2.50, out:10.0 };
+  if(m.indexOf('gpt-3.5')>=0) return{ in:0.50, out:1.50 };
+  return{ in:0.15, out:0.60 };
+}
+function bsAnthropicPricePerM(model){
+  const m=String(model||'').toLowerCase();
+  if(m.indexOf('opus')>=0) return{ in:15, out:75 };
+  if(m.indexOf('haiku')>=0) return{ in:0.80, out:4 };
+  return{ in:3, out:15 };
+}
+function bsRecordOpenAiUsageFromResponse(data){
+  if(!data||!data.usage) return;
+  const pt=+data.usage.prompt_tokens||0;
+  const ct=+data.usage.completion_tokens||0;
+  if(pt<=0&&ct<=0) return;
+  const model=String(data.model||'gpt-4o-mini');
+  const pr=bsOpenAiPricePerM(model);
+  const addUsd=(pt/1e6)*pr.in+(ct/1e6)*pr.out;
+  const L=bsLoadAiUsageLedger();
+  L.openai.usd+=addUsd;
+  L.openai.inTok+=pt;
+  L.openai.outTok+=ct;
+  bsSaveAiUsageLedger(L);
+  bsRefreshTopAiUsageDisplay();
+}
+function bsRecordAnthropicUsageFromResponse(data){
+  if(!data||!data.usage) return;
+  const it=+data.usage.input_tokens||0;
+  const ot=+data.usage.output_tokens||0;
+  if(it<=0&&ot<=0) return;
+  const model=String(data.model||'');
+  const pr=bsAnthropicPricePerM(model);
+  const addUsd=(it/1e6)*pr.in+(ot/1e6)*pr.out;
+  const L=bsLoadAiUsageLedger();
+  L.anthropic.usd+=addUsd;
+  L.anthropic.inTok+=it;
+  L.anthropic.outTok+=ot;
+  bsSaveAiUsageLedger(L);
+  bsRefreshTopAiUsageDisplay();
+}
+function bsFmtUsdShort(n){
+  const x=+n||0;
+  if(x>0&&x<0.0005) return '~<$0.001';
+  return '~$'+x.toFixed(3);
+}
+function bsRefreshTopAiUsageDisplay(){
+  const wrap=document.getElementById('topAiUsagePill');
+  const eg=document.getElementById('topAiUsageGpt');
+  const ec=document.getElementById('topAiUsageClaude');
+  if(!wrap||!eg||!ec) return;
+  const L=bsLoadAiUsageLedger();
+  eg.textContent='GPT '+bsFmtUsdShort(L.openai.usd);
+  ec.textContent='Claude '+bsFmtUsdShort(L.anthropic.usd);
+  wrap.title='이 브라우저·계정 기준 누적 추정 요금(토큰×공개 단가). 실제 청구와 다를 수 있습니다. '
+    +'OpenAI: 입력 '+L.openai.inTok.toLocaleString()+' · 출력 '+L.openai.outTok.toLocaleString()+' 토큰. '
+    +'Claude: 입력 '+L.anthropic.inTok.toLocaleString()+' · 출력 '+L.anthropic.outTok.toLocaleString()+' 토큰.';
+}
+function bsUpdateTopAiUsageVisibility(){
+  const wrap=document.getElementById('topAiUsagePill');
+  if(!wrap) return;
+  if(typeof csCanUseAiApis==='function'&&csCanUseAiApis()){
+    wrap.style.display='flex';
+    bsRefreshTopAiUsageDisplay();
+  }else{
+    wrap.style.display='none';
+  }
+}
 function syncAiSettingsFormToDom(){
   const pr=getAiPrefs();
   const c=document.getElementById('prefAiClassify');
@@ -7188,6 +7633,7 @@ function initAiSettingsUI(){
   syncAiSettingsFormToDom();
   csRefreshClassifyHint();
   csRefreshDriveSettingsUi();
+  try{ if(typeof bsUpdateTopAiUsageVisibility==='function') bsUpdateTopAiUsageVisibility(); }catch(_){}
 }
 function csMemberOpenAIStorageKey(){
   try{
@@ -7600,6 +8046,7 @@ async function csOpenAIChat(messages, chatOpts){
   });
   const data=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(typeof data.error==='string'?data.error:(data.error&&data.error.message)||JSON.stringify(data.error||data));
+  if(data.usage) bsRecordOpenAiUsageFromResponse({ usage:data.usage, model:data.model||'gpt-4o-mini' });
   return data.text||'';
 }
 async function csAnthropicChat(system,userText,chatOpts){
@@ -7633,6 +8080,7 @@ async function csAnthropicChat(system,userText,chatOpts){
   });
   const data=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(typeof data.error==='string'?data.error:(data.error&&data.error.message)||JSON.stringify(data.error||data));
+  if(data.usage) bsRecordAnthropicUsageFromResponse({ usage:data.usage, model:data.model||model });
   return data.text||'';
 }
 /** Claude 멀티모달: content는 API와 동일한 블록 배열(이미지+텍스트 등) */
@@ -7665,6 +8113,7 @@ async function csAnthropicUserBlocks(system,userContentBlocks){
   });
   const data=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(typeof data.error==='string'?data.error:(data.error&&data.error.message)||JSON.stringify(data.error||data));
+  if(data.usage) bsRecordAnthropicUsageFromResponse({ usage:data.usage, model:data.model||model });
   return data.text||'';
 }
 function csParseAiStudioPatch(text){
@@ -8959,6 +9408,7 @@ function csRenderCardsGrid(){
     const tb=document.getElementById('csCardsToolbar');if(tb) tb.classList.remove('show');
     ['csCardPublishBadge','csFinalizeStudioBtn','csDraftStudioBtn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
     const saveAllBtn0=document.getElementById('csSaveAllCardsBtn'); if(saveAllBtn0) saveAllBtn0.style.display='none';
+    const driveAfter0=document.getElementById('csDriveAfterCardsBtn'); if(driveAfter0) driveAfter0.style.display='none';
     g.innerHTML='<div class="cs-empty-state"><div class="cs-es-icon">📭</div><div class="cs-es-text">분류 결과가 없습니다</div></div>';
     return;
   }
@@ -8966,7 +9416,10 @@ function csRenderCardsGrid(){
   csSyncCardsCollapsedUi();
   const pubAccSel=(document.getElementById('pubFilterAccount')||{}).value||'';
   const saveAllBtn=document.getElementById('csSaveAllCardsBtn');
-  if(saveAllBtn) saveAllBtn.style.display=(csCards.length && pubAccSel)?'':'none';
+  const driveAfter=document.getElementById('csDriveAfterCardsBtn');
+  const showSaveAll=(csCards.length && pubAccSel)?'':'none';
+  if(saveAllBtn) saveAllBtn.style.display=showSaveAll;
+  if(driveAfter) driveAfter.style.display=showSaveAll;
   g.innerHTML=csCards.map((c,idx)=>{
     const num=String(idx+1).padStart(2,'0');
     const chLabel=c.channel?(c.channel+(c.channelType?' · '+c.channelType:'')):(CS_TYPE_LABELS[c.type]||'기타');
@@ -12170,6 +12623,17 @@ function toast(msg,type='ok'){
 // ── INIT ──
 bsApplySessionToTopbar();
 if(typeof initAiSettingsUI==='function') initAiSettingsUI();
+try{ if(typeof bsUpdateTopAiUsageVisibility==='function') bsUpdateTopAiUsageVisibility(); }catch(_){}
+try{ bsEnforceTeamEmailIfConfigured(); }catch(_){}
+try{
+  const sp = new URLSearchParams(window.location.search||'');
+  if(sp.get('driveSetup')==='1'){
+    const clean = window.location.pathname + (window.location.hash||'');
+    if(window.history && window.history.replaceState) window.history.replaceState({}, '', clean);
+    if(typeof toggleAiSettingsPanel==='function') toggleAiSettingsPanel();
+    if(typeof toast==='function') toast('구글 로그인 완료. 아래 초록색 「📂 백업 폴더 선택·변경」 또는 「드라이브 연결」로 폴더를 지정하세요.','ok');
+  }
+}catch(_){}
 
 function doLogout(){
   if(!confirm('로그아웃 하시겠습니까?')) return;

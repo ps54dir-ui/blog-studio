@@ -625,6 +625,23 @@ async function handleToken(accessToken){
       return;
     }
 
+    try{
+      const vr = await fetch('/api/blog-studio/verify-team-email', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        credentials:'same-origin',
+        body: JSON.stringify({ email: user.email })
+      });
+      if(vr.ok){
+        const vj = await vr.json().catch(()=>({}));
+        if(vj.restricted && vj.ok === false){
+          showLoading(false);
+          showError('이 구글 계정은 허용된 팀 목록에 없습니다. <code style="font-size:9px">BLOG_STUDIO_ALLOWED_EMAILS</code>에 이메일을 추가하거나 관리자에게 문의하세요.');
+          return;
+        }
+      }
+    }catch(_){ /* 정적 호스팅 등 API 없으면 기존과 동일 */ }
+
     const cfg = getConfig();
     const adminList = (cfg.admins||'').split(',').map(e=>e.trim().toLowerCase()).filter(Boolean);
     const isAdmin = adminList.includes(user.email.toLowerCase());
@@ -639,81 +656,19 @@ async function handleToken(accessToken){
       loginAt: Date.now(),
     };
     sessionStorage.setItem('bs_session', JSON.stringify(session));
+    /* 백업 폴더는 스튜디오 ⚙ 설정 → 「드라이브 연결」에서만 지정 (Picker 또는 폴더 URL 입력) */
+    sessionStorage.removeItem('bs_drive_root');
+    sessionStorage.removeItem('bs_drive_user');
+    sessionStorage.removeItem('bs_drive_user_label');
+    sessionStorage.removeItem('bs_drive_team');
 
-    // 드라이브 폴더 초기화 (실패해도 세션은 유지 — 수동으로 스튜디오 이동 가능)
-    try{
-      await initDriveFolder(accessToken, user.email);
-    }catch(driveErr){
-      showLoading(false);
-      showError('구글 로그인은 되었으나 <b>드라이브 폴더</b>를 만들 수 없습니다.<br>'+
-        String(driveErr.message||driveErr)+
-        '<br><br>→ Google Cloud에서 <b>Google Drive API</b> 사용 설정, OAuth 클라이언트의 <b>JavaScript 원본</b>에 지금 주소(<code style="font-size:9px">'+location.origin+'</code>)가 들어가 있는지 확인하세요.'+
-        '<br><br><a href="./blog-studio-v7.html" style="display:inline-block;margin-top:10px;padding:8px 16px;background:var(--purple);color:#fff;border-radius:8px;text-decoration:none;font-weight:600">드라이브 없이 스튜디오로 이동</a>');
-      return;
-    }
-
-    // 리다이렉트
-    window.location.href = './blog-studio-v7.html';
+    window.location.href = './blog-studio-v7.html?driveSetup=1';
 
   }catch(e){
     showLoading(false);
     showError('로그인 처리 중 오류가 났습니다.<br>'+String(e.message||e)+
       '<br><br><small style="color:var(--muted)">file:// 로 열면 구글 로그인이 막힐 수 있습니다. 로컬 서버(npm run dev 등)로 http(s) 주소에서 여세요.</small>');
   }
-}
-
-// ══════════════════════════════════════
-// 구글 드라이브 폴더 초기화
-// ══════════════════════════════════════
-const DRIVE_ROOT = 'Blog Studio';
-
-async function initDriveFolder(token, email){
-  // Blog Studio 루트 폴더 확인/생성
-  let rootId = await findOrCreateFolder(token, DRIVE_ROOT, null);
-  // 사용자 개인 폴더
-  let userFolder = await findOrCreateFolder(token, email, rootId);
-  // 공유 팀 폴더 (관리자용)
-  let teamFolder = await findOrCreateFolder(token, '_team_shared', rootId);
-
-  sessionStorage.setItem('bs_drive_root', rootId);
-  sessionStorage.setItem('bs_drive_user', userFolder);
-  sessionStorage.setItem('bs_drive_team', teamFolder);
-}
-
-async function findOrCreateFolder(token, name, parentId){
-  const esc = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  let query = `name='${esc}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
-  if(parentId) query += ` and '${parentId}' in parents`;
-
-  const searchRes = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`,
-    { headers:{ Authorization:'Bearer '+token }}
-  );
-  const searchData = await searchRes.json();
-  if(!searchRes.ok){
-    throw new Error('Drive 검색 거부: '+(searchData.error?.message||searchRes.status+' '+searchRes.statusText));
-  }
-
-  if(searchData.files && searchData.files.length > 0){
-    return searchData.files[0].id;
-  }
-
-  const meta = { name, mimeType:'application/vnd.google-apps.folder' };
-  if(parentId) meta.parents = [parentId];
-
-  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
-    method:'POST',
-    headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' },
-    body: JSON.stringify(meta)
-  });
-  const created = await createRes.json();
-  if(!createRes.ok){
-    throw new Error((created.error&&created.error.message)||'Drive 폴더 생성 실패 '+createRes.status);
-  }
-  if(!created.id){
-    throw new Error('Drive 응답 오류: '+JSON.stringify(created).slice(0,200));
-  }
-  return created.id;
 }
 
 // ══════════════════════════════════════
@@ -747,6 +702,7 @@ function clearSessionAndReload(){
   sessionStorage.removeItem('bs_session');
   sessionStorage.removeItem('bs_drive_root');
   sessionStorage.removeItem('bs_drive_user');
+  sessionStorage.removeItem('bs_drive_user_label');
   sessionStorage.removeItem('bs_drive_team');
   location.reload();
 }

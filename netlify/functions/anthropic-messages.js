@@ -97,7 +97,12 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: headersJson,
-      body: JSON.stringify({ ok: true, text })
+      body: JSON.stringify({
+        ok: true,
+        text,
+        usage: data.usage || null,
+        model: data.model || model
+      })
     };
   } catch (e) {
     console.error('[anthropic-messages]', e);

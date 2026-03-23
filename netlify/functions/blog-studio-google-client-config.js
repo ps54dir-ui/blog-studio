@@ -20,9 +20,14 @@ exports.handler = async (event) => {
     ''
   ).trim();
   const admins = (process.env.BLOG_STUDIO_GOOGLE_ADMINS || '').trim();
+  const apiKey = (
+    process.env.BLOG_STUDIO_GOOGLE_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    ''
+  ).trim();
   return {
     statusCode: 200,
     headers,
-    body: JSON.stringify({ ok: true, clientId, admins }),
+    body: JSON.stringify({ ok: true, clientId, admins, apiKey }),
   };
 };
