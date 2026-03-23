@@ -389,7 +389,12 @@ h1{
     <div class="step-num">3</div>
     <div class="step-content">
       <h3>OAuth 동의 화면 설정</h3>
-      <p>API 및 서비스 → OAuth 동의 화면 → 외부 선택 → 앱 이름: "Blog Studio" → 저장</p>
+      <p>API 및 서비스 → OAuth 동의 화면 → 외부 선택 → 앱 이름: "Blog Studio" → 저장<br><br>
+      <strong>데이터 액세스(범위)</strong>에서 아래를 추가하세요. (없으면 드라이브 폴더 검색 시 <code>insufficient authentication scopes</code> 오류가 납니다.)<br>
+      <code>…/auth/drive.file</code> (앱이 만든/연 파일)<br>
+      <code>…/auth/drive.metadata.readonly</code> (드라이브 목록·검색)<br>
+      <code>email</code>, <code>profile</code><br><br>
+      범위를 바꾼 뒤에는 사용자가 <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" style="color:var(--accent)">Google 계정 → 보안 → 타사 앱</a>에서 Blog Studio 접근을 제거한 다음 <strong>다시 로그인</strong>해야 새 권한이 적용됩니다.</p>
     </div>
   </div>
 
@@ -582,6 +587,7 @@ async function signInWithGoogle(){
     client_id: cfg.clientId,
     scope: [
       'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/drive.metadata.readonly',
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
     ].join(' '),
