@@ -10,6 +10,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b4fa0'><text y='18' font-size='18'>✦</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="config.js"></script>
 <style>
 :root{
@@ -264,6 +265,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 .pm-manage-badge.done{background:rgba(45,106,74,.15);color:var(--green);border:1px solid rgba(45,106,74,.3);}
 .pm-manage-badge.ready{background:rgba(146,99,10,.15);color:var(--amber);border:1px solid rgba(146,99,10,.3);}
 .pm-manage-badge.editing{background:rgba(29,78,137,.12);color:var(--blue);border:1px solid rgba(29,78,137,.25);}
+.pm-manage-badge.hold{background:rgba(180,60,60,.12);color:#b43c3c;border:1px solid rgba(180,60,60,.3);}
 .pm-manage-card{cursor:pointer;}
 .pm-manage-card-sel{border-color:var(--purple);box-shadow:0 0 0 2px rgba(107,79,160,.25);}
 .pm-manage-detail-wrap{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
@@ -978,7 +980,7 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 .cs-prompt-list::-webkit-scrollbar-thumb{background:var(--border);}
 .cs-prompt-item{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;}
 .cs-prompt-item-h{padding:8px 10px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:space-between;background:rgba(107,79,160,.04);cursor:pointer;}
-.cs-prompt-item-b{padding:10px;font-size:10px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;font-family:'DM Mono',monospace;background:var(--bg);}
+.cs-prompt-item-b{padding:10px;font-size:10px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:min(60vh,480px);overflow-y:auto;font-family:'DM Mono',monospace;background:var(--bg);}
 .cs-prompt-copy-all{padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:8px;}
 /* Publish panel — 운영용 발행 컨트롤 센터 */
 #spPub{flex-direction:column;background:var(--bg);min-height:0;}
@@ -1254,8 +1256,8 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
 
 <div class="ai-settings-backdrop" id="aiSettingsBackdrop" onclick="closeAiSettingsPanel()"></div>
 <div class="ai-settings-panel" id="aiSettingsPanel" onclick="event.stopPropagation()">
-  <div class="ai-set-ttl">AI · API 설정</div>
-  <p class="ai-set-intro">회원은 기본 <b>GPT(OpenAI)</b>. Claude를 쓰려면 엔진을 고르고 Anthropic 키를 저장하세요. 이 브라우저·계정별 <code style="font-size:8px">localStorage</code>에 저장됩니다.</p>
+  <div class="ai-set-ttl">AI · API · 드라이브</div>
+  <p class="ai-set-intro">회원은 기본 <b>GPT(OpenAI)</b>. Claude를 쓰려면 엔진을 고르고 키를 저장하세요. <b>구글 드라이브</b>를 연결하면 지침·캐릭터 JSON이 본인 드라이브에도 동기화됩니다.</p>
   <div class="ai-settings-row">
     <label for="prefAiClassify">콘텐츠 스튜디오 · 파일 분류</label>
     <select id="prefAiClassify" class="cs-api-input" style="width:100%;box-sizing:border-box;max-width:none" onchange="onPrefAiClassifyChange()">
@@ -1290,6 +1292,18 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
       <button type="button" class="cs-api-btn ghost" onclick="csClearMemberAnthropicKey()">삭제</button>
     </div>
     <div id="csMemberAnthropicStatus" class="cs-api-status"></div>
+  </div>
+  <hr class="ai-set-hr">
+  <div class="cs-api_panel" style="margin-top:0">
+    <div class="cs-api-ttl" style="margin-bottom:6px">📁 구글 드라이브 <span style="font-weight:400;color:var(--muted)">(회원)</span></div>
+    <p class="cs-api-desc" style="margin-top:0">로그인 시 폴더 생성에 실패했거나, 나중에 연결하려면 아래에서 구글 계정을 다시 허용하세요. <code style="font-size:8px">bs_projects.json</code> · <code style="font-size:8px">bs_characters.json</code>이 본인 드라이브에 저장됩니다.</p>
+    <div id="csDriveSettingsStatus" class="cs-api-status" style="margin-bottom:8px"></div>
+    <div class="cs-api-row">
+      <button type="button" class="cs-api-btn" onclick="csConnectGoogleDrive(false)">드라이브 연결</button>
+      <button type="button" class="cs-api-btn ghost" onclick="csConnectGoogleDrive(true)">권한 새로 받기</button>
+      <button type="button" class="cs-api-btn ghost" onclick="csDisconnectGoogleDriveFolders()">폴더 연결만 해제</button>
+    </div>
+    <p class="cs-api-note" style="margin-top:8px;padding-top:0">클라이언트 ID는 사이트와 동일하게 <code>/api/blog-studio/google-client-config</code> 또는 빌드 주입값을 사용합니다. 로그인 페이지에서 한 번도 구글을 쓰지 않았다면 「드라이브 연결」이 곧 계정 연동입니다.</p>
   </div>
   <div id="aiSettingsAdminNote" class="cs-api-note" style="display:none">
     <b>관리자</b>: OpenAI는 서버 <code>OPENAI_API_KEY</code> 또는 <code>config.js</code> <code>openaiKey</code>. Claude는 <code>ANTHROPIC_API_KEY</code> 또는 <code>anthropicKey</code>.
@@ -1393,7 +1407,10 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
     <div class="cs-mid-pane on" id="csMidPane0">
       <div class="cs-cards-toolbar" id="csCardsToolbar" aria-label="카드 영역 도구">
         <span class="cs-cards-toolbar-l">분류 카드 <span style="font-weight:400;color:var(--muted)">· 한 화면에 맞춤</span></span>
-        <button type="button" class="cs-cards-collapse-btn" id="csCardsCollapseBtn" onclick="csToggleCardsCollapsed()">카드 접기</button>
+        <span style="display:flex;gap:6px;align-items:center">
+          <button type="button" class="cs-cards-collapse-btn" id="csCardsCollapseBtn" onclick="csToggleCardsCollapsed()">카드 접기</button>
+          <button type="button" class="cs-cards-collapse-btn" id="csSaveAllCardsBtn" onclick="csSaveAllCards()" style="background:var(--purple);color:#fff;font-weight:700;display:none" title="수정된 모든 카드를 발행 원고에 저장">전체 저장</button>
+        </span>
       </div>
       <!-- upper: card grid -->
       <div class="cs-upper" id="csUpperCards">
@@ -1487,19 +1504,11 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
     </div>
     <!-- PAGE 1: 프롬프트 모음 -->
     <div class="cs-mid-pane" id="csMidPane1">
-      <div class="cs-prompt-mode-bar" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.02)">
-        <span style="font-size:9px;color:var(--muted);margin-right:4px">출력 모드</span>
-        <button type="button" class="cs-pm-btn on" data-cs-pm="all" onclick="csSetPromptLayerFilter('all')">전체</button>
-        <button type="button" class="cs-pm-btn" data-cs-pm="raw" onclick="csSetPromptLayerFilter('raw')">RAW 원본</button>
-        <button type="button" class="cs-pm-btn" data-cs-pm="view" onclick="csSetPromptLayerFilter('view')">VIEW 표시</button>
-        <button type="button" class="cs-pm-btn" data-cs-pm="generated" onclick="csSetPromptLayerFilter('generated')">GENERATED 제안</button>
-      </div>
+      <div id="csPromptStats" style="display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:4px 10px;font-size:9px;color:var(--muted);border-bottom:1px solid var(--border);background:rgba(0,0,0,.015)"></div>
       <div class="cs-prompt-filters" id="csPromptFilters">
-        <button class="cs-pf-btn on" onclick="csFilterPrompts('all')">전체</button>
+        <button class="cs-pf-btn on" onclick="csFilterPrompts('image_video')">🖼🎬 이미지·영상</button>
         <button class="cs-pf-btn" onclick="csFilterPrompts('image')">🖼 이미지</button>
         <button class="cs-pf-btn" onclick="csFilterPrompts('video')">🎬 영상</button>
-        <button class="cs-pf-btn" onclick="csFilterPrompts('voice')">🎙 음성</button>
-        <button class="cs-pf-btn" onclick="csFilterPrompts('bgm')">🎵 BGM/SFX</button>
       </div>
       <div class="cs-prompt-list" id="csPromptList">
         <div class="cs-empty-state"><div class="cs-es-icon">📦</div><div class="cs-es-text">분류 후 프롬프트가 여기에 정리됩니다</div></div>
@@ -1568,24 +1577,27 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
         <button type="button" class="pub-sum-card" data-pub-sum="failed" onclick="pubSetSummaryFilter('failed')"><span class="pub-sum-n" id="pubSumFail">0</span><span class="pub-sum-l">실패</span></button>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <select id="pubFilterAccount" onchange="pubApplyFilters()" style="font-size:10px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--card)">
+          <option value="">계정 선택</option>
+        </select>
         <button type="button" class="pub-bulk-btn" onclick="document.getElementById('pubChannelPanel').style.display=document.getElementById('pubChannelPanel').style.display==='none'?'block':'none'">채널 관리</button>
       </div>
     </div>
-    <div id="pubChannelPanel" style="display:none;background:var(--card);border-bottom:1px solid var(--border);padding:10px 14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:700">채널 연결</span>
+    <div id="pubChannelPanel" style="display:none;background:var(--card);border-bottom:1px solid var(--border);padding:12px 14px">
+      <!-- 상단 헤더 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="font-size:12px;font-weight:700">계정 · 채널 관리</span>
         <span style="flex:1"></span>
-        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:3px 8px" onclick="pubRefreshChannelConns()">새로고침</button>
+        <button type="button" class="pub-bulk-btn" style="font-size:9px;padding:3px 10px" onclick="pubRefreshChannelConns()">새로고침</button>
       </div>
-      <div id="pubChannelConnList" style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);padding:4px">로딩 중…</div></div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button type="button" class="pub-bulk-btn primary" style="font-size:8px;padding:4px 10px" onclick="pubConnectChannel('youtube')">YouTube</button>
-        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="pubConnectChannel('naver_blog')">네이버 블로그</button>
-        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="pubConnectChannel('instagram')">Instagram</button>
-        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="pubConnectChannel('facebook')">Facebook</button>
-        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="pubConnectChannel('threads')">Threads</button>
-        <button type="button" class="pub-bulk-btn" style="font-size:8px;padding:4px 10px" onclick="pubConnectChannel('tiktok')">TikTok</button>
+      <!-- 계정 추가 폼 -->
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+        <input id="pubNewAccLabel" type="text" placeholder="계정 이름 (예: 내 블로그, ABC 회사)" style="flex:1;min-width:140px;font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg)">
+        <input id="pubNewAccMemo" type="text" placeholder="메모 (선택)" style="flex:1;min-width:100px;font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg)">
+        <button type="button" class="pub-bulk-btn primary" style="font-size:9px;padding:4px 12px" onclick="pubAddAccount()">계정 추가</button>
       </div>
+      <!-- 계정·채널 목록 -->
+      <div id="pubAccountList"><div style="font-size:10px;color:var(--muted);padding:4px">로딩 중…</div></div>
     </div>
     <div class="pub-split">
       <div class="pub-left-col">
@@ -1628,7 +1640,12 @@ input:focus,textarea:focus{border-color:var(--blue);background:white;}
     <div class="pm-head">
       <h2>발행 원고 관리</h2>
       <p class="pm-sub">저장한 <b>파일</b>의 관리 여부를 봅니다. 좌측에서 파일을 선택하면 우측에 카드와 <b>발행완료·발행전·수정중</b> 상태가 표시됩니다. (콘텐츠 안내·채널 배치도는 이 탭에서 숨김)</p>
-      <input type="search" id="pmSearchInput" class="pm-search" placeholder="제목·본문·파일명 검색…" autocomplete="off" aria-label="발행 원고 검색" oninput="onPmSearchInput()">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+        <input type="search" id="pmSearchInput" class="pm-search" placeholder="제목·본문·파일명 검색…" autocomplete="off" aria-label="발행 원고 검색" oninput="onPmSearchInput()" style="flex:1;margin-bottom:0">
+        <select id="pmFilterAccount" onchange="onPmSearchInput()" style="font-size:10px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card)">
+          <option value="">계정 선택</option>
+        </select>
+      </div>
       <div class="pm-meta" id="pmListMeta"></div>
     </div>
     <div id="pmStageHost" class="pm-stage-host" aria-live="polite">
@@ -2007,17 +2024,61 @@ function getPmSearchQuery(){
   const el = document.getElementById('pmSearchInput');
   return el ? String(el.value||'').trim() : '';
 }
-function onPmSearchInput(){ renderPmList(); renderPmSidebarFileList(); }
-/** 스냅샷 카드 중 발행 완료 표시된 개수 */
-function pmGetSnapshotPublishInfo(pm){
+function onPmSearchInput(){ renderPmList(); renderPmSidebarFileList(); if(bsCurrentStep===4) pmRenderPubMsMain(); }
+
+function pmGetSelectedAccountId(){
+  return (document.getElementById('pmFilterAccount')||{}).value||'';
+}
+function pmGetCurrentAccountId(){
+  if(typeof bsCurrentStep!=='undefined' && bsCurrentStep===4) return pmGetSelectedAccountId();
+  return (document.getElementById('pubFilterAccount')||{}).value||'';
+}
+
+function pmCardMatchesAccount(card, accId){
+  if(!accId||!card) return true;
+  const acc=pubAccounts.find(a=>a.id===accId);
+  if(!acc||!acc.channels||!acc.channels.length) return false;
+  const ch=(card.channel||'').toLowerCase();
+  const platformMap={
+    '유튜브':'youtube','youtube':'youtube',
+    '인스타그램':'instagram','인스타':'instagram','instagram':'instagram',
+    '네이버 블로그':'naver_blog','네이버블로그':'naver_blog','naver_blog':'naver_blog',
+    '티스토리':'tistory','tistory':'tistory',
+    '페이스북':'facebook','facebook':'facebook',
+    '틱톡':'tiktok','tiktok':'tiktok',
+    '쓰레드':'threads','threads':'threads',
+    'x':'x','트위터':'x',
+    '블로거':'blogger','blogger':'blogger',
+    '구글 블로그':'google_blog','google_blog':'google_blog',
+    '네이버 카페':'naver_cafe','네이버카페':'naver_cafe','naver_cafe':'naver_cafe'
+  };
+  const platform=platformMap[ch]||ch.replace(/\s+/g,'_');
+  return acc.channels.some(c=>c.platform===platform);
+}
+
+function pmManuscriptMatchesAccount(pm, accId){
+  if(!accId) return true;
+  if(!Array.isArray(pm.cardsSnapshot)||!pm.cardsSnapshot.length) return true;
+  return pm.cardsSnapshot.some(c=>c&&pmCardMatchesAccount(c,accId));
+}
+
+function pmRebuildAccountFilter(){
+  const sel=document.getElementById('pmFilterAccount');
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">계정 선택</option>'+pubAccounts.map(a=>`<option value="${csEsc(a.id).replace(/"/g,'&quot;')}">${csEsc(a.label)}</option>`).join('');
+  if(pubAccounts.find(a=>a.id===cur)) sel.value=cur;
+}
+/** 스냅샷 카드 중 발행 완료 표시된 개수 (accId 있으면 해당 계정 기준) */
+function pmGetSnapshotPublishInfo(pm, accId){
   const snap = pm && Array.isArray(pm.cardsSnapshot) ? pm.cardsSnapshot : [];
   if(!snap.length) return { total:0, published:0 };
   let published = 0;
-  snap.forEach(c=>{ if(c && c.publishedAt) published++; });
+  snap.forEach(c=>{ if(c && pmGetCardStateForAccount(c, accId).publishedAt) published++; });
   return { total:snap.length, published };
 }
 function pmPublishCellHtml(it){
-  const { total, published } = pmGetSnapshotPublishInfo(it);
+  const { total, published } = pmGetSnapshotPublishInfo(it, pmGetCurrentAccountId());
   if(!total) return '<span class="pm-pub-st-muted">—</span>';
   if(published===0) return '<span class="pm-pub-st-none">미발행</span>';
   if(published===total) return '<span class="pm-pub-st-done">발행완료</span>';
@@ -2037,9 +2098,11 @@ function renderPmList(){
   const empty = document.getElementById('pmEmpty');
   const meta = document.getElementById('pmListMeta');
   const q = getPmSearchQuery();
+  const accId = pmGetSelectedAccountId();
   let list = [...publishManuscripts];
   list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  list = q ? list.filter(it=>itemMatchesPmSearch(it, q)) : list;
+  if(q) list = list.filter(it=>itemMatchesPmSearch(it, q));
+  if(accId) list = list.filter(it=>pmManuscriptMatchesAccount(it,accId));
   if(meta) meta.textContent = publishManuscripts.length
     ? (q ? '표시 '+list.length+' / 전체 '+publishManuscripts.length+'건' : '총 '+publishManuscripts.length+'건')
     : '';
@@ -2071,7 +2134,7 @@ function renderPmList(){
     const cShow = c || '<span style="color:var(--muted)">(내용 없음)</span>';
     const src = msEscHtml(String(it.sourceFilename||'—'));
     const srcAttr = msEscHtml(String(it.sourceFilename||'')).replace(/"/g,'&quot;');
-    const { total:pubTot, published:pubDone } = pmGetSnapshotPublishInfo(it);
+    const { total:pubTot, published:pubDone } = pmGetSnapshotPublishInfo(it, pmGetCurrentAccountId());
     const pubCell = pmPublishCellHtml(it);
     const resetDis = pubDone===0 ? ' disabled' : '';
     const markDis = pubTot===0 ? ' disabled' : '';
@@ -2156,7 +2219,26 @@ function pmNormalizeSnapshotCard(c){
   let o;
   try{ o = JSON.parse(JSON.stringify(c)); }catch(e){ o = Object.assign({},c); }
   if(o.finalized==null) o.finalized = false;
+  if(!o.accountStates || typeof o.accountStates!=='object') o.accountStates = {};
   return o;
+}
+function pmGetCardStateForAccount(card, accId){
+  if(!card) return { finalized:false, publishedAt:null, publishedFromQueueId:null, onHold:false };
+  if(accId && card.accountStates && card.accountStates[accId]){
+    const s=card.accountStates[accId];
+    return { finalized:!!s.finalized, publishedAt:s.publishedAt||null, publishedFromQueueId:s.publishedFromQueueId||null, onHold:!!s.onHold };
+  }
+  return { finalized:!!card.finalized, publishedAt:card.publishedAt||null, publishedFromQueueId:card.publishedFromQueueId||null, onHold:!!card.onHold };
+}
+function pmSetCardStateForAccount(card, accId, state){
+  if(!card || !accId) return;
+  if(!card.accountStates) card.accountStates={};
+  if(!card.accountStates[accId]) card.accountStates[accId]={};
+  const t=card.accountStates[accId];
+  if(state.finalized!==undefined) t.finalized=state.finalized;
+  if(state.publishedAt!==undefined) t.publishedAt=state.publishedAt;
+  if(state.publishedFromQueueId!==undefined) t.publishedFromQueueId=state.publishedFromQueueId;
+  if(state.onHold!==undefined) t.onHold=state.onHold;
 }
 function pmBuildVisualDualHtml(c){
   return csBuildVisualDualInnerHtml(c);
@@ -2225,6 +2307,7 @@ function pmBuildCardLayoutHtml(c){
 /** 발행 원고 관리 전용: 카드 그리드 + 선택 시 하단 콘텐츠 스튜디오형 편집 패널 */
 function pmBuildCardStageHtmlForManage(pm){
   let cards = Array.isArray(pm.cardsSnapshot) ? pm.cardsSnapshot.map(pmNormalizeSnapshotCard).filter(Boolean) : [];
+  const accId = pmGetSelectedAccountId();
   if(!cards.length){
     const titleEsc = csEsc(pm.sourceFilename || pm.title || '저장 원고');
     const body = String(pm.content||'').trim();
@@ -2233,18 +2316,30 @@ function pmBuildCardStageHtmlForManage(pm){
       +`<pre style="white-space:pre-wrap;font-size:9px;color:var(--text);max-height:320px;overflow:auto;margin:0;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg)">${csEsc(body.slice(0,120000))}</pre></div>`;
   }
   const pmIdJs = String(pm.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const isAccountMode = !!accId;
   const gridInner = cards.map((c,idx)=>{
     const num=String(idx+1).padStart(2,'0');
     const chLbl=[c.channel,c.channelType].filter(Boolean).join(' · ')||(CS_TYPE_LABELS[c.type]||'기타');
-    const stLab = c.publishedAt ? '발행완료' : (c.finalized ? '발행전' : '수정중');
-    const badgeCls = c.publishedAt ? 'done' : (c.finalized ? 'ready' : 'editing');
     const cardIdJs = String(c.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const sel = pmSelectedManageCardId && (String(c.id)===String(pmSelectedManageCardId));
-    return `<div class="pm-manage-card ${sel?'pm-manage-card-sel':''}" onclick="pmSelectManageCard('${pmIdJs}','${cardIdJs}')"><div class="pm-manage-card-n">No.${num}</div><div class="pm-manage-card-ch">${csEsc(chLbl)}</div><div class="pm-manage-card-ttl">${csEsc(c.title||'(제목 없음)')}</div><div><button type="button" class="pm-manage-badge ${badgeCls}" onclick="event.stopPropagation();pmCycleCardManageStatus('${pmIdJs}','${cardIdJs}')" title="클릭하여 상태 변경">${stLab}</button></div></div>`;
+    if(!isAccountMode){
+      return `<div class="pm-manage-card ${sel?'pm-manage-card-sel':''}" onclick="pmSelectManageCard('${pmIdJs}','${cardIdJs}')"><div class="pm-manage-card-n">No.${num}</div><div class="pm-manage-card-ch">${csEsc(chLbl)}</div><div class="pm-manage-card-ttl">${csEsc(c.title||'(제목 없음)')}</div><div class="pm-manage-card-body" style="font-size:9px;color:var(--muted);padding:2px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${csEsc((c.body||'').slice(0,120))}</div></div>`;
+    }
+    const st = pmGetCardStateForAccount(c, accId);
+    const stLab = st.publishedAt ? '발행완료' : (st.finalized ? '발행전' : '수정중');
+    const badgeCls = st.publishedAt ? 'done' : (st.finalized ? 'ready' : 'editing');
+    const cardConn=pubFindConnForContent(c);
+    const cardAcc=cardConn?pubGetAccountForConn(cardConn.id):null;
+    const accTag=cardAcc?`<span style="font-size:8px;padding:1px 5px;border-radius:3px;background:rgba(107,79,160,.1);color:var(--purple);font-weight:600;margin-left:4px">${csEsc(cardAcc.label)}</span>`:'';
+    const holdOn = !!st.onHold;
+    const holdCls = holdOn ? 'hold' : '';
+    return `<div class="pm-manage-card ${sel?'pm-manage-card-sel':''}" onclick="pmSelectManageCard('${pmIdJs}','${cardIdJs}')" ${holdOn?'style="opacity:.55"':''}><div class="pm-manage-card-n">No.${num}</div><div class="pm-manage-card-ch">${csEsc(chLbl)}${accTag}</div><div class="pm-manage-card-ttl">${csEsc(c.title||'(제목 없음)')}</div><div style="display:flex;gap:4px;align-items:center"><button type="button" class="pm-manage-badge ${badgeCls}" onclick="event.stopPropagation();pmCycleCardManageStatus('${pmIdJs}','${cardIdJs}')" title="클릭하여 상태 변경">${stLab}</button><button type="button" class="pm-manage-badge ${holdCls}" onclick="pmToggleCardHold('${pmIdJs}','${cardIdJs}',event)" title="발행 보류 토글" style="${holdOn?'':'background:#fff;color:#aaa;border:1px solid #ddd'}">보류</button></div></div>`;
   }).join('');
-  const gridHtml = `<div class="pm-manage-toggle-row"><span class="pm-manage-toggle-lbl">카드 ${cards.length}개</span><button type="button" class="pm-manage-toggle-btn" onclick="pmToggleManageCards()">${pmManageCardsCollapsed?'카드 펼치기':'카드 접기'}</button></div><div class="pm-manage-grid-wrap ${pmManageCardsCollapsed?'collapsed':''}"><div class="pm-manage-grid">`+gridInner+`</div></div>`;
+  const saveBtn = `<button type="button" onclick="pmSaveManuscriptCards('${pmIdJs}')" style="padding:4px 12px;border-radius:6px;font-size:9px;font-weight:700;cursor:pointer;border:none;background:var(--purple);color:#fff" title="카드 수정 사항을 저장">저장</button>`;
+  const modeHint = isAccountMode ? '' : '<div style="padding:8px 12px;font-size:10px;color:var(--muted);background:rgba(107,79,160,.04);border-radius:6px;margin-bottom:8px">💡 <b>계정을 선택</b>하면 상태 관리·보류 등 채널별 관리 기능이 활성화됩니다.</div>';
+  const gridHtml = modeHint+`<div class="pm-manage-toggle-row"><span class="pm-manage-toggle-lbl">카드 ${cards.length}개</span><div style="display:flex;gap:6px;align-items:center">${saveBtn}<button type="button" class="pm-manage-toggle-btn" onclick="pmToggleManageCards()">${pmManageCardsCollapsed?'카드 펼치기':'카드 접기'}</button></div></div><div class="pm-manage-grid-wrap ${pmManageCardsCollapsed?'collapsed':''}"><div class="pm-manage-grid">`+gridInner+`</div></div>`;
   const selCard = pmSelectedManageCardId ? cards.find(c=>String(c.id)===String(pmSelectedManageCardId)) : null;
-  const detailHtml = selCard ? pmBuildManageCardDetailHtml(pm, selCard) : '<div class="pm-manage-detail-empty">카드를 선택하면 하단에 콘텐츠 스튜디오와 같은 편집 패널이 나타납니다.</div>';
+  const detailHtml = selCard ? pmBuildManageCardDetailHtml(pm, selCard) : (isAccountMode ? '<div class="pm-manage-detail-empty">카드를 선택하면 하단에 편집 패널이 나타납니다.</div>' : '<div class="pm-manage-detail-empty">계정을 선택하면 카드별 관리·편집 기능을 사용할 수 있습니다.</div>');
   return gridHtml + `<div class="pm-manage-detail-wrap">` + detailHtml + `</div>`;
 }
 function pmToggleManageCards(){
@@ -2287,14 +2382,17 @@ function pmBuildCardPromptText(c){
 function pmBuildManageCardDetailHtml(pm, c){
   const pmIdJs = String(pm.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const cardIdJs = String(c.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const accId = pmGetSelectedAccountId();
+  const st = pmGetCardStateForAccount(c, accId);
   const num = (pm.cardsSnapshot||[]).findIndex(x=>x&&(String(x.id)===String(c.id)));
   const numStr = String(num>=0 ? num+1 : 1).padStart(2,'0');
   const chLbl = [c.channel,c.channelType].filter(Boolean).join(' · ')||(CS_TYPE_LABELS[c.type]||'기타');
+  const viewCard = Object.assign({}, c, { finalized: st.finalized, publishedAt: st.publishedAt, onHold: st.onHold });
   const strip = csBuildStudioMidStripHtml(c);
   const promptTxt = pmBuildCardPromptText(c);
-  const layoutHtml = pmBuildInteractiveLayoutHtml(c);
-  const previewHtml = pmBuildVisualDualHtml(c);
-  const fin = !!c.finalized;
+  const layoutHtml = pmBuildInteractiveLayoutHtml(viewCard);
+  const previewHtml = pmBuildVisualDualHtml(viewCard);
+  const fin = !!st.finalized;
   const tEsc = v=>csEsc(String(v||''));
   return `<div class="pm-manage-detail">
     <div class="cs-content-guide on ${pmContentGuideCollapsed?'collapsed':''}" style="margin:0 0 12px">
@@ -2341,7 +2439,7 @@ function pmBuildManageCardDetailHtml(pm, c){
           </div>
         </div>
         <div class="cs-lower-ai-h" style="margin-top:12px">발행</div>
-        ${c.publishedAt?`<span class="pm-card-pub-note" style="font-size:9px;color:var(--green)">발행완료</span>`:`<div class="pm-card-pub-actions" style="flex-direction:column;gap:4px"><button type="button" class="pm-card-pub-now" style="width:100%" onclick="pubPublishFromSavedCard('${pmIdJs}','${cardIdJs}')">즉시 발행</button><button type="button" class="pm-card-pub-sch" style="width:100%" onclick="pubScheduleFromSavedCard('${pmIdJs}','${cardIdJs}')">예약</button></div>`}
+        ${st.publishedAt?`<span class="pm-card-pub-note" style="font-size:9px;color:var(--green)">발행완료</span>`:`<div class="pm-card-pub-actions" style="flex-direction:column;gap:4px"><button type="button" class="pm-card-pub-now" style="width:100%" onclick="pubPublishFromSavedCard('${pmIdJs}','${cardIdJs}')">즉시 발행</button><button type="button" class="pm-card-pub-sch" style="width:100%" onclick="pubScheduleFromSavedCard('${pmIdJs}','${cardIdJs}')">예약</button></div>`}
         <div class="cs-lower-ai-h" style="margin-top:12px">상태</div>
         <button type="button" class="cs-cg-mini-btn ${fin?'primary':'ghost'}" onclick="pmToggleManageCardFinalized('${pmIdJs}','${cardIdJs}')">${fin?'완성':'편집중으로'}</button>
       </aside>
@@ -2376,7 +2474,9 @@ function pmToggleManageCardFinalized(pmId, cardId){
   const pm = publishManuscripts.find(x=>String(x.id)===String(pmId));
   const c = pm&&pm.cardsSnapshot ? pm.cardsSnapshot.find(x=>x&&String(x.id)===String(cardId)) : null;
   if(!c) return;
-  c.finalized = !c.finalized;
+  const accId = pmGetCurrentAccountId();
+  const st = pmGetCardStateForAccount(c, accId);
+  pmSetCardStateForAccount(c, accId, { finalized: !st.finalized });
   savePublishManuscripts();
   pmRenderPubMsMain();
   toast('상태가 변경되었습니다.','ok');
@@ -2448,42 +2548,98 @@ function pmCycleCardManageStatus(pmId, cardIdStr){
     if(c && (c.id===cardIdStr || String(c.id)===String(cardIdStr))) found = c;
   });
   if(!found){ toast('카드를 찾을 수 없습니다.','warn'); return; }
-  if(found.publishedAt){
-    delete found.publishedAt; delete found.publishedFromQueueId;
-    found.finalized = true;
-  }else if(found.finalized){
-    found.finalized = false;
+  const accId = pmGetCurrentAccountId();
+  const st = pmGetCardStateForAccount(found, accId);
+  if(st.publishedAt){
+    pmSetCardStateForAccount(found, accId, { publishedAt:null, publishedFromQueueId:null, finalized:true });
+  }else if(st.finalized){
+    pmSetCardStateForAccount(found, accId, { finalized:false });
   }else{
-    const ts = Date.now();
-    found.publishedAt = ts;
-    found.publishedFromQueueId = 'manual_external';
+    pmSetCardStateForAccount(found, accId, { publishedAt:Date.now(), publishedFromQueueId:'manual_external' });
   }
-  const live = csCards.find(x=>x.id===found.id || String(x.id)===String(found.id));
-  if(live){
-    if(found.publishedAt){ live.publishedAt = found.publishedAt; live.publishedFromQueueId = found.publishedFromQueueId; }
-    else{ delete live.publishedAt; delete live.publishedFromQueueId; }
-    live.finalized = !!found.finalized;
-  }
+  const newSt = pmGetCardStateForAccount(found, accId);
+  const dbStatus = newSt.publishedAt ? 'published' : (newSt.finalized ? 'final' : 'draft');
+  pubSaveCardToContents(found, dbStatus).catch(e=>console.warn('DB sync:', e));
   savePublishManuscripts();
   pubRefreshPmPublishUI();
   pmRenderPubMsMain();
-  const dbStatus = found.publishedAt ? 'published' : (found.finalized ? 'final' : 'draft');
-  pubSaveCardToContents(found, dbStatus).catch(e=>console.warn('DB sync:', e));
   toast('관리 상태가 변경되었습니다.','ok');
+}
+function pmToggleCardHold(pmId, cardIdStr, ev){
+  if(ev) ev.stopPropagation();
+  const pm = publishManuscripts.find(x=>String(x.id)===String(pmId));
+  if(!pm || !Array.isArray(pm.cardsSnapshot)){ toast('원고를 찾을 수 없습니다.','warn'); return; }
+  let found = null;
+  pm.cardsSnapshot.forEach(c=>{
+    if(c && (c.id===cardIdStr || String(c.id)===String(cardIdStr))) found = c;
+  });
+  if(!found){ toast('카드를 찾을 수 없습니다.','warn'); return; }
+  const accId = pmGetCurrentAccountId();
+  const st = pmGetCardStateForAccount(found, accId);
+  pmSetCardStateForAccount(found, accId, { onHold: !st.onHold });
+  const newSt = pmGetCardStateForAccount(found, accId);
+  savePublishManuscripts();
+  pubRefreshPmPublishUI();
+  pmRenderPubMsMain();
+  toast(newSt.onHold ? '발행 보류 설정됨' : '보류 해제됨','ok');
+}
+function pmSaveManuscriptCards(pmId){
+  const pm = publishManuscripts.find(x=>String(x.id)===String(pmId));
+  if(!pm){ toast('원고를 찾을 수 없습니다.','warn'); return; }
+  if(!Array.isArray(pm.cardsSnapshot)||!pm.cardsSnapshot.length){ toast('저장할 카드가 없습니다.','warn'); return; }
+  const liveCards = csCards.filter(Boolean);
+  if(liveCards.length){
+    for(const snap of pm.cardsSnapshot){
+      const live = liveCards.find(x=>x.id===snap.id || String(x.id)===String(snap.id));
+      if(live){
+        snap.title = live.title || snap.title;
+        snap.body = live.body || snap.body;
+        snap.tags = live.tags || snap.tags;
+        snap.cta = live.cta || snap.cta;
+        snap.shortSummary = live.shortSummary || snap.shortSummary;
+        if(live.prompts) snap.prompts = JSON.parse(JSON.stringify(live.prompts));
+      }
+    }
+  }
+  pm.updatedAt = Date.now();
+  savePublishManuscripts();
+  pmRenderPubMsMain();
+  toast('✓ 카드 수정 사항이 저장되었습니다.','ok');
 }
 function pmBuildCardStageHtml(pm){
   const titleEsc = csEsc(pm.sourceFilename || pm.title || '저장 원고');
   let cards = Array.isArray(pm.cardsSnapshot) ? pm.cardsSnapshot.map(pmNormalizeSnapshotCard).filter(Boolean) : [];
+  const pubAccSel=(document.getElementById('pubFilterAccount')||{}).value||'';
   if(!cards.length){
     const body = String(pm.content||'').trim();
     return `<div class="pm-stage-plain"><p style="font-size:11px;color:var(--muted);margin:0 0 10px">이 저장본에는 스튜디오 <b>분류 카드 스냅샷</b>이 없습니다. 콘텐츠 스튜디오에서 분류 후 <b>저장</b>하면 슬롯·완성 상태가 함께 저장됩니다.</p>`
       +`<div style="font-size:10px;font-weight:700;margin-bottom:6px">${titleEsc}</div>`
       +`<pre style="white-space:pre-wrap;font-size:9px;color:var(--text);max-height:320px;overflow:auto;margin:0;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg)">${csEsc(body.slice(0,120000))}</pre></div>`;
   }
-  return cards.map((c,idx)=>{
+  if(!pubAccSel){
+    return cards.map((c,idx)=>{
+      const num=String(idx+1).padStart(2,'0');
+      const chLbl=[c.channel,c.channelType].filter(Boolean).join(' · ')||(CS_TYPE_LABELS[c.type]||'기타');
+      return `<div class="pm-stage-card" style="padding:12px;margin-bottom:10px;border:1px solid var(--border);border-radius:8px;background:var(--card)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;font-weight:800;color:var(--purple)">No.${num}</span>
+          <span class="cs-card-type-badge ${c.type}" style="font-size:8px">${CS_TYPE_LABELS[c.type]||'기타'}</span>
+          <span style="font-size:11px;font-weight:700">${csEsc(c.title||'(제목 없음)')}</span>
+        </div>
+        <div style="font-size:9px;color:var(--muted);line-height:1.5;margin-bottom:6px">${csEsc((c.body||'').slice(0,200))}</div>
+        ${(c.tags||[]).length?`<div style="display:flex;flex-wrap:wrap;gap:3px">${(c.tags||[]).slice(0,5).map(t=>`<span style="font-size:7px;padding:1px 5px;border-radius:8px;background:var(--bg);color:var(--muted);border:1px solid var(--border)">${csEsc(t)}</span>`).join('')}</div>`:''}
+        <div style="font-size:8px;color:var(--muted);margin-top:4px">${csEsc(chLbl)}</div>
+      </div>`;
+    }).join('');
+  }
+  const pmIdJsTop = String(pm.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const saveBtnHtml = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button type="button" onclick="pmSaveManuscriptCards('${pmIdJsTop}')" style="padding:5px 16px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:none;background:var(--purple);color:#fff">전체 저장</button></div>`;
+  return saveBtnHtml + cards.map((c,idx)=>{
     const num=String(idx+1).padStart(2,'0');
     const chLbl=[c.channel,c.channelType].filter(Boolean).join(' · ')||(CS_TYPE_LABELS[c.type]||'기타');
-    const stLab = c.publishedAt ? '발행완료' : (c.finalized ? '완성' : '편집중');
+    const st = pmGetCardStateForAccount(c, pubAccSel);
+    const stLab = st.publishedAt ? '발행완료' : (st.finalized ? '완성' : '편집중');
+    const holdOn = !!st.onHold;
     const strip=
       csCgCell('CHANNEL',csChannelDisplayCode(c))
       +csCgCell('TYPE',csTypeDisplayForGuide(c))
@@ -2497,18 +2653,21 @@ function pmBuildCardStageHtml(pm){
     const promptText = csEsc(csBuildCardActualProductionText(c));
     const pmIdJs = String(pm.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const cardIdJs = String(c.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const manualHeadBtn = c.publishedAt ? '' : `<button type="button" class="pm-mark-manual-btn" onclick="pmMarkOnePublishedManual('${pmIdJs}','${cardIdJs}')" title="이 카드만 프로그램 밖에서 발행한 경우">외부 발행 · 완료 표시</button>`;
+    const manualHeadBtn = st.publishedAt ? '' : `<button type="button" class="pm-mark-manual-btn" onclick="pmMarkOnePublishedManual('${pmIdJs}','${cardIdJs}')" title="이 카드만 프로그램 밖에서 발행한 경우">외부 발행 · 완료 표시</button>`;
+    const holdBtnHtml = `<button type="button" class="pm-manage-badge ${holdOn?'hold':''}" onclick="pmToggleCardHold('${pmIdJs}','${cardIdJs}',event)" title="발행 보류 토글" style="margin-left:8px;${holdOn?'':'background:#fff;color:#aaa;border:1px solid #ddd'}">보류</button>`;
+    const statusBadge = `<span class="pm-manage-badge ${st.publishedAt?'done':(st.finalized?'ready':'editing')}" style="cursor:default">${stLab}</span>`;
     const pubActs = (typeof bsCurrentStep!=='undefined' && bsCurrentStep===3)
-      ? (c.publishedAt
+      ? (st.publishedAt
         ? `<div class="pm-card-pub-actions"><span class="pm-card-pub-note">발행완료로 표시된 카드입니다.</span></div>`
         : `<div class="pm-card-pub-actions"><button type="button" class="pm-card-pub-now" onclick="pubPublishFromSavedCard('${pmIdJs}','${cardIdJs}')">즉시 발행</button><button type="button" class="pm-card-pub-sch" onclick="pubScheduleFromSavedCard('${pmIdJs}','${cardIdJs}')">예약</button></div>`)
       : '';
-    return `<div class="pm-stage-card">
+    return `<div class="pm-stage-card" ${holdOn?'style="opacity:.5"':''}>
       <div class="cs-content-guide on pm-readonly" style="margin:0">
         <div class="cs-cg-head">
           <div class="cs-cg-head-l">
             <span class="cs-cg-ttl">📌 콘텐츠 안내</span>
-            <span class="cs-cg-sub">No.${num} · ${csEsc(chLbl)} · ${csEsc(stLab)}</span>
+            <span class="cs-cg-sub">No.${num} · ${csEsc(chLbl)}</span>
+            <span style="margin-left:6px">${statusBadge}${holdBtnHtml}</span>
           </div>
           <div class="cs-cg-head-actions">${manualHeadBtn}</div>
         </div>
@@ -2520,11 +2679,11 @@ function pmBuildCardStageHtml(pm){
       <div class="cs-lower-split" style="display:flex;margin-top:12px;">
         <div class="cs-lower-left">
           <div class="cs-lower-header"><span>📐 채널 배치도</span></div>
-          <div class="cs-lower-body">${pmBuildCardLayoutHtml(c)}</div>
+          <div class="cs-lower-body">${pmBuildCardLayoutHtml(Object.assign({},c,{finalized:st.finalized,publishedAt:st.publishedAt,onHold:st.onHold}))}</div>
         </div>
         <div class="cs-lower-right">
           <div class="cs-lower-header"><span>👁 미리보기</span></div>
-          <div class="cs-preview-visual">${pmBuildVisualDualHtml(c)}</div>
+          <div class="cs-preview-visual">${pmBuildVisualDualHtml(Object.assign({},c,{finalized:st.finalized,publishedAt:st.publishedAt,onHold:st.onHold}))}</div>
         </div>
       </div>
       ${pubActs}
@@ -2578,7 +2737,7 @@ function pmDeleteSavedManuscript(pmId){
 }
 function pmWrapStageWithToolbar(pm, innerHtml){
   const idJs = String(pm.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  const { total, published } = pmGetSnapshotPublishInfo(pm);
+  const { total, published } = pmGetSnapshotPublishInfo(pm, pmGetCurrentAccountId());
   if(!total) return innerHtml;
   let label = '아직 발행 완료된 카드가 없습니다.';
   if(published===total) label = '모든 카드가 발행 완료로 표시되어 있습니다.';
@@ -2594,17 +2753,11 @@ function pmMarkAllPublishedManual(pmId){
     toast('표시할 카드가 없습니다. 스튜디오에서 분류 후 저장된 원고만 표시할 수 있습니다.','warn');
     return;
   }
+  const accId = pmGetCurrentAccountId();
   const ts = Date.now();
   pm.cardsSnapshot.forEach(c=>{
     if(!c) return;
-    c.publishedAt = ts;
-    c.publishedFromQueueId = 'manual_external';
-    if(c.id==null) return;
-    const live = csCards.find(x=>x.id===c.id || String(x.id)===String(c.id));
-    if(live){
-      live.publishedAt = ts;
-      live.publishedFromQueueId = 'manual_external';
-    }
+    pmSetCardStateForAccount(c, accId, { publishedAt: ts, publishedFromQueueId: 'manual_external' });
   });
   savePublishManuscripts();
   pubRefreshPmPublishUI();
@@ -2624,14 +2777,8 @@ function pmMarkOnePublishedManual(pmId, cardIdStr){
     toast('카드를 찾을 수 없습니다.','warn');
     return;
   }
-  const ts = Date.now();
-  found.publishedAt = ts;
-  found.publishedFromQueueId = 'manual_external';
-  const live = csCards.find(x=>x.id===found.id || String(x.id)===String(found.id));
-  if(live){
-    live.publishedAt = ts;
-    live.publishedFromQueueId = 'manual_external';
-  }
+  const accId = pmGetCurrentAccountId();
+  pmSetCardStateForAccount(found, accId, { publishedAt: Date.now(), publishedFromQueueId: 'manual_external' });
   savePublishManuscripts();
   pubRefreshPmPublishUI();
   toast('이 카드를 발행완료로 표시했습니다.','ok');
@@ -2639,22 +2786,13 @@ function pmMarkOnePublishedManual(pmId, cardIdStr){
 function pmResetPublishFlags(pmId){
   const pm = publishManuscripts.find(x=>String(x.id)===String(pmId));
   if(!pm || !Array.isArray(pm.cardsSnapshot)) return;
-  const { published } = pmGetSnapshotPublishInfo(pm);
+  const accId = pmGetCurrentAccountId();
+  const { published } = pmGetSnapshotPublishInfo(pm, accId);
   if(!published){ toast('초기화할 발행 표시가 없습니다.','warn'); return; }
   if(!confirm('이 원고에 연결된 카드의 「발행완료」표시를 모두 지울까요?\n(실제 플랫폼에 올린 글은 삭제되지 않습니다.)')) return;
-  const ids = new Set();
   pm.cardsSnapshot.forEach(c=>{
     if(!c) return;
-    delete c.publishedAt;
-    delete c.publishedFromQueueId;
-    if(c.id!=null) ids.add(c.id);
-  });
-  ids.forEach(cid=>{
-    const live = csCards.find(x=>x.id===cid);
-    if(live){
-      delete live.publishedAt;
-      delete live.publishedFromQueueId;
-    }
+    pmSetCardStateForAccount(c, accId, { publishedAt: null, publishedFromQueueId: null });
   });
   savePublishManuscripts();
   pubRefreshPmPublishUI();
@@ -2664,9 +2802,11 @@ function renderPmSidebarFileList(){
   const el = document.getElementById('pmSavedFileList');
   if(!el) return;
   const q = (bsCurrentStep===4) ? getPmSearchQuery() : '';
+  const accId = pmGetSelectedAccountId();
   let list = [...publishManuscripts];
   list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   if(q) list = list.filter(it=>itemMatchesPmSearch(it,q));
+  if(accId) list = list.filter(it=>pmManuscriptMatchesAccount(it,accId));
   if(!publishManuscripts.length){
     el.innerHTML = '<div class="pm-saved-empty">저장된 파일이 없습니다.</div>';
     return;
@@ -2679,7 +2819,7 @@ function renderPmSidebarFileList(){
     const fn = it.sourceFilename || it.title || '(무제)';
     const sel = String(pmSelectedPublishId)===String(it.id);
     const idJs = String(it.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const { total:st, published:sd } = pmGetSnapshotPublishInfo(it);
+    const { total:st, published:sd } = pmGetSnapshotPublishInfo(it, pmGetCurrentAccountId());
     const pubHint = st && sd===st ? ' ✓' : (sd>0 ? ' ·'+sd+'/'+st : '');
     return `<div class="pm-saved-file-row"><button type="button" class="pm-saved-file-item ${sel?'on':''}" onclick="pmSelectPublishedFile('${idJs}')" title="${st?('발행 표시 '+sd+'/'+st):''}">${csEsc(fn+pubHint)}</button><button type="button" class="pm-saved-file-del" onclick="event.stopPropagation();pmDeleteSavedManuscript('${idJs}')" title="삭제">✕</button></div>`;
   }).join('');
@@ -4521,6 +4661,190 @@ function bsSharedGuidelinesSystemPrefix(){
   return chunks.length ? chunks.join('\n\n') + '\n\n' : '';
 }
 
+// ── 설정 패널: 구글 드라이브 연결 (index.html 과 동일 스코프·폴더 구조)
+const BS_DRIVE_ROOT_NAME = 'Blog Studio';
+function bsGoogleOAuthScopeString(){
+  return [
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.metadata.readonly',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+  ].join(' ');
+}
+async function bsFetchGoogleClientConfig(){
+  const urls = ['/api/blog-studio/google-client-config', '/.netlify/functions/blog-studio-google-client-config'];
+  for(let i=0;i<urls.length;i++){
+    try{
+      const r = await fetch(urls[i], { credentials:'same-origin' });
+      if(!r.ok) continue;
+      const j = await r.json();
+      if(j && j.ok && String(j.clientId||'').trim()) return String(j.clientId).trim();
+    }catch(_){}
+  }
+  try{
+    const cfg = JSON.parse(localStorage.getItem('bs_google_config')||'{}');
+    if(cfg && cfg.clientId) return String(cfg.clientId).trim();
+  }catch(_){}
+  return '';
+}
+async function bsFindOrCreateDriveFolder(token, name, parentId){
+  const esc = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  let query = `name='${esc}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  if(parentId) query += ` and '${parentId}' in parents`;
+  const searchRes = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`,
+    { headers:{ Authorization:'Bearer '+token }});
+  const searchData = await searchRes.json();
+  if(!searchRes.ok){
+    throw new Error((searchData.error&&searchData.error.message)||('Drive 검색 거부: '+searchRes.status));
+  }
+  if(searchData.files && searchData.files.length) return searchData.files[0].id;
+  const meta = { name, mimeType:'application/vnd.google-apps.folder' };
+  if(parentId) meta.parents = [parentId];
+  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+    method:'POST',
+    headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' },
+    body: JSON.stringify(meta)
+  });
+  const created = await createRes.json();
+  if(!createRes.ok){
+    throw new Error((created.error&&created.error.message)||('Drive 폴더 생성 실패 '+createRes.status));
+  }
+  if(!created.id) throw new Error('Drive 응답 오류');
+  return created.id;
+}
+async function bsInitDriveFolderForStudio(token, email){
+  const rootId = await bsFindOrCreateDriveFolder(token, BS_DRIVE_ROOT_NAME, null);
+  const userFolder = await bsFindOrCreateDriveFolder(token, email, rootId);
+  const teamFolder = await bsFindOrCreateDriveFolder(token, '_team_shared', rootId);
+  sessionStorage.setItem('bs_drive_root', rootId);
+  sessionStorage.setItem('bs_drive_user', userFolder);
+  sessionStorage.setItem('bs_drive_team', teamFolder);
+}
+function bsReloadDriveSessionFromStorage(){
+  try{ driveSession = JSON.parse(sessionStorage.getItem('bs_session')); }catch{ driveSession=null; }
+}
+function bsApplySessionToTopbar(){
+  bsReloadDriveSessionFromStorage();
+  const pill = document.getElementById('userPill');
+  const nameEl = document.getElementById('topUserName');
+  const avatarEl = document.getElementById('topUserAvatar');
+  const badge = document.getElementById('adminPillBadge');
+  const adminBtn = document.getElementById('adminBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  if(!driveSession){
+    if(pill) pill.style.display='none';
+    if(avatarEl){ avatarEl.src=''; avatarEl.style.display='none'; }
+    if(badge) badge.style.display='none';
+    if(adminBtn) adminBtn.style.display='none';
+    if(logoutBtn) logoutBtn.style.display='none';
+    return;
+  }
+  if(pill) pill.style.display='flex';
+  if(nameEl) nameEl.textContent = driveSession.name || (driveSession.email||'').split('@')[0] || '';
+  if(avatarEl){
+    if(driveSession.picture){ avatarEl.src=driveSession.picture; avatarEl.style.display=''; }
+    else { avatarEl.src=''; avatarEl.style.display='none'; }
+  }
+  if(driveSession.isAdmin){
+    if(badge) badge.style.display='';
+    if(adminBtn) adminBtn.style.display='';
+  }else{
+    if(badge) badge.style.display='none';
+    if(adminBtn) adminBtn.style.display='none';
+  }
+  if(logoutBtn) logoutBtn.style.display='';
+}
+async function csConnectGoogleDrive(forceConsent){
+  const cid = await bsFetchGoogleClientConfig();
+  if(!cid){
+    toast('Google 클라이언트 ID를 찾을 수 없습니다. Netlify 환경 변수·빌드 주입 또는 로그인 페이지 설정을 확인하세요.','warn');
+    return;
+  }
+  if(typeof google==='undefined' || !google.accounts){
+    toast('Google 스크립트가 아직 로드되지 않았습니다. 잠시 후 다시 시도하세요.','err');
+    return;
+  }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: cid,
+    scope: bsGoogleOAuthScopeString(),
+    callback: async (tokenResponse)=>{
+      if(tokenResponse.error){
+        toast('Google 인증 실패: '+tokenResponse.error,'err');
+        return;
+      }
+      const accessToken = tokenResponse.access_token;
+      try{
+        const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+          headers:{ Authorization:'Bearer '+accessToken }
+        });
+        const user = await res.json();
+        if(!res.ok || !user.email){
+          toast('프로필·이메일을 가져오지 못했습니다.','err');
+          return;
+        }
+        let prev = {};
+        try{ prev = JSON.parse(sessionStorage.getItem('bs_session')||'{}'); }catch(_){}
+        let adminList = [];
+        try{
+          const cfg = JSON.parse(localStorage.getItem('bs_google_config')||'{}');
+          adminList = String(cfg.admins||'').split(',').map(function(e){ return e.trim().toLowerCase(); }).filter(Boolean);
+        }catch(_){}
+        const isAdmin = adminList.indexOf(String(user.email).toLowerCase())>=0 || !!prev.isAdmin;
+        const session = {
+          accessToken: accessToken,
+          email: user.email,
+          name: user.name||'',
+          picture: user.picture||'',
+          isAdmin: isAdmin,
+          loginAt: Date.now(),
+        };
+        sessionStorage.setItem('bs_session', JSON.stringify(session));
+        await bsInitDriveFolderForStudio(accessToken, user.email);
+        driveSession = session;
+        toast('✓ 구글 드라이브가 연결되었습니다. 지침·캐릭터를 저장하면 드라이브에도 반영됩니다.','ok');
+        saveProjects();
+        csRefreshDriveSettingsUi();
+        bsApplySessionToTopbar();
+      }catch(e){
+        toast('드라이브 폴더 설정 실패: '+(e.message||e),'err');
+      }
+    },
+    error_callback: function(){ toast('로그인이 취소되었거나 오류가 났습니다.','warn'); }
+  });
+  if(forceConsent || !sessionStorage.getItem('bs_drive_user')){
+    client.requestAccessToken({ prompt: 'consent' });
+  }else{
+    client.requestAccessToken();
+  }
+}
+function csDisconnectGoogleDriveFolders(){
+  sessionStorage.removeItem('bs_drive_root');
+  sessionStorage.removeItem('bs_drive_user');
+  sessionStorage.removeItem('bs_drive_team');
+  bsReloadDriveSessionFromStorage();
+  toast('드라이브 폴더 ID만 제거했습니다. 로그인 세션은 유지됩니다.','ok');
+  csRefreshDriveSettingsUi();
+}
+function csRefreshDriveSettingsUi(){
+  const el = document.getElementById('csDriveSettingsStatus');
+  if(!el) return;
+  bsReloadDriveSessionFromStorage();
+  const hasTok = !!(driveSession && driveSession.accessToken);
+  const folder = sessionStorage.getItem('bs_drive_user');
+  const em = (driveSession && driveSession.email) ? driveSession.email : '';
+  if(hasTok && folder){
+    el.className = 'cs-api-status';
+    el.textContent = '✓ 연결됨 · '+(em||'구글 계정')+' · 드라이브 폴더 준비됨';
+  }else if(hasTok && !folder){
+    el.className = 'cs-api-status warn';
+    el.textContent = '△ 토큰은 있으나 드라이브 폴더가 없습니다. 「드라이브 연결」을 눌러 주세요.';
+  }else{
+    el.className = 'cs-api-status warn';
+    el.textContent = '미연결 · 「드라이브 연결」로 구글 계정을 허용하세요.';
+  }
+}
+
 // 드라이브에 JSON 파일 저장
 async function saveToDrive(filename, data){
   if(!driveSession) return;
@@ -5978,8 +6302,13 @@ const csFiles=[];
 let csCards=[];
 let csPrompts=[];
 let csSelectedCardId=null;
-let csPromptFilter='all';
-let csPromptLayerFilter='all';
+let csPromptFilter='image_video';
+let csPromptLayerFilter='raw';
+let csPromptDebugMode=false;
+/** true면 프롬프트 모음 목록에서 GENERATED 레이어만 제외(RAW·VIEW 유지). localStorage 동기화 */
+let csHideGeneratedPrompts=(function(){
+  try{ return localStorage.getItem('bs_cs_hide_generated')==='1'; }catch(_){ return false; }
+})();
 const CS_TYPE_LABELS={blog:'블로그',sns:'SNS',video:'영상',news:'뉴스',other:'기타'};
 const CS_CHANNELS=[
   {key:'youtube',name:'유튜브',color:'#c0441e',types:['롱폼','쇼츠']},
@@ -6695,6 +7024,7 @@ function csFileIcon(n){const e=n.split('.').pop().toLowerCase();return{txt:'📝
 function csMidTab(idx){
   document.querySelectorAll('.cs-mid-tab').forEach((t,i)=>t.classList.toggle('on',i===idx));
   document.querySelectorAll('.cs-mid-pane').forEach((p,i)=>p.classList.toggle('on',i===idx));
+  if(idx===1&&csCards&&csCards.length){ csPrompts=csExtractPrompts(csCards,[]); csRenderPromptList(); }
 }
 
 // File upload
@@ -6857,6 +7187,7 @@ function initAiSettingsUI(){
   if(mode==='member'){ csUpdateMemberKeyStatus(); csUpdateMemberAnthropicStatus(); }
   syncAiSettingsFormToDom();
   csRefreshClassifyHint();
+  csRefreshDriveSettingsUi();
 }
 function csMemberOpenAIStorageKey(){
   try{
@@ -7041,22 +7372,21 @@ function csClassifySystemPrompt(){
 입력에 있는 모든 독립 콘텐츠를 빠짐없이 cards 배열에 넣으세요. 10개, 24개, 100개든 전부 반환. 일부만 요약하지 마세요.
 중요: 원본에 번호(No.01~No.24 등)가 있으면 해당 번호를 no 필드에 넣고 절대 같은 번호 카드를 2개 이상 만들지 마세요. 한 콘텐츠를 채널별로 쪼개지 말고 단일 카드로 유지하세요.
 반드시 유효한 JSON만 출력. 출력의 첫 비공백 문자는 반드시 '{' 이어야 합니다. 구분선·마크다운·코드펜스·설명 문장을 앞뒤에 붙이지 마세요.
-★ 토큰 절약 규칙 ★
-- body: 원본 전문 복사 금지. 200자 이내 요약만. 원본은 파일에 이미 있으므로 전문은 불필요.
-- prompts: 해당 없는 필드는 키 자체를 생략(빈 문자열로 넣지 마세요). imageKo만 필수.
-- 줄바꿈·들여쓰기 없이 한 줄 JSON으로 출력.
-스키마:
-{"cards":[{"no":"01","title":"","body":"200자 이내 요약","type":"blog|sns|video|news|other","channel":"","channelType":"","tags":[],"shortSummary":"","cta":"","prompts":{"imageKo":["한국어 이미지 프롬프트"]}}]}
-prompts 선택키(해당 시만): voiceScript, voice, video, bgm, sfx, imageEn
-필수: 각 카드마다 imageKo에 최소 1개 이상 구체적인 한국어 이미지 프롬프트를 채우세요.
-type이 video/sns면 video·shortSummary·cta를 채우세요. blog면 imageKo에 대표 이미지 프롬프트.
-Instagram/Threads→sns, YouTube→video, 네이버/티스토리→blog.`;
+★ 극한 토큰 절약 — 아래 필드만 출력 ★
+- no: 원본 번호 (없으면 생략)
+- title: 콘텐츠 제목 (원본 그대로, 30자 이내)
+- type: blog|sns|video|news|other
+- channel: 채널명 (있으면)
+- imageKo: 한국어 이미지 프롬프트 1개 (25자 이내)
+body·tags·prompts 등 나머지 필드는 절대 넣지 마세요. 클라이언트가 원본에서 채웁니다.
+스키마: {"cards":[{"no":"01","title":"제목","type":"blog","channel":"","imageKo":"프롬프트"}]}
+줄바꿈·들여쓰기 없이 한 줄 JSON. Instagram/Threads→sns, YouTube→video, 네이버/티스토리→blog.`;
 }
 function csClassifyBlobFromTexts(texts){
   return texts.map(({name,text})=>`--- FILE: ${name} ---\n${String(text||'').slice(0,120000)}`).join('\n\n').slice(0,200000);
 }
-/** 청크당 ~8k자 — 카드당 ~1k 출력 토큰이므로 8개 이내로 유지 */
-const CS_CLASSIFY_CHUNK_CHARS=8000;
+/** 경량 스키마 사용 시 120k 한도 — 분할 최소화로 중복 방지 */
+const CS_CLASSIFY_CHUNK_CHARS=120000;
 function csChunkBlobForClassify(fullBlob, batch){
   if(!fullBlob||fullBlob.length<=CS_CLASSIFY_CHUNK_CHARS) return [{blob:fullBlob,batch}];
   const chunks=[]; let rest=fullBlob;
@@ -7078,11 +7408,11 @@ function csChunkBlobForClassify(fullBlob, batch){
   }
   return chunks;
 }
-/** 배치당 파일 수 — 10개씩 묶음 (blob는 청크로 추가 분할) */
+/** 배치당 파일 수 — 5개씩 묶음 (blob는 청크로 추가 분할) */
 function csChunkTextsForClassifyAi(texts){
   const arr=Array.isArray(texts)?texts:[];
   if(!arr.length) return [];
-  const MAX_PER_BATCH=10;
+  const MAX_PER_BATCH=5;
   const out=[];
   for(let i=0;i<arr.length;i+=MAX_PER_BATCH){
     out.push(arr.slice(i,i+MAX_PER_BATCH));
@@ -7110,10 +7440,44 @@ function csRepairJsonForParse(s){
   t=inStrFix(t);
   return t;
 }
+function csSalvageTruncatedCards(jsonStr){
+  const tryParse=(str)=>{ try{ return JSON.parse(str); }catch(_){ return null; } };
+  let start=jsonStr.indexOf('"cards"');
+  if(start<0) start=jsonStr.indexOf("'cards'");
+  const arrStart=jsonStr.indexOf('[',start>=0?start:0);
+  if(arrStart<0) return null;
+  const saved=[];
+  let i=arrStart+1, depth=0, objStart=-1, esc=false, inStr=false, q='';
+  while(i<jsonStr.length){
+    const c=jsonStr[i];
+    if(inStr){ if(esc){esc=false;i++;continue;} if(c==='\\'){esc=true;i++;continue;} if(c===q){inStr=false;} i++;continue; }
+    if(c==='"'||c==="'"){ inStr=true; q=c; i++; continue; }
+    if(c==='{'){
+      if(depth===0) objStart=i;
+      depth++; i++; continue;
+    }
+    if(c==='}'){
+      depth--;
+      if(depth===0&&objStart>=0){
+        const frag=jsonStr.slice(objStart,i+1);
+        const repaired=csRepairJsonForParse(frag);
+        const obj=tryParse(repaired)||tryParse(frag);
+        if(obj&&(obj.title||obj.body||obj.no)) saved.push(obj);
+        objStart=-1;
+      }
+      i++; continue;
+    }
+    i++;
+  }
+  if(saved.length){ console.log('[csClassify] 잘린 JSON에서 '+saved.length+'개 카드 복구'); return {cards:saved}; }
+  return null;
+}
 function csIsClassifyTruncated(text){
   const t=String(text||'').trimEnd();
   if(t.length<80) return false;
-  return !/[}\]]\s*$/.test(t);
+  if(/[}\]]\s*$/.test(t)) return false;
+  try{ const j=JSON.parse(csRepairJsonForParse(csExtractJsonFromModel(t))); if(j&&j.cards) return false; }catch(_){}
+  return true;
 }
 function csCardsFromClassifyJson(text,texts){
   const jsonStr=csExtractJsonFromModel(text);
@@ -7149,6 +7513,9 @@ function csCardsFromClassifyJsonParsed(jsonStr,texts){
       }
     }
   }
+  if(!raw){
+    raw=csSalvageTruncatedCards(jsonStr);
+  }
   if(!raw) throw new Error('JSON 파싱 실패. AI 응답이 유효한 JSON이 아닐 수 있습니다.');
   const arr=raw.cards||[];
   if(!Array.isArray(arr)||!arr.length)throw new Error('모델 응답에 cards가 없습니다');
@@ -7161,6 +7528,7 @@ function csCardsFromClassifyJsonParsed(jsonStr,texts){
     const typ=['blog','sns','video','news','other'].includes(t)?t:csGuessType(c.title||'',c.body||'');
     const noRaw=c.no||(typeof c.id==='string'?c.id.replace(/content_/i,'').trim():'');
     const no=noRaw?String(noRaw).padStart(2,'0'):null;
+    const imgKoTop=c.imageKo?(typeof c.imageKo==='string'?[c.imageKo]:Array.isArray(c.imageKo)?c.imageKo:[]):[];
     return{
       id:++id,
       no,
@@ -7181,7 +7549,7 @@ function csCardsFromClassifyJsonParsed(jsonStr,texts){
         video:(p.video||p.video_prompt||'').trim(),
         bgm:(p.bgm||p.bgm_prompt||'').trim(),
         sfx:(p.sfx||p.sfx_summary||'').trim(),
-        imageKo:toArr(p.imageKo),
+        imageKo:imgKoTop.length?imgKoTop:toArr(p.imageKo),
         imageEn:toArr(p.imageEn)
       },
       cta:(c.cta||'').trim(),
@@ -7400,26 +7768,26 @@ async function csClassifyChunkWithContinuation(chunkBlob, batch, system, aiFn, m
   const MAX_CONT=maxRetries||2;
   const userMsg=`다음은 파일 모음입니다:\n\n${chunkBlob}`;
   const firstOut=await aiFn(system, userMsg);
-  if(!csIsClassifyTruncated(firstOut)) return {cards:csCardsFromClassifyJson(firstOut,batch)};
-  const allCards=[];
-  try{ allCards.push(...csCardsFromClassifyJson(firstOut,batch)); }catch(_){}
-  const existingNos=allCards.map(c=>c.no||c.title).filter(Boolean);
+  const firstCards=[];
+  try{ firstCards.push(...csCardsFromClassifyJson(firstOut,batch)); }catch(_){}
+  if(!csIsClassifyTruncated(firstOut) || firstCards.length>=20) return {cards:firstCards};
+  const existingNos=firstCards.map(c=>c.no||c.title).filter(Boolean);
   for(let retry=0; retry<MAX_CONT; retry++){
-    console.log('[csClassify] 응답 잘림 감지, 누락 카드 재요청 '+(retry+1)+' (기존 '+allCards.length+'개)');
-    const contMsg=`이전 요청에서 토큰 한도로 JSON이 잘렸습니다. 아래 원본 파일 중 이미 반환된 카드(${existingNos.join(', ')})를 제외하고 나머지 카드만 {"cards":[...]} 형태로 출력하세요. 간결한 JSON만, 설명 없이.\n\n${chunkBlob}`;
+    console.log('[csClassify] 응답 잘림 감지, 누락 카드 재요청 '+(retry+1)+' (기존 '+firstCards.length+'개 / 배치 '+batch.length+'개)');
+    const contMsg=`이전 응답에서 JSON이 잘렸습니다. 이미 받은 카드: [${existingNos.join(',')}]. 이 번호를 제외한 나머지 카드만 {"cards":[...]} JSON으로 출력. 설명 없이 JSON만.`;
     const contOut=await aiFn(system, contMsg);
     try{
       const extra=csCardsFromClassifyJson(contOut,batch);
       for(const c of extra){
         const key=c.no||c.title;
         if(key && existingNos.includes(key)) continue;
-        allCards.push(c);
+        firstCards.push(c);
         if(key) existingNos.push(key);
       }
     }catch(e){ console.warn('[csClassify] 이어쓰기 파싱 실패:',e); }
     if(!csIsClassifyTruncated(contOut)) break;
   }
-  return {cards:allCards};
+  return {cards:firstCards};
 }
 async function csClassifyWithOpenAI(texts, onProgress){
   await bsEnsureAiGuidelinesCachesOrAbort(false);
@@ -7441,7 +7809,7 @@ async function csClassifyWithOpenAI(texts, onProgress){
     );
   };
   const tasks=allChunks.map(({blob,batch})=>{
-    return csClassifyChunkWithContinuation(blob,batch,system,aiFn,2);
+    return csClassifyChunkWithContinuation(blob,batch,system,aiFn,3);
   });
   const results=await Promise.all(tasks);
   const all=[]; let nextId=0;
@@ -7467,7 +7835,7 @@ async function csClassifyWithClaude(texts, onProgress){
     return csAnthropicChat(sys,user,{max_tokens:16384});
   };
   const tasks=allChunks.map(({blob,batch})=>{
-    return csClassifyChunkWithContinuation(blob,batch,system,aiFn,2);
+    return csClassifyChunkWithContinuation(blob,batch,system,aiFn,3);
   });
   const results=await Promise.all(tasks);
   const all=[]; let nextId=0;
@@ -7499,6 +7867,59 @@ function csBackfillBodiesFromTexts(cards, texts){
       c.body=best.slice(0,5000);
       if(c.raw&&typeof c.raw==='object') c.raw.body=c.body;
     }
+  }
+}
+/**
+ * AI 분류 후 카드의 c.raw에 원본 JSON item의 voice/video/audio/prompts를 보강.
+ * AI가 반환한 카드에는 축약된 필드만 있어서, 원본 JSON에서 no/id로 매칭 후 병합.
+ */
+function csBackfillRawFromTexts(cards, texts){
+  var itemMap={};
+  for(var ti=0;ti<texts.length;ti++){
+    var text=texts[ti].text;
+    if(!text) continue;
+    try{
+      var j=JSON.parse(text);
+      var arr=Array.isArray(j)?j:(j.items&&Array.isArray(j.items)?j.items:null);
+      if(!arr) continue;
+      for(var ai=0;ai<arr.length;ai++){
+        var item=arr[ai];
+        if(!item||typeof item!=='object') continue;
+        var noRaw=item.no||(typeof item.id==='string'?item.id.replace(/content_/i,'').trim():'');
+        if(noRaw){
+          var noKey=String(noRaw).replace(/^0+/,'')||noRaw;
+          itemMap[noKey]=item;
+        }
+      }
+    }catch(e){}
+  }
+  for(var ci=0;ci<cards.length;ci++){
+    var c=cards[ci];
+    if(!c.no) continue;
+    var noKey=String(c.no).replace(/^0+/,'')||c.no;
+    var orig=itemMap[noKey];
+    if(!orig) continue;
+    if(!c.raw||typeof c.raw!=='object') c.raw={};
+    Object.keys(orig).forEach(function(k){
+      if(k.indexOf('has_')!==0) return;
+      c.raw[k]=orig[k];
+    });
+    if(orig.voice&&!c.raw.voice) c.raw.voice=orig.voice;
+    if(orig.video&&!c.raw.video) c.raw.video=orig.video;
+    if(orig.audio&&!c.raw.audio) c.raw.audio=orig.audio;
+    if(orig.prompts){
+      if(!c.raw.prompts) c.raw.prompts={};
+      var pk=['voice_prompt','video_prompt','bgm_prompt','sfx_prompt','sfx_summary','video_scenes','bgm_style','image_prompt_ko','image_prompt_en','voiceScript'];
+      for(var pi=0;pi<pk.length;pi++){ var k=pk[pi]; if(orig.prompts[k]!=null&&!c.raw.prompts[k]) c.raw.prompts[k]=orig.prompts[k]; }
+      if(Array.isArray(orig.prompts.image_prompts)&&orig.prompts.image_prompts.length&&(!Array.isArray(c.raw.prompts.image_prompts)||!c.raw.prompts.image_prompts.length)){
+        c.raw.prompts.image_prompts=orig.prompts.image_prompts;
+      }
+      if(Array.isArray(orig.prompts.video_prompts)&&orig.prompts.video_prompts.length&&(!Array.isArray(c.raw.prompts.video_prompts)||!c.raw.prompts.video_prompts.length)){
+        c.raw.prompts.video_prompts=orig.prompts.video_prompts;
+      }
+    }
+    if(orig.image&&!c.raw.image) c.raw.image=orig.image;
+    if(orig.script&&!c.raw.script) c.raw.script=orig.script;
   }
 }
 // AI Classify
@@ -7559,6 +7980,7 @@ async function csClassify(){
   csCards=csDeduplicateCardsByNo(csCards);
   if(usedAI && csCards.length>0){
     csBackfillBodiesFromTexts(csCards, texts);
+    csBackfillRawFromTexts(csCards, texts);
     const localRef=csParseAll(texts);
     if(localRef.length>csCards.length+2){
       console.warn('[csClassify] AI 카드 '+csCards.length+'개 < 로컬 기준 '+localRef.length+'개 — 일부 누락 가능성');
@@ -7675,6 +8097,50 @@ async function csSaveFilesToGallery(){
   }
 }
 
+function csSaveAllCards(){
+  if(!csCards||!csCards.length){ toast('저장할 카드가 없습니다.','warn'); return; }
+  const btn=document.getElementById('csSaveAllCardsBtn');
+  if(btn) btn.disabled=true;
+  try{
+    const sourceName=csFiles.length?csFiles.map(f=>f.name).join(', '):'분류 카드';
+    const existing=publishManuscripts.find(p=>p.sourceLabel===sourceName && (Date.now()-p.createdAt)<600000);
+    if(existing){
+      existing.cardsSnapshot=JSON.parse(JSON.stringify(csCards));
+      existing.updatedAt=Date.now();
+      savePublishManuscripts();
+      renderPmList();
+      renderPmSidebarFileList();
+      toast('✓ 기존 원고에 '+csCards.length+'개 카드 업데이트 완료','ok');
+    } else {
+      const fullText=csFiles.length?'':'';
+      const toAdd=[{
+        title: sourceName,
+        content: fullText,
+        selectionCriteria:'',
+        sourceFilename: sourceName,
+        createdAt: Date.now(),
+        fromStudio: true
+      }];
+      const prevLen=publishManuscripts.length;
+      pushPublishManuscriptEntries(toAdd);
+      const pm=publishManuscripts[prevLen];
+      if(pm){
+        pm.cardsSnapshot=JSON.parse(JSON.stringify(csCards));
+        pm.sourceLabel=sourceName;
+        savePublishManuscripts();
+      }
+      renderPmList();
+      renderPmSidebarFileList();
+      toast('✓ '+csCards.length+'개 카드 전체 저장 완료','ok');
+    }
+  }catch(e){
+    console.error(e);
+    toast('전체 저장 실패: '+(e.message||e),'err');
+  }finally{
+    if(btn) btn.disabled=false;
+  }
+}
+
 function csResolveItemTitle(item){
   const t=item.title||item.name||item.copy?.title||item.view?.title||item.short_summary||'';
   return typeof t==='string'?t.trim():'';
@@ -7719,17 +8185,36 @@ function csParseAll(texts){
         const canon=no&&noMap[no]?noMap[no]:null;
         const ch=canon?canon.channel:(item.channel_group||item.channel||'');
         const chTyp=canon?canon.channelType:(function(){const p=csPickChannelTypeFromItem(item);if(p) return p;const ct=String(item.channel_type||item.channelType||'').trim();if(ct) return ct;const typ=String(item.type||'').trim();if(typ&&!/^(video|sns|blog|news|other|content)$/i.test(typ)) return typ;return '';})();
+        const vidScenes=item.video?.scenes||prompts.video_scenes||null;
+        const sfxVal=item.audio?.sfx;
+        const sfxStr=typeof sfxVal==='string'?sfxVal:(Array.isArray(sfxVal)?sfxVal.map(v=>typeof v==='string'?v:(v?.prompt||v?.script||(v?.type&&v?.timing?[v.type,v.timing,v.duration].filter(Boolean).join(' '):'')).trim()).filter(Boolean).join('\n'):(prompts.sfx_summary||prompts.sfx_prompt||''));
+        const wf=csWorkbenchMediaFlagsFromImp(item);
+        var imgKoArr=[], imgEnArr=[];
+        if(wf.has_image){
+          imgKoArr=(Array.isArray(prompts.image_prompt_ko)?prompts.image_prompt_ko:(prompts.image_prompt_ko?[prompts.image_prompt_ko]:[])).map(function(x){ return String(x==null?'':x).trim(); }).filter(Boolean);
+          imgEnArr=(Array.isArray(prompts.image_prompt_en)?prompts.image_prompt_en:(prompts.image_prompt_en?[prompts.image_prompt_en]:[])).map(function(x){ return String(x==null?'':x).trim(); }).filter(Boolean);
+          if(Array.isArray(prompts.image_prompts)&&prompts.image_prompts.length){
+            prompts.image_prompts.forEach(function(ent){
+              if(!ent||typeof ent!=='object')return;
+              var ik=String(ent.image_prompt_ko||'').trim();
+              var ie=String(ent.image_prompt_en||'').trim();
+              if(ik) imgKoArr.push(ik);
+              if(ie) imgEnArr.push(ie);
+            });
+          }
+        }
         cards.push({id:++id,no,type:csGuessType(item.title||item.name||'',JSON.stringify(item)),title:titleResolved||'(제목 없음)',
           body:bodyStr,
           shortSummary:item.short_summary||'',
           tags:item.tags||item.copy?.tags||item.keywords||[],source:name,channel:ch,
           channelType:chTyp,
           publishTiming:item.publish_timing||'',hookType:item.hook_type||'',angle:item.angle||item.copy?.angle||'',
-          prompts:{voice:prompts.voice_prompt||item.voice?.prompt||'',voiceScript:item.voice?.script||'',
-            video:prompts.video_prompt||item.video?.prompt||'',bgm:prompts.bgm_prompt||item.audio?.bgm?.prompt||'',
-            sfx:prompts.sfx_summary||'',
-            imageKo:imgArr.map(im=>im.prompt_ko||'').filter(Boolean).concat([prompts.image_prompt_ko||'']).filter(Boolean),
-            imageEn:imgArr.map(im=>im.prompt_en||'').filter(Boolean).concat([prompts.image_prompt_en||'']).filter(Boolean)},
+          prompts:{voice:wf.has_voice?(prompts.voice_prompt||item.voice?.prompt||''):'',voiceScript:wf.has_voice?(prompts.voiceScript||item.voice?.script||''):'',
+            video:wf.has_video?(prompts.video_prompt||item.video?.prompt||''):'',videoScenes:wf.has_video?vidScenes:null,scenes:wf.has_video?vidScenes:null,
+            bgm:wf.has_audio?(prompts.bgm_prompt||item.audio?.bgm?.prompt||''):'',bgmStyle:wf.has_audio?(prompts.bgm_style||item.audio?.bgm?.style||''):'',
+            sfx:wf.has_audio?sfxStr:'',
+            imageKo:wf.has_image?imgArr.map(im=>im.prompt_ko||'').filter(Boolean).concat(imgKoArr):[],
+            imageEn:wf.has_image?imgArr.map(im=>im.prompt_en||'').filter(Boolean).concat(imgEnArr):[]},
           cta:item.cta||item.copy?.cta||'',raw:item,finalized:false});
       });
       if(cards.some(c=>c.no)){
@@ -7761,16 +8246,16 @@ function csDeduplicateCardsByNo(cards){
   const out=[];
   let dupeCount=0;
   for(const c of cards){
-    const noKey=c.no?String(c.no).padStart(2,'0'):null;
-    const titleKey=(c.title||'').trim().toLowerCase();
+    const noKey=c.no?String(c.no).replace(/^0+/,''):null;
+    const titleKey=(c.title||'').trim().toLowerCase().replace(/\s+/g,' ');
     let isDupe=false;
     if(noKey && seenNo.has(noKey)){
       const prev=seenNo.get(noKey);
       const prevLen=(prev.body||'').length+(prev.title||'').length;
       const curLen=(c.body||'').length+(c.title||'').length;
-      if(curLen>prevLen){ const idx=out.indexOf(prev); if(idx>=0) out[idx]=c; seenNo.set(noKey,c); if(titleKey) seenTitle.set(titleKey,c); }
+      if(curLen>prevLen){ const idx=out.indexOf(prev); if(idx>=0) out[idx]=c; seenNo.set(noKey,c); }
       isDupe=true; dupeCount++;
-    } else if(!noKey && titleKey && seenTitle.has(titleKey)){
+    } else if(!noKey && titleKey.length>3 && seenTitle.has(titleKey)){
       const prev=seenTitle.get(titleKey);
       const prevLen=(prev.body||'').length; const curLen=(c.body||'').length;
       if(curLen>prevLen){ const idx=out.indexOf(prev); if(idx>=0) out[idx]=c; seenTitle.set(titleKey,c); }
@@ -7779,7 +8264,7 @@ function csDeduplicateCardsByNo(cards){
     if(!isDupe){
       out.push(c);
       if(noKey) seenNo.set(noKey,c);
-      if(titleKey) seenTitle.set(titleKey,c);
+      if(titleKey.length>3) seenTitle.set(titleKey,c);
     }
   }
   if(dupeCount) console.log(`[Dedup] ${cards.length}→${out.length}개 (중복 ${dupeCount}개 제거)`);
@@ -7861,30 +8346,53 @@ function csCardToRawItemJson(c){
   const imp=(c.raw&&typeof c.raw==='object'&&!Array.isArray(c.raw))?c.raw:null;
   const imgKo=csCleanSingleImagePrompts(Array.isArray(p.imageKo)?p.imageKo:(p.imageKo?[p.imageKo]:[]));
   const imgEn=csCleanSingleImagePrompts(Array.isArray(p.imageEn)?p.imageEn:(p.imageEn?[p.imageEn]:[]));
+  const vScript=p.voiceScript||(imp&&imp.voice&&imp.voice.script)||(imp&&imp.script)||'';
+  const vPrompt=p.voice||(imp&&imp.voice&&imp.voice.prompt)||(imp&&imp.prompts&&imp.prompts.voice_prompt)||'';
+  const vidPrompt=p.video||(imp&&imp.video&&imp.video.prompt)||(imp&&imp.prompts&&imp.prompts.video_prompt)||'';
+  const vidScenes=p.videoScenes||p.scenes||(imp&&imp.video&&imp.video.scenes)||(imp&&imp.prompts&&imp.prompts.video_scenes)||null;
+  const bgmP=p.bgm||(imp&&imp.audio&&imp.audio.bgm&&imp.audio.bgm.prompt)||(imp&&imp.prompts&&imp.prompts.bgm_prompt)||'';
+  const bgmS=p.bgmStyle||p.bgm_style||(imp&&imp.audio&&imp.audio.bgm&&imp.audio.bgm.style)||(imp&&imp.prompts&&imp.prompts.bgm_style)||'';
+  const sfxP=p.sfx||(imp&&imp.prompts&&imp.prompts.sfx_summary)||(imp&&imp.prompts&&imp.prompts.sfx_prompt)||'';
+  const sfxFromAudio=imp&&imp.audio&&Array.isArray(imp.audio.sfx)&&imp.audio.sfx.length?
+    imp.audio.sfx.map(v=>typeof v==='string'?v:(v?.prompt||v?.script||(v?.type&&v?.timing?[v.type,v.timing,v.duration].filter(Boolean).join(' '):'')).trim()).filter(Boolean).join('\n'):'';
   const overlay={
     title:c.title, body:c.body, copy:c.body,
     short_summary:c.shortSummary, summary:c.shortSummary, one_line_summary:c.shortSummary,
     tags:c.tags, cta:c.cta,
-    script:p.voiceScript,
+    script:vScript,
     voice:Object.assign({},imp&&imp.voice,{
-      script:p.voiceScript||(imp&&imp.voice&&imp.voice.script)||'',
-      prompt:p.voice||(imp&&imp.voice&&imp.voice.prompt)||'',
+      script:vScript,
+      prompt:vPrompt,
     }),
-    video:Object.assign({},imp&&imp.video,{ prompt:p.video||(imp&&imp.video&&imp.video.prompt)||'' }),
+    video:Object.assign({},imp&&imp.video,{
+      prompt:vidPrompt,
+      scenes:vidScenes,
+    }),
     audio:Object.assign({},imp&&imp.audio,{
-      bgm:Object.assign({},imp&&imp.audio&&imp.audio.bgm,{ prompt:p.bgm||(imp&&imp.audio&&imp.audio.bgm&&imp.audio.bgm.prompt)||'' }),
-      sfx_prompt:p.sfx||'',
-      sfx_summary:p.sfx||'',
+      bgm:Object.assign({},imp&&imp.audio&&imp.audio.bgm,{
+        prompt:bgmP,
+        style:bgmS,
+      }),
+      sfx:imp&&imp.audio&&imp.audio.sfx?imp.audio.sfx:undefined,
+      sfx_prompt:(sfxP||sfxFromAudio)||undefined,
+      sfx_summary:(sfxP||sfxFromAudio)||undefined,
     }),
-    prompts:Object.assign({},imp&&imp.prompts,{
-      voice_prompt:p.voice,video_prompt:p.video,bgm_prompt:p.bgm,sfx_prompt:p.sfx,sfx_summary:p.sfx,
-      voiceScript:p.voiceScript,
-      imageKo:imgKo,imageEn:imgEn,
-      image_prompt_ko:imgKo.length?imgKo:null,
-      image_prompt_en:imgEn.length?imgEn:null,
-    }),
+    prompts:(function(){
+      var pb=Object.assign({},imp&&imp.prompts,{
+        voice_prompt:vPrompt,video_prompt:vidPrompt,video_scenes:vidScenes,bgm_prompt:bgmP,bgm_style:bgmS,sfx_prompt:(sfxP||sfxFromAudio),sfx_summary:(sfxP||sfxFromAudio),
+        voiceScript:vScript,
+        imageKo:imgKo,imageEn:imgEn,
+        image_prompt_ko:imgKo.length?imgKo:null,
+        image_prompt_en:imgEn.length?imgEn:null,
+      });
+      if(imp&&imp.prompts&&Array.isArray(imp.prompts.image_prompts)&&imp.prompts.image_prompts.length)
+        pb.image_prompts=imp.prompts.image_prompts.slice();
+      if(imp&&imp.prompts&&Array.isArray(imp.prompts.video_prompts)&&imp.prompts.video_prompts.length)
+        pb.video_prompts=imp.prompts.video_prompts.slice();
+      return pb;
+    })(),
     image:{ prompt_ko:imgKo.length?imgKo:null, prompt_en:imgEn.length?imgEn:null },
-    content:{ script:p.voiceScript, body:c.body },
+    content:{ script:vScript, body:c.body },
     view:{
       summary:c.shortSummary, title:c.title, body_copy:c.body, cta:c.cta,
       channel_label:[c.channel,c.channelType].filter(Boolean).join(' · ')||null,
@@ -7903,39 +8411,138 @@ function csExtractRawFromItem(item){
   const trace=[];
   const itemNo=csAsString(item.no)||csAsString(item.id)||csAsString(item.item_no)||'UNKNOWN';
 
-  const script=csFirstStringByPaths(item,itemNo,trace,'script',[
-    'voice.script','prompts.voiceScript','script','raw.script','content.script','raw.voice.script',
-  ]);
-  const voicePrompt=csFirstStringByPaths(item,itemNo,trace,'voice_prompt',[
-    'prompts.voice_prompt','voice.prompt','raw.voice_prompt','raw.prompts.voice_prompt',
-  ]);
-  const videoPrompt=csFirstStringByPaths(item,itemNo,trace,'video_prompt',[
-    'prompts.video_prompt','video.prompt','raw.video_prompt','raw.prompts.video_prompt',
-  ]);
-  const bgmPrompt=csFirstStringByPaths(item,itemNo,trace,'bgm_prompt',[
-    'prompts.bgm_prompt','audio.bgm.prompt','raw.bgm_prompt','raw.prompts.bgm_prompt','raw.audio.bgm.prompt',
-  ]);
-  const sfxPrompt=csFirstStringByPaths(item,itemNo,trace,'sfx_prompt',[
-    'prompts.sfx_prompt','prompts.sfx_summary','audio.sfx_prompt','audio.sfx_summary','raw.sfx_prompt','raw.prompts.sfx_prompt',
-  ]);
+  var wfGate=csWorkbenchMediaFlagsFromImp(item);
+  var script=null, voicePrompt=null, videoPrompt=null, videoScenes=null, bgmPrompt=null, bgmStyle=null, sfxPrompt=null;
 
-  let imagePromptKo=csFirstStringArrayByPaths(item,itemNo,trace,'image_prompt_ko',[
-    'prompts.image_prompt_ko','prompts.imageKo','image.prompt_ko','raw.image_prompt_ko','raw.prompts.image_prompt_ko',
-  ]);
-  if(!imagePromptKo){
-    const single=csFirstStringByPaths(item,itemNo,trace,'image_prompt_ko',[
-      'prompts.image_prompt_ko','prompts.imageKo','image.prompt_ko','raw.image_prompt_ko',
+  if(wfGate.has_voice){
+    script=csFirstStringByPaths(item,itemNo,trace,'script',[
+      'voice.script','prompts.voiceScript','script','raw.script','content.script','raw.voice.script',
     ]);
-    if(single) imagePromptKo=[single];
+    voicePrompt=csFirstStringByPaths(item,itemNo,trace,'voice_prompt',[
+      'prompts.voice_prompt','voice.prompt','raw.voice_prompt','raw.prompts.voice_prompt',
+    ]);
   }
-  let imagePromptEn=csFirstStringArrayByPaths(item,itemNo,trace,'image_prompt_en',[
-    'prompts.image_prompt_en','prompts.imageEn','image.prompt_en','raw.image_prompt_en','raw.prompts.image_prompt_en',
-  ]);
-  if(!imagePromptEn){
-    const single=csFirstStringByPaths(item,itemNo,trace,'image_prompt_en',[
-      'prompts.image_prompt_en','prompts.imageEn','image.prompt_en','raw.image_prompt_en',
+  if(wfGate.has_video){
+    var vpa=csGetByPath(item,'prompts.video_prompts');
+    if(!vpa||!vpa.length) vpa=csGetByPath(item,'raw.prompts.video_prompts');
+    if(!vpa||!vpa.length) vpa=csGetByPath(item,'video_prompts');
+    var vPromptList=null;
+    if(Array.isArray(vpa)&&vpa.length){
+      var vSlot=[];
+      vpa.forEach(function(ent,idx){
+        if(ent==null)return;
+        var vp='';
+        if(typeof ent==='string') vp=String(ent).trim();
+        else if(typeof ent==='object'&&!Array.isArray(ent)){
+          vp=String(ent.video_prompt||ent.prompt||ent.script||ent.text||'').trim();
+        }
+        if(vp){
+          vSlot.push(vp);
+          trace.push({itemNo,field:'video_prompt',value:vp,sourcePath:'prompts.video_prompts['+idx+'].video_prompt'});
+        }
+      });
+      if(vSlot.length) vPromptList=vSlot;
+    }
+    if(!vPromptList||!vPromptList.length){
+      var vArr=csFirstStringArrayByPaths(item,itemNo,trace,'video_prompt',[
+        'prompts.video_prompt','video.prompt','raw.video_prompt','raw.prompts.video_prompt',
+      ]);
+      if(vArr&&vArr.length) vPromptList=vArr.slice();
+    }
+    if(!vPromptList||!vPromptList.length){
+      var singleVp=csFirstStringByPaths(item,itemNo,trace,'video_prompt',[
+        'prompts.video_prompt','video.prompt','raw.video_prompt','raw.prompts.video_prompt',
+      ]);
+      if(singleVp) vPromptList=[singleVp];
+    }
+    if(vPromptList&&vPromptList.length===1) videoPrompt=vPromptList[0];
+    else if(vPromptList&&vPromptList.length>1) videoPrompt=vPromptList;
+    else videoPrompt=null;
+    videoScenes=csFirstStringArrayByPaths(item,itemNo,trace,'video_scenes',[
+      'prompts.video_scenes','video.scenes','raw.video.scenes','raw.prompts.video_scenes',
     ]);
-    if(single) imagePromptEn=[single];
+    if(!videoScenes){
+      const scenesVal=csGetByPath(item,'video.scenes');
+      if(Array.isArray(scenesVal)&&scenesVal.length){
+        const scripts=scenesVal.map(s=>typeof s==='string'?s:(s&&(s.script||s.text||s.description||s.prompt)||'')).filter(Boolean);
+        if(scripts.length){ trace.push({itemNo,field:'video_scenes',value:scripts,sourcePath:'video.scenes'}); videoScenes=scripts; }
+      }
+    }
+  }
+  if(wfGate.has_audio){
+    bgmPrompt=csFirstStringByPaths(item,itemNo,trace,'bgm_prompt',[
+      'prompts.bgm_prompt','audio.bgm.prompt','bgm.prompt','raw.bgm_prompt','raw.prompts.bgm_prompt','raw.audio.bgm.prompt',
+    ]);
+    bgmStyle=csFirstStringByPaths(item,itemNo,trace,'bgm_style',[
+      'audio.bgm.style','bgm.style','prompts.bgm_style','raw.audio.bgm.style','raw.prompts.bgm_style',
+    ]);
+    sfxPrompt=csFirstStringByPaths(item,itemNo,trace,'sfx_prompt',[
+      'prompts.sfx_prompt','prompts.sfx_summary','audio.sfx','audio.sfx_prompt','audio.sfx_summary','raw.sfx_prompt','raw.prompts.sfx_prompt',
+    ]);
+    if(!sfxPrompt){
+      const sfxVal=csGetByPath(item,'audio.sfx');
+      if(Array.isArray(sfxVal)&&sfxVal.length){
+        const parts=sfxVal.map(v=>{
+          if(typeof v==='string') return v.trim();
+          if(v&&typeof v==='object'){
+            const p=v.prompt||v.script||v.text;
+            if(p) return String(p).trim();
+            return [v.type,v.timing,v.duration].filter(Boolean).join(' ');
+          }
+          return '';
+        }).filter(Boolean);
+        if(parts.length){ trace.push({itemNo,field:'sfx_prompt',value:parts.join('\n'),sourcePath:'audio.sfx'}); sfxPrompt=parts.join('\n'); }
+      }
+    }
+  }
+
+  var imagePromptKo=null, imagePromptEn=null;
+  if(wfGate.has_image){
+    var ipa=csGetByPath(item,'prompts.image_prompts');
+    if(!ipa||!ipa.length) ipa=csGetByPath(item,'raw.prompts.image_prompts');
+    if(!ipa||!ipa.length) ipa=csGetByPath(item,'image_prompts');
+    if(Array.isArray(ipa)&&ipa.length){
+      var koSlot=[], enSlot=[];
+      ipa.forEach(function(entry,idx){
+        if(!entry||typeof entry!=='object'||Array.isArray(entry))return;
+        var iko=String(entry.image_prompt_ko||'').trim();
+        var ien=String(entry.image_prompt_en||'').trim();
+        if(iko){
+          koSlot.push(iko);
+          trace.push({itemNo,field:'image_prompt_ko',value:iko,sourcePath:'prompts.image_prompts['+idx+'].image_prompt_ko'});
+        }
+        if(ien){
+          enSlot.push(ien);
+          trace.push({itemNo,field:'image_prompt_en',value:ien,sourcePath:'prompts.image_prompts['+idx+'].image_prompt_en'});
+        }
+      });
+      if(koSlot.length) imagePromptKo=koSlot;
+      if(enSlot.length) imagePromptEn=enSlot;
+    }
+    if(!imagePromptKo||!imagePromptKo.length){
+      imagePromptKo=csFirstStringArrayByPaths(item,itemNo,trace,'image_prompt_ko',[
+        'prompts.image_prompt_ko','prompts.imageKo','image.prompt_ko','raw.image_prompt_ko','raw.prompts.image_prompt_ko',
+      ]);
+      if(!imagePromptKo){
+        var singleKo=csFirstStringByPaths(item,itemNo,trace,'image_prompt_ko',[
+          'prompts.image_prompt_ko','prompts.imageKo','image.prompt_ko','raw.image_prompt_ko',
+        ]);
+        if(singleKo) imagePromptKo=[singleKo];
+      }
+    }
+    if(!imagePromptEn||!imagePromptEn.length){
+      imagePromptEn=csFirstStringArrayByPaths(item,itemNo,trace,'image_prompt_en',[
+        'prompts.image_prompt_en','prompts.imageEn','image.prompt_en','raw.image_prompt_en','raw.prompts.image_prompt_en',
+      ]);
+      if(!imagePromptEn){
+        var singleEn=csFirstStringByPaths(item,itemNo,trace,'image_prompt_en',[
+          'prompts.image_prompt_en','prompts.imageEn','image.prompt_en','raw.image_prompt_en',
+        ]);
+        if(singleEn) imagePromptEn=[singleEn];
+      }
+    }
+    if(!imagePromptKo||!imagePromptKo.length) imagePromptKo=null;
+    if(!imagePromptEn||!imagePromptEn.length) imagePromptEn=null;
   }
 
   const summary=csFirstStringByPaths(item,itemNo,trace,'summary',[
@@ -7961,7 +8568,7 @@ function csExtractRawFromItem(item){
   return{
     itemNo,
     raw:{
-      script,voice_prompt:voicePrompt,video_prompt:videoPrompt,bgm_prompt:bgmPrompt,sfx_prompt:sfxPrompt,
+      script,voice_prompt:voicePrompt,video_prompt:videoPrompt,video_scenes:videoScenes||null,bgm_prompt:bgmPrompt,bgm_style:bgmStyle,sfx_prompt:sfxPrompt,
       image_prompt_ko:imagePromptKo,image_prompt_en:imagePromptEn,
       summary,cta,body_copy:bodyCopy,title,tags,
       channel_label:channelLabel,type_label:typeLabel,
@@ -7986,13 +8593,22 @@ function csRawBundleToExportShape(raw){
   const o={};
   const set=(k,v)=>{
     if(v==null) return;
-    if(Array.isArray(v)&&!v.length) return;
+    if(typeof v==='string'&&!String(v).trim()) return;
+    if(Array.isArray(v)){
+      if(!v.length) return;
+      var nar=v.map(function(x){ return typeof x==='string'?x.trim():x; }).filter(function(x){ return typeof x==='string'?x.length>0:x!=null&&x!==''; });
+      if(!nar.length) return;
+      o[k]=nar;
+      return;
+    }
     o[k]=v;
   };
   set('script',raw.script);
   set('voice_prompt',raw.voice_prompt);
   set('video_prompt',raw.video_prompt);
+  set('video_scenes',raw.video_scenes);
   set('bgm_prompt',raw.bgm_prompt);
+  set('bgm_style',raw.bgm_style);
   set('sfx_prompt',raw.sfx_prompt);
   set('image_prompt_ko',raw.image_prompt_ko);
   set('image_prompt_en',raw.image_prompt_en);
@@ -8029,15 +8645,75 @@ function csNormalizeTypeSlug(c){
   if(c.type==='news') return 'news';
   return c.type||'other';
 }
-/** path 기반 RAW + 출처 trace (content_id는 trace·식별용으로만 보강) */
+/** path 기반 RAW + 출처 trace (content_id는 trace·식별용으로만 보강). 원본(c.raw) 우선 적용 */
 function csCardRawWithTrace(c, content_id){
   const itemJson=csCardToRawItemJson(c);
   const itemForExtract=Object.assign({},itemJson,{
     no: csAsString(itemJson.no)||content_id,
     id: csAsString(itemJson.id)||content_id,
   });
-  const bundle=csExtractRawFromItem(itemForExtract);
-  return{ raw: csRawBundleToExportShape(bundle.raw), raw_trace: bundle.trace };
+  let bundle=csExtractRawFromItem(itemForExtract);
+  var raw=bundle.raw;
+  var trace=bundle.trace;
+  var itemNo=bundle.itemNo;
+  var imp=c.raw&&typeof c.raw==='object'&&!Array.isArray(c.raw)?c.raw:null;
+  if(imp){
+    var wfImp=csWorkbenchMediaFlagsFromImp(imp);
+    if(wfImp.has_voice){
+      var s=imp.voice&&imp.voice.script||imp.script;
+      if(typeof s==='string'&&s.trim()){ raw=Object.assign({},raw,{script:s.trim()}); if(!trace.some(function(t){return t.field==='script';})) trace.push({itemNo,field:'script',value:s.trim(),sourcePath:'voice.script'}); }
+      var vp=imp.voice&&imp.voice.prompt||(imp.prompts&&imp.prompts.voice_prompt);
+      if(typeof vp==='string'&&vp.trim()){ raw=Object.assign({},raw,{voice_prompt:vp.trim()}); if(!trace.some(function(t){return t.field==='voice_prompt';})) trace.push({itemNo,field:'voice_prompt',value:vp.trim(),sourcePath:'voice.prompt'}); }
+    }
+    if(wfImp.has_video){
+      var vd=imp.video&&imp.video.prompt||(imp.prompts&&imp.prompts.video_prompt);
+      if(Array.isArray(vd)&&vd.length){
+        var vnorm=vd.map(function(x){ return typeof x==='string'?x.trim():String(x==null?'':x).trim(); }).filter(Boolean);
+        if(vnorm.length===1){ vd=vnorm[0]; }
+        else if(vnorm.length>1){
+          raw=Object.assign({},raw,{video_prompt:vnorm});
+          if(!trace.some(function(t){return t.field==='video_prompt';})) trace.push({itemNo,field:'video_prompt',value:vnorm,sourcePath:'video.prompt[]'});
+          vd=null;
+        } else vd=null;
+      }
+      if(vd!=null&&typeof vd==='string'&&vd.trim()){ raw=Object.assign({},raw,{video_prompt:vd.trim()}); if(!trace.some(function(t){return t.field==='video_prompt';})) trace.push({itemNo,field:'video_prompt',value:vd.trim(),sourcePath:'video.prompt'}); }
+      var vps=imp.prompts&&imp.prompts.video_prompts;
+      if(Array.isArray(vps)&&vps.length&&(!raw.video_prompt||(typeof raw.video_prompt==='string'&&!String(raw.video_prompt).trim()))){
+        var vmerge=[]; var vmi=0;
+        vps.forEach(function(ent){
+          if(ent==null)return;
+          var tx='';
+          if(typeof ent==='string') tx=ent.trim();
+          else if(typeof ent==='object'&&!Array.isArray(ent)) tx=String(ent.video_prompt||ent.prompt||ent.script||'').trim();
+          if(tx){ vmerge.push(tx); trace.push({itemNo,field:'video_prompt',value:tx,sourcePath:'prompts.video_prompts['+vmi+'].video_prompt'}); }
+          vmi++;
+        });
+        if(vmerge.length===1) raw=Object.assign({},raw,{video_prompt:vmerge[0]});
+        else if(vmerge.length>1) raw=Object.assign({},raw,{video_prompt:vmerge});
+      }
+      if(imp.video&&Array.isArray(imp.video.scenes)&&imp.video.scenes.length){
+        var sc=imp.video.scenes.map(function(x){ return typeof x==='string'?x:(x&&(x.script||x.text||x.description||x.prompt)||''); }).filter(Boolean);
+        if(sc.length){ raw=Object.assign({},raw,{video_scenes:sc}); if(!trace.some(function(t){return t.field==='video_scenes';})) trace.push({itemNo,field:'video_scenes',value:sc,sourcePath:'video.scenes'}); }
+      }
+    }
+    if(wfImp.has_audio){
+      var bp=(imp.audio&&imp.audio.bgm&&imp.audio.bgm.prompt)||(imp.prompts&&imp.prompts.bgm_prompt);
+      if(typeof bp==='string'&&bp.trim()){ raw=Object.assign({},raw,{bgm_prompt:bp.trim()}); if(!trace.some(function(t){return t.field==='bgm_prompt';})) trace.push({itemNo,field:'bgm_prompt',value:bp.trim(),sourcePath:'audio.bgm.prompt'}); }
+      var bs=(imp.audio&&imp.audio.bgm&&imp.audio.bgm.style)||(imp.prompts&&imp.prompts.bgm_style);
+      if(typeof bs==='string'&&bs.trim()){ raw=Object.assign({},raw,{bgm_style:bs.trim()}); if(!trace.some(function(t){return t.field==='bgm_style';})) trace.push({itemNo,field:'bgm_style',value:bs.trim(),sourcePath:'audio.bgm.style'}); }
+      var sfx=(imp.prompts&&imp.prompts.sfx_summary)||(imp.prompts&&imp.prompts.sfx_prompt);
+      if(typeof sfx==='string'&&sfx.trim()){ raw=Object.assign({},raw,{sfx_prompt:sfx.trim()}); if(!trace.some(function(t){return t.field==='sfx_prompt';})) trace.push({itemNo,field:'sfx_prompt',value:sfx.trim(),sourcePath:'prompts.sfx_summary'}); }
+      else if(imp.audio&&Array.isArray(imp.audio.sfx)&&imp.audio.sfx.length){
+        var sfxParts=imp.audio.sfx.map(function(v){
+          if(typeof v==='string') return v.trim();
+          if(v&&typeof v==='object'){ var p=v.prompt||v.script||v.text; if(p) return String(p).trim(); return [v.type,v.timing,v.duration].filter(Boolean).join(' '); }
+          return '';
+        }).filter(Boolean);
+        if(sfxParts.length){ raw=Object.assign({},raw,{sfx_prompt:sfxParts.join('\n')}); if(!trace.some(function(t){return t.field==='sfx_prompt';})) trace.push({itemNo,field:'sfx_prompt',value:sfxParts.join('\n'),sourcePath:'audio.sfx'}); }
+      }
+    }
+  }
+  return{ raw: csRawBundleToExportShape(raw), raw_trace: trace };
 }
 /** VIEW: RAW를 덮어쓰지 않는 요약·라벨만. title은 RAW.title 우선. placeholder 금지. */
 function csCardViewLayer(c, contentId, raw){
@@ -8061,6 +8737,8 @@ function csCardViewLayer(c, contentId, raw){
  * 출력 객체: { field, value, generated:true }
  */
 function csCardGeneratedLayer(c){
+  const imp=c.raw&&typeof c.raw==='object'&&!Array.isArray(c.raw)?c.raw:null;
+  const wf=csWorkbenchMediaFlagsFromImp(imp);
   const p=c.prompts||{};
   const has=(key)=>{
     if(key==='image_prompt_ko') return (p.imageKo||[]).some(x=>String(x||'').trim());
@@ -8073,7 +8751,7 @@ function csCardGeneratedLayer(c){
     return false;
   };
   const out={};
-  if(!has('image_prompt_ko')){
+  if(wf.has_image&&!has('image_prompt_ko')){
     const title=c.title||'(제목 없음)';
     const body=(c.body||'').trim();
     const summ=body.slice(0,400).replace(/\s+/g,' ').trim();
@@ -8083,14 +8761,14 @@ function csCardGeneratedLayer(c){
       generated:true
     };
   }
-  if(!has('image_prompt_en')){
+  if(wf.has_image&&!has('image_prompt_en')){
     out.image_prompt_en={
       field:'image_prompt_en',
       value:'Subject: '+(c.title||'content')+'. Style: clean editorial or UGC-appropriate visual matching the channel; minimal overlaid text.',
       generated:true
     };
   }
-  if(!has('video_prompt')&&(c.type==='video'||c.type==='sns'||c.type==='blog')){
+  if(wf.has_video&&!has('video_prompt')&&(c.type==='video'||c.type==='sns'||c.type==='blog')){
     out.video_prompt={
       field:'video_prompt',
       value:'[장면 구성 제안·플레이스홀더] 훅 구간 → 정보/전개 구간 → CTA. 실제 대사·낭독 대본은 RAW.script 등 원본 필드에만 기입하세요. 이 블록은 촬영·컷 계획용입니다.',
@@ -8118,53 +8796,129 @@ function csPromptCatForField(fieldKey, layer){
   if(layer==='view') return 'text';
   const k=String(fieldKey||'');
   if(/image_prompt/.test(k)) return 'image';
-  if(k==='video_prompt') return 'video';
+  if(k==='video_prompt'||k==='video_scenes') return 'video';
   if(k==='script'||k==='voice_prompt') return 'voice';
-  if(k==='bgm_prompt'||k==='sfx_prompt') return 'bgm';
+  if(k==='bgm_prompt'||k==='bgm_style'||k==='sfx_prompt') return 'bgm';
   return 'text';
 }
 
+/** Workbench has_* 게이팅. 최상위 has_ 접두 키가 하나도 없으면 레거시(전부 허용); 하나라도 있으면 strict(각 축은 ===true 만). */
+function csWorkbenchMediaFlagsFromImp(imp){
+  if(!imp||typeof imp!=='object'||Array.isArray(imp)) imp={};
+  var anyExplicit=false;
+  for(var hk in imp){
+    if(Object.prototype.hasOwnProperty.call(imp,hk)&&hk.indexOf('has_')===0){ anyExplicit=true; break; }
+  }
+  if(!anyExplicit){
+    return{has_image:true,has_video:true,has_voice:true,has_audio:true};
+  }
+  return{
+    has_image:imp.has_image===true,
+    has_video:imp.has_video===true,
+    has_voice:imp.has_voice===true,
+    has_audio:imp.has_audio===true
+  };
+}
+
+const CS_RAW_PROMPT_FIELDS=new Set([
+  'script','voice_prompt','video_prompt','video_scenes','bgm_prompt','bgm_style','sfx_prompt','image_prompt_ko','image_prompt_en'
+]);
+const CS_DUMMY_PATTERNS=[/^\[장면\s*구성\s*제안/, /플레이스홀더\]/, /^\(제목\s*없음\)$/];
+function csIsDummyText(t){
+  return CS_DUMMY_PATTERNS.some(rx=>rx.test(t));
+}
 function csExtractPrompts(cards,texts){
   const prompts=[];let pid=0;
+  const seen=new Set();
   const push=(layer,cat,label,text,cardId,extra)=>{
     const t=String(text||'').trim();
     if(!t)return;
-    prompts.push(Object.assign({id:++pid,layer,cat,label,text:text,cardId},extra||{}));
+    if(layer==='generated'&&csIsDummyText(t))return;
+    const ix=extra&&Object.prototype.hasOwnProperty.call(extra,'arrayIndex')?'\x00@'+extra.arrayIndex:'';
+    const dedup=(extra&&extra.fieldKey?extra.fieldKey:'')+'\x00'+(extra&&extra.sourcePath||'')+'\x00'+String(cardId)+ix;
+    if(seen.has(dedup))return;
+    seen.add(dedup);
+    prompts.push(Object.assign({id:++pid,layer,cat,label,text:t,cardId},extra||{}));
   };
   cards.forEach((c,idx)=>{
     const st=csBuildStructuredContent(c,idx);
     const cid=st.content_id;
+    const imp=c.raw&&typeof c.raw==='object'&&!Array.isArray(c.raw)?c.raw:null;
+    const wf=csWorkbenchMediaFlagsFromImp(imp);
+    const rawFieldsPresent=new Set();
     Object.entries(st.raw).forEach(([k,v])=>{
       if(v==null)return;
+      if(!CS_RAW_PROMPT_FIELDS.has(k))return;
+      if((k==='image_prompt_ko'||k==='image_prompt_en')&&!wf.has_image)return;
+      if((k==='video_prompt'||k==='video_scenes')&&!wf.has_video)return;
+      if((k==='script'||k==='voice_prompt')&&!wf.has_voice)return;
+      if((k==='bgm_prompt'||k==='bgm_style')&&!wf.has_audio)return;
       const cat=csPromptCatForField(k,'raw');
       if(cat==='text')return;
+      rawFieldsPresent.add(k);
+      const traceSp=((st.raw_trace||[]).find(tr=>tr.field===k)||{}).sourcePath||'';
       if(Array.isArray(v)){
         v.forEach((item,i)=>{
           const tx=String(item||'').trim();
           if(!tx)return;
-          push('raw',cat,'RAW · '+k+(v.length>1?' '+(i+1):'')+' — '+cid,tx,c.id,{fieldKey:k});
+          const sp=traceSp?traceSp+'['+i+']':k+'['+i+']';
+          push('raw',cat,'RAW · '+k+(v.length>1?' '+(i+1):'')+' — '+cid,tx,c.id,{fieldKey:k,sourcePath:sp,arrayIndex:i});
         });
         return;
       }
-      push('raw',cat,'RAW · '+k+' — '+cid,String(v),c.id,{fieldKey:k});
+      push('raw',cat,'RAW · '+k+' — '+cid,String(v),c.id,{fieldKey:k,sourcePath:traceSp});
     });
     Object.entries(st.generated||{}).forEach(([,obj])=>{
       if(!obj||!obj.generated||!obj.field)return;
+      if(rawFieldsPresent.has(obj.field))return;
+      var fld=obj.field;
+      if((fld==='image_prompt_ko'||fld==='image_prompt_en')&&!wf.has_image)return;
+      if(fld==='video_prompt'&&!wf.has_video)return;
       const gCat=csPromptCatForField(obj.field,'generated');
       if(gCat==='text')return;
       const tx=String(obj.value||'').trim();
       if(!tx)return;
-      push('generated',gCat,'GENERATED · '+obj.field+' — '+cid,tx,c.id,{fieldKey:obj.field,generatedFlag:true});
+      push('generated',gCat,'GENERATED · '+obj.field+' — '+cid,tx,c.id,{fieldKey:obj.field,generatedFlag:true,sourcePath:''});
     });
   });
+  if(csHideGeneratedPrompts) return prompts.filter(function(p){ return p.layer!=='generated'; });
   return prompts;
 }
 
+function csPromptClearGenerated(){
+  csHideGeneratedPrompts=true;
+  try{ localStorage.setItem('bs_cs_hide_generated','1'); }catch(_){}
+  if(csCards&&csCards.length){ csPrompts=csExtractPrompts(csCards,[]); }
+  csRenderPromptList();
+  toast('GENERATED 프롬프트를 목록에서 모두 숨겼습니다','ok');
+}
+function csPromptRestoreGenerated(){
+  csHideGeneratedPrompts=false;
+  try{ localStorage.removeItem('bs_cs_hide_generated'); }catch(_){}
+  if(csCards&&csCards.length){ csPrompts=csExtractPrompts(csCards,[]); }
+  csRenderPromptList();
+  toast('GENERATED 프롬프트를 다시 표시합니다','ok');
+}
+
 function csSetPromptLayerFilter(layer){
-  csPromptLayerFilter=layer||'all';
+  if(layer==='generated'&&!csPromptDebugMode)return;
+  csPromptLayerFilter=layer||'raw';
   document.querySelectorAll('[data-cs-pm]').forEach(b=>{
     b.classList.toggle('on',b.getAttribute('data-cs-pm')===csPromptLayerFilter);
   });
+  csRenderPromptList();
+}
+function csToggleDebugMode(on){
+  csPromptDebugMode=!!on;
+  document.querySelectorAll('[data-cs-debug-only]').forEach(el=>{
+    el.style.display=on?'':'none';
+  });
+  if(!on&&csPromptLayerFilter==='generated'){
+    csPromptLayerFilter='raw';
+    document.querySelectorAll('[data-cs-pm]').forEach(b=>{
+      b.classList.toggle('on',b.getAttribute('data-cs-pm')==='raw');
+    });
+  }
   csRenderPromptList();
 }
 
@@ -8204,29 +8958,58 @@ function csRenderCardsGrid(){
     const pfb=document.getElementById('csPreviewFinalizeBar');if(pfb) pfb.classList.remove('show');
     const tb=document.getElementById('csCardsToolbar');if(tb) tb.classList.remove('show');
     ['csCardPublishBadge','csFinalizeStudioBtn','csDraftStudioBtn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+    const saveAllBtn0=document.getElementById('csSaveAllCardsBtn'); if(saveAllBtn0) saveAllBtn0.style.display='none';
     g.innerHTML='<div class="cs-empty-state"><div class="cs-es-icon">📭</div><div class="cs-es-text">분류 결과가 없습니다</div></div>';
     return;
   }
   document.getElementById('csCardsToolbar')?.classList.add('show');
   csSyncCardsCollapsedUi();
+  const pubAccSel=(document.getElementById('pubFilterAccount')||{}).value||'';
+  const saveAllBtn=document.getElementById('csSaveAllCardsBtn');
+  if(saveAllBtn) saveAllBtn.style.display=(csCards.length && pubAccSel)?'':'none';
   g.innerHTML=csCards.map((c,idx)=>{
     const num=String(idx+1).padStart(2,'0');
     const chLabel=c.channel?(c.channel+(c.channelType?' · '+c.channelType:'')):(CS_TYPE_LABELS[c.type]||'기타');
+    if(!pubAccSel){
+      return `<div class="cs-card ${csSelectedCardId===c.id?'selected':''}" onclick="csSelectCard(${c.id})">
+        <div class="cs-card-head">
+          <span style="font-size:10px;font-weight:800;color:var(--purple);min-width:28px">No.${num}</span>
+          <span class="cs-card-type-badge ${c.type}">${CS_TYPE_LABELS[c.type]||'기타'}</span>
+          <div class="cs-card-title" title="${csEsc(c.title)}">${csEsc(c.title)}</div>
+        </div>
+        <div class="cs-card-body">${csEsc(c.body?.slice(0,200)||'')}</div>
+        ${(c.tags||[]).length?`<div style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:3px">${(c.tags||[]).slice(0,4).map(t=>`<span style="font-size:7px;padding:1px 5px;border-radius:8px;background:var(--bg);color:var(--muted);border:1px solid var(--border)">${csEsc(t)}</span>`).join('')}</div>`:''}
+        <div class="cs-card-footer"><span>📎 ${csEsc(c.source)}</span><span>${csEsc(chLabel)}</span></div>
+      </div>`;
+    }
     const flag=c.publishedAt
       ? '<span class="cs-card-flag pubdone">발행완료</span>'
       : (c.finalized?'<span class="cs-card-flag final">완성</span>':'<span class="cs-card-flag draft">편집중</span>');
-    return `<div class="cs-card ${csSelectedCardId===c.id?'selected':''}" onclick="csSelectCard(${c.id})">
+    return `<div class="cs-card ${csSelectedCardId===c.id?'selected':''}" onclick="csSelectCard(${c.id})" ${c.onHold?'style="opacity:.5"':''}>
       <div class="cs-card-head">
         <span style="font-size:10px;font-weight:800;color:var(--purple);min-width:28px">No.${num}</span>
-        <span class="cs-card-type-badge ${c.type}">${CS_TYPE_LABELS[c.type]||'기타'}</span>${flag}
+        <span class="cs-card-type-badge ${c.type}">${CS_TYPE_LABELS[c.type]||'기타'}</span>${c.onHold?'<span class="cs-card-flag" style="background:rgba(180,60,60,.12);color:#b43c3c">보류</span>':''}${flag}
         <div class="cs-card-title" title="${csEsc(c.title)}">${csEsc(c.title)}</div>
       </div>
       <div class="cs-card-body">${csEsc(c.body?.slice(0,200)||'')}</div>
       ${(c.tags||[]).length?`<div style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:3px">${(c.tags||[]).slice(0,4).map(t=>`<span style="font-size:7px;padding:1px 5px;border-radius:8px;background:var(--bg);color:var(--muted);border:1px solid var(--border)">${csEsc(t)}</span>`).join('')}</div>`:''}
-      <div style="padding:0 12px 8px;font-size:7px;color:var(--muted)">클릭 → 콘텐츠 안내·프롬프트·미리보기</div>
+      <div style="padding:0 12px 8px;display:flex;align-items:center;gap:6px;font-size:7px;color:var(--muted)"><span>클릭 → 안내·프롬프트·미리보기</span><button type="button" onclick="event.stopPropagation();csToggleCardHold(${c.id})" style="margin-left:auto;padding:2px 8px;border-radius:4px;font-size:8px;font-weight:700;cursor:pointer;border:1px solid ${c.onHold?'rgba(180,60,60,.3)':'#ddd'};background:${c.onHold?'rgba(180,60,60,.12)':'#fff'};color:${c.onHold?'#b43c3c':'#aaa'}" title="발행 보류 토글">보류</button></div>
       <div class="cs-card-footer"><span>📎 ${csEsc(c.source)}</span><span>${csEsc(chLabel)}</span></div>
     </div>`;
   }).join('');
+}
+function csToggleCardHold(cardId){
+  const c=csCards.find(x=>x.id===cardId);
+  if(!c) return;
+  c.onHold = !c.onHold;
+  for(const pm of publishManuscripts){
+    if(!Array.isArray(pm.cardsSnapshot)) continue;
+    const snap=pm.cardsSnapshot.find(s=>s&&(s.id===cardId||String(s.id)===String(cardId)));
+    if(snap) snap.onHold = c.onHold;
+  }
+  savePublishManuscripts();
+  csRenderCardsGrid();
+  toast(c.onHold?'발행 보류 설정됨':'보류 해제됨','ok');
 }
 
 // Select card → show lower split (배치도 + 미리보기)
@@ -8785,37 +9568,89 @@ function csDownloadCard(id){
   a.click();URL.revokeObjectURL(a.href);toast('💾 다운로드됨','ok');
 }
 
-// Prompt collection
+// Prompt collection — 이 탭은 이미지·영상만 (음성·BGM/SFX 항목은 목록·통계·복사에서 제외)
+function csPromptIsVisualAsset(p){
+  return p.cat!=='voice'&&p.cat!=='bgm';
+}
 function csFilterPrompts(cat){
   csPromptFilter=cat;
-  const map={all:'전체',image:'이미지',video:'영상',voice:'음성',bgm:'BGM'};
+  const map={image_video:'이미지·영상',image:'🖼 이미지',video:'🎬 영상'};
   document.querySelectorAll('.cs-pf-btn').forEach(b=>{
     const match=Object.entries(map).find(([k,v])=>b.textContent.includes(v));
     b.classList.toggle('on',match&&match[0]===cat);
   });
   csRenderPromptList();
 }
+function csRenderPromptStats(){
+  const el=document.getElementById('csPromptStats');
+  if(!el)return;
+  const vis=csPrompts.filter(csPromptIsVisualAsset);
+  const rawCount=vis.filter(p=>p.layer==='raw').length;
+  const genCount=vis.filter(p=>p.layer==='generated').length;
+  const rawFields=new Set(vis.filter(p=>p.layer==='raw').map(p=>p.cardId+'\x00'+p.fieldKey));
+  const hiddenByRaw=vis.filter(p=>p.layer==='generated'&&rawFields.has(p.cardId+'\x00'+p.fieldKey)).length;
+  const hiddenGen=csPromptDebugMode?0:(hiddenByRaw+(csPromptLayerFilter!=='all'&&csPromptLayerFilter!=='generated'?genCount-hiddenByRaw:0));
+  var genAct=csHideGeneratedPrompts
+    ?'<button type="button" class="cs-prev-btn" onclick="csPromptRestoreGenerated()" style="padding:2px 8px;font-size:8px;margin-left:8px;flex-shrink:0" title="AI 제안(GENERATED) 다시 목록에 표시">표시 복원</button>'
+    :'<button type="button" class="cs-prev-btn" onclick="csPromptClearGenerated()" style="padding:2px 8px;font-size:8px;margin-left:8px;flex-shrink:0" title="AI 제안(GENERATED)만 목록에서 숨김. 카드·RAW 데이터는 그대로">전체 삭제</button>';
+  el.innerHTML='<span>RAW: <b>'+rawCount+'</b></span>'
+    +'<span>GENERATED: <b>'+genCount+'</b></span>'
+    +'<span style="color:var(--muted)">숨겨진 GENERATED: <b>'+hiddenGen+'</b></span>'
+    +genAct
+    +'<label style="margin-left:auto;font-size:8px;color:var(--muted);display:flex;align-items:center;gap:3px;cursor:pointer;flex-shrink:0"><input type="checkbox" onchange="csToggleDebugMode(this.checked)" style="margin:0">debug</label>';
+}
 function csRenderPromptList(){
   const el=document.getElementById('csPromptList');
   const copyEl=document.getElementById('csPromptCopyAll');
   if(!el)return;
-  let pool=csPrompts;
-  if(csPromptLayerFilter!=='all') pool=pool.filter(p=>p.layer===csPromptLayerFilter);
-  const filtered=csPromptFilter==='all'?pool:pool.filter(p=>p.cat===csPromptFilter);
+  csRenderPromptStats();
+  const rawFields=new Set(csPrompts.filter(p=>p.layer==='raw').map(p=>p.cardId+'\x00'+p.fieldKey));
+  let pool;
+  if(csPromptLayerFilter==='all'){
+    if(csPromptDebugMode){
+      pool=csPrompts.slice();
+    }else{
+      pool=csPrompts.filter(p=>{
+        if(p.layer==='generated') return !rawFields.has(p.cardId+'\x00'+p.fieldKey);
+        return true;
+      });
+    }
+  }else if(csPromptLayerFilter==='generated'){
+    pool=csPromptDebugMode?csPrompts.filter(p=>p.layer==='generated'):[];
+  }else{
+    pool=csPrompts.filter(p=>p.layer===csPromptLayerFilter);
+  }
+  pool=pool.filter(csPromptIsVisualAsset);
+  const filtered=csPromptFilter==='all'?pool:csPromptFilter==='image_video'?pool.filter(p=>p.cat==='image'||p.cat==='video'):pool.filter(p=>p.cat===csPromptFilter);
   if(!filtered.length){el.innerHTML='<div class="cs-empty-state"><div class="cs-es-icon">📦</div><div class="cs-es-text">'+(csCards.length?'해당 조건의 항목 없음(모드·카테고리 변경)':'분류 후 프롬프트가 여기에 정리됩니다')+'</div></div>';if(copyEl)copyEl.style.display='none';return;}
   el.innerHTML=filtered.map(p=>{
     const cls=p.layer==='raw'?'cs-layer-raw':p.layer==='view'?'cs-layer-view':'cs-layer-generated';
-    const badge=p.generatedFlag?'<span class="cs-gen-badge">AI 제안</span>':'';
+    const isFallback=p.generatedFlag&&!rawFields.has(p.cardId+'\x00'+p.fieldKey);
+    const badge=p.generatedFlag?(isFallback?'<span class="cs-gen-badge" style="background:#e67e22;color:#fff">(자동생성)</span>':'<span class="cs-gen-badge">AI 제안</span>'):'';
     return `<div class="cs-prompt-item ${cls}"><div class="cs-prompt-item-h"><span>${csEsc(p.label)}</span>${badge}<button class="cs-prev-btn" onclick="event.stopPropagation();navigator.clipboard.writeText(${JSON.stringify(p.text).replace(/</g,'\\u003c')}).then(()=>toast('📋 복사됨','ok'))" style="padding:2px 8px;font-size:8px">복사</button></div><div class="cs-prompt-item-b">${csEsc(p.text)}</div></div>`;
   }).join('');
   if(copyEl)copyEl.style.display='flex';
 }
 function csCopyAllPrompts(){
-  let pool=csPrompts;
-  if(csPromptLayerFilter!=='all') pool=pool.filter(p=>p.layer===csPromptLayerFilter);
-  const filtered=csPromptFilter==='all'?pool:pool.filter(p=>p.cat===csPromptFilter);
+  const rawFields=new Set(csPrompts.filter(p=>p.layer==='raw').map(p=>p.cardId+'\x00'+p.fieldKey));
+  let pool;
+  if(csPromptLayerFilter==='all'){
+    pool=csPromptDebugMode?csPrompts.slice():csPrompts.filter(p=>{
+      if(p.layer==='generated') return !rawFields.has(p.cardId+'\x00'+p.fieldKey);
+      return true;
+    });
+  }else if(csPromptLayerFilter==='generated'){
+    pool=csPromptDebugMode?csPrompts.filter(p=>p.layer==='generated'):[];
+  }else{
+    pool=csPrompts.filter(p=>p.layer===csPromptLayerFilter);
+  }
+  pool=pool.filter(csPromptIsVisualAsset);
+  const filtered=csPromptFilter==='all'?pool:csPromptFilter==='image_video'?pool.filter(p=>p.cat==='image'||p.cat==='video'):pool.filter(p=>p.cat===csPromptFilter);
   if(!filtered.length)return;
-  const text=filtered.map(p=>'['+p.layer.toUpperCase()+'] '+p.label+'\n'+p.text).join('\n\n─────────\n\n');
+  const text=filtered.map(p=>{
+    const tag=p.generatedFlag&&!rawFields.has(p.cardId+'\x00'+p.fieldKey)?'(자동생성) ':'';
+    return '['+p.layer.toUpperCase()+'] '+tag+p.label+'\n'+p.text;
+  }).join('\n\n─────────\n\n');
   navigator.clipboard.writeText(text).then(()=>toast('📋 '+filtered.length+'개 복사됨','ok'));
 }
 
@@ -9325,7 +10160,7 @@ function renewClearAll(){
 // 발행 컨트롤 센터 (SQLite API 연동)
 // ════════════════════════════════════════════════════
 const PUB_STATUS_LABEL={draft:'초안',final:'확정',queued:'대기',publishing:'발행중',published:'완료',failed:'실패',cancelled:'취소'};
-const PUB_PLATFORM_LABEL={youtube:'YouTube',naver_blog:'네이버 블로그',instagram:'Instagram',tistory:'티스토리',facebook:'Facebook',threads:'Threads',x:'X',tiktok:'TikTok',other:'기타'};
+const PUB_PLATFORM_LABEL={youtube:'YouTube',naver_blog:'네이버 블로그',instagram:'Instagram',tistory:'티스토리',facebook:'Facebook',threads:'Threads',x:'X',tiktok:'TikTok',blogger:'Blogger',google_blog:'구글 블로그',naver_cafe:'네이버 카페'};
 let pubQueueItems=[];
 let pubContentItems=[];
 let pubChannelConns=[];
@@ -9491,11 +10326,18 @@ async function pubLoadHistory(contentId){
   return r.ok ? (r.items||[]) : [];
 }
 
-/** 채널 연결 목록 로드 */
+/** 채널 연결 + 계정 로드 */
+let pubAccounts = [];
 async function pubLoadChannelConnections(){
-  const r = await pubApi('GET','/api/channel-connections');
-  pubChannelConns = r.ok ? (r.items||[]) : [];
+  const [accR, chR] = await Promise.all([
+    pubApi('GET','/api/accounts/with-channels'),
+    pubApi('GET','/api/channel-connections')
+  ]);
+  pubAccounts = accR.ok ? (accR.items||[]) : [];
+  pubChannelConns = chR.ok ? (chR.items||[]) : [];
   pubRenderChannelConnPanel();
+  pubRebuildAccountFilter();
+  pmRebuildAccountFilter();
   return pubChannelConns;
 }
 
@@ -9519,78 +10361,126 @@ function pubFindConnForContent(content){
   return conn || null;
 }
 
-/** 채널 연결 관리 패널 렌더 */
+/** 계정·채널 관리 패널 렌더 */
 function pubRenderChannelConnPanel(){
-  const el = document.getElementById('pubChannelConnList');
+  const el = document.getElementById('pubAccountList');
   if(!el) return;
-  if(!pubChannelConns.length){
-    el.innerHTML = '<div style="font-size:10px;color:var(--muted);padding:8px">연결된 채널이 없습니다. 아래 버튼으로 채널을 연결하세요.</div>';
-    return;
+  const platformOpts = Object.entries(PUB_PLATFORM_LABEL).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+  const unlinked = pubChannelConns.filter(c=>!c.account_id);
+  let html = '';
+
+  if(!pubAccounts.length && !unlinked.length){
+    html = '<div style="font-size:10px;color:var(--muted);padding:8px;text-align:center">계정이 없습니다. 위에서 계정을 추가하세요.</div>';
+    el.innerHTML = html; return;
   }
-  el.innerHTML = pubChannelConns.map(c => {
-    const label = PUB_PLATFORM_LABEL[c.platform] || c.platform;
-    const hasToken = !!c.access_token;
-    const statusDot = hasToken ? '<span style="color:var(--green)">●</span>' : '<span style="color:var(--red)">●</span>';
-    const name = c.account_name || label;
-    return `<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;font-size:10px;border-bottom:1px solid var(--border)">
-      ${statusDot}
-      <span style="font-weight:600">${csEsc(label)}</span>
-      <span style="color:var(--muted)">${csEsc(name)}</span>
-      <span style="flex:1"></span>
-      ${hasToken ? '<span style="font-size:8px;color:var(--green)">연결됨</span>' : '<span style="font-size:8px;color:var(--red)">토큰 없음</span>'}
-      <button type="button" style="font-size:8px;padding:2px 6px;cursor:pointer;border:1px solid var(--border);border-radius:3px;background:var(--card)" onclick="pubDisconnectChannel('${csEsc(c.id)}')">해제</button>
-    </div>`;
-  }).join('');
+
+  pubAccounts.forEach(acc => {
+    const chs = acc.channels || [];
+    html += `<div style="border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--bg)">`;
+    html += `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);background:rgba(107,79,160,.04);border-radius:6px 6px 0 0">`;
+    html += `<span style="font-weight:700;font-size:11px">${csEsc(acc.label)}</span>`;
+    if(acc.memo) html += `<span style="font-size:9px;color:var(--muted)">${csEsc(acc.memo)}</span>`;
+    html += `<span style="flex:1"></span>`;
+    html += `<span style="font-size:9px;color:var(--accent);font-weight:600">${chs.length}채널</span>`;
+    html += `<button type="button" style="font-size:8px;padding:2px 8px;cursor:pointer;border:1px solid var(--border);border-radius:3px;background:var(--card)" onclick="pubDeleteAccount('${csEsc(acc.id)}')">삭제</button>`;
+    html += `</div>`;
+
+    if(chs.length){
+      chs.forEach(c => {
+        const label = PUB_PLATFORM_LABEL[c.platform]||c.platform;
+        const dot = c.access_token ? '<span style="color:var(--green)">●</span>' : '<span style="color:var(--red)">●</span>';
+        const status = c.access_token ? '<span style="font-size:8px;color:var(--green)">연결됨</span>' : '<span style="font-size:8px;color:var(--red)">토큰 없음</span>';
+        html += `<div style="display:flex;align-items:center;gap:6px;padding:3px 10px;font-size:10px;border-bottom:1px solid var(--border)">`;
+        html += `${dot} <span style="font-weight:600">${csEsc(label)}</span>`;
+        html += `<span style="color:var(--muted)">${csEsc(c.account_name||'')}</span>`;
+        if(c.channel_id) html += `<span style="font-size:8px;color:var(--muted)">ID:${csEsc(c.channel_id)}</span>`;
+        html += `<span style="flex:1"></span>${status}`;
+        html += `<button type="button" style="font-size:8px;padding:2px 6px;cursor:pointer;border:1px solid var(--border);border-radius:3px;background:var(--card)" onclick="pubRemoveChannel('${csEsc(c.id)}')">삭제</button>`;
+        html += `</div>`;
+      });
+    } else {
+      html += `<div style="font-size:10px;color:var(--muted);padding:6px 10px;text-align:center">채널 없음</div>`;
+    }
+
+    html += `<div style="padding:5px 8px;display:flex;gap:4px;align-items:center;flex-wrap:wrap">`;
+    html += `<select id="pubNewChPlatform_${acc.id}" style="font-size:9px;padding:2px 4px;border:1px solid var(--border);border-radius:3px;background:var(--card)">${platformOpts}</select>`;
+    html += `<input id="pubNewChName_${acc.id}" type="text" placeholder="채널명/아이디" style="flex:1;min-width:80px;font-size:9px;padding:3px 6px;border:1px solid var(--border);border-radius:3px;background:var(--bg)">`;
+    html += `<button type="button" class="pub-bulk-btn" style="font-size:8px;padding:3px 8px" onclick="pubAddChannel('${csEsc(acc.id)}')">+ 채널</button>`;
+    html += `</div></div>`;
+  });
+
+  if(unlinked.length){
+    html += `<div style="border:1px solid #e8b84d;border-radius:6px;margin-bottom:8px;background:#fef9ee">`;
+    html += `<div style="padding:6px 10px;font-size:10px;font-weight:700;color:#92700c;border-bottom:1px solid #e8b84d">미연결 채널 (${unlinked.length})</div>`;
+    unlinked.forEach(c => {
+      const label = PUB_PLATFORM_LABEL[c.platform]||c.platform;
+      const accOpts = pubAccounts.map(a=>`<option value="${csEsc(a.id)}">${csEsc(a.label)}</option>`).join('');
+      html += `<div style="display:flex;align-items:center;gap:6px;padding:3px 10px;font-size:10px;border-bottom:1px solid #e8b84d">`;
+      html += `<span style="font-weight:600">${csEsc(label)}</span>`;
+      html += `<span style="color:var(--muted)">${csEsc(c.account_name||'')}</span>`;
+      html += `<span style="flex:1"></span>`;
+      html += `<select onchange="pubMoveChannel('${csEsc(c.id)}',this.value)" style="font-size:8px;padding:2px;border:1px solid var(--border);border-radius:3px"><option value="">계정 선택…</option>${accOpts}</select>`;
+      html += `<button type="button" style="font-size:8px;padding:2px 6px;cursor:pointer;border:1px solid var(--border);border-radius:3px;background:var(--card)" onclick="pubRemoveChannel('${csEsc(c.id)}')">삭제</button>`;
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+
+  el.innerHTML = html;
 }
 
-async function pubConnectChannel(platform){
-  if(platform === 'youtube'){
-    const r = await pubApi('GET','/api/oauth/google/start');
-    if(r.ok && r.url){ window.open(r.url, 'oauth_google', 'width=600,height=700'); toast('Google 로그인 창이 열렸습니다.','info'); }
-    else toast('YouTube 연결 실패: '+(r.error||''),'err');
-  } else if(platform === 'naver_blog'){
-    const r = await pubApi('GET','/api/oauth/naver/start');
-    if(r.ok && r.url){ window.open(r.url, 'oauth_naver', 'width=600,height=700'); toast('네이버 로그인 창이 열렸습니다.','info'); }
-    else toast('네이버 연결 실패: '+(r.error||''),'err');
-  } else if(platform === 'instagram'){
-    const token = prompt('Instagram Long-Lived Access Token을 입력하세요.\n(Meta for Developers에서 발급)');
-    if(!token) return;
-    const igUserId = prompt('Instagram Business Account ID를 입력하세요.');
-    if(!igUserId) return;
-    const r = await pubApi('POST','/api/channel-connections', {
-      platform: 'instagram',
-      account_name: 'Instagram',
-      channel_id: igUserId,
-      access_token: token
-    });
-    if(r.ok) toast('Instagram 연결 완료','ok');
-    else toast('Instagram 연결 실패: '+(r.error||''),'err');
-    await pubLoadChannelConnections();
-  } else {
-    const token = prompt(`${PUB_PLATFORM_LABEL[platform]||platform} Access Token을 입력하세요.`);
-    if(!token) return;
-    const r = await pubApi('POST','/api/channel-connections', {
-      platform,
-      account_name: PUB_PLATFORM_LABEL[platform]||platform,
-      access_token: token
-    });
-    if(r.ok) toast('채널 연결 완료','ok');
-    else toast('연결 실패: '+(r.error||''),'err');
-    await pubLoadChannelConnections();
-  }
+/** 계정 추가 */
+async function pubAddAccount(){
+  const label = (document.getElementById('pubNewAccLabel').value||'').trim();
+  const memo = (document.getElementById('pubNewAccMemo').value||'').trim();
+  if(!label){ toast('계정 이름을 입력하세요.','warn'); return; }
+  const r = await pubApi('POST','/api/accounts',{label, memo});
+  if(r.ok){ toast('계정 추가 완료','ok'); document.getElementById('pubNewAccLabel').value=''; document.getElementById('pubNewAccMemo').value=''; }
+  else toast('추가 실패: '+(r.error||''),'err');
+  await pubLoadChannelConnections();
 }
 
-async function pubDisconnectChannel(connId){
-  if(!confirm('이 채널 연결을 해제하시겠습니까?')) return;
+/** 계정 삭제 */
+async function pubDeleteAccount(accId){
+  if(!confirm('이 계정을 삭제하시겠습니까?\n소속 채널은 미연결 상태가 됩니다.')) return;
+  const r = await pubApi('DELETE','/api/accounts/'+encodeURIComponent(accId));
+  if(r.ok) toast('계정 삭제','ok');
+  else toast('삭제 실패: '+(r.error||''),'err');
+  await pubLoadChannelConnections();
+}
+
+/** 채널 추가 (계정 소속) */
+async function pubAddChannel(accId){
+  const platform = document.getElementById('pubNewChPlatform_'+accId)?.value;
+  const name = (document.getElementById('pubNewChName_'+accId)?.value||'').trim();
+  if(!name){ toast('채널명을 입력하세요.','warn'); return; }
+  const r = await pubApi('POST','/api/channel-connections',{account_id:accId, platform, account_name:name});
+  if(r.ok){ toast('채널 추가 완료','ok'); const el=document.getElementById('pubNewChName_'+accId); if(el) el.value=''; }
+  else toast('추가 실패: '+(r.error||''),'err');
+  await pubLoadChannelConnections();
+}
+
+/** 채널 삭제 */
+async function pubRemoveChannel(connId){
+  if(!confirm('이 채널을 삭제하시겠습니까?')) return;
   const r = await pubApi('DELETE','/api/channel-connections/'+encodeURIComponent(connId));
-  if(r.ok) toast('채널 연결 해제','ok');
-  else toast('해제 실패: '+(r.error||''),'err');
+  if(r.ok) toast('채널 삭제','ok');
+  else toast('삭제 실패: '+(r.error||''),'err');
+  await pubLoadChannelConnections();
+}
+
+/** 미연결 채널 → 계정 이동 */
+async function pubMoveChannel(connId, accId){
+  if(!accId) return;
+  const r = await pubApi('PATCH','/api/channel-connections/'+encodeURIComponent(connId),{account_id:accId});
+  if(r.ok) toast('채널 이동 완료','ok');
+  else toast('이동 실패: '+(r.error||''),'err');
   await pubLoadChannelConnections();
 }
 
 async function pubRefreshChannelConns(){
   await pubLoadChannelConnections();
-  toast('채널 연결 상태 새로고침 완료','ok');
+  toast('채널·계정 새로고침 완료','ok');
 }
 
 /* ---- 스냅샷 카드 → DB 저장 + 큐 등록 ---- */
@@ -9683,37 +10573,46 @@ function pubRebuildChannelFilter(){
   sel.value=chans.includes(cur)?cur:'';
 }
 
+function pubRebuildAccountFilter(){
+  const sel=document.getElementById('pubFilterAccount');
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">계정 선택</option>'+pubAccounts.map(a=>`<option value="${csEsc(a.id).replace(/"/g,'&quot;')}">${csEsc(a.label)}</option>`).join('');
+  if(pubAccounts.find(a=>a.id===cur)) sel.value=cur;
+}
+
+function pubGetAccountForConn(connId){
+  if(!connId) return null;
+  const conn = pubChannelConns.find(c=>c.id===connId);
+  if(!conn||!conn.account_id) return null;
+  return pubAccounts.find(a=>a.id===conn.account_id)||null;
+}
+
 function pubApplyFiltersDebounced(){
   clearTimeout(pubFilterDebounce);
   pubFilterDebounce=setTimeout(pubApplyFilters,180);
 }
 
 function pubApplyFilters(){
-  const onPubTab = typeof bsCurrentStep!=='undefined' && bsCurrentStep===3;
   let base;
-  if(onPubTab){
-    if(pubSummaryFilter==='queue') base=pubQueueItems.filter(it=>it.status==='queued');
-    else if(pubSummaryFilter==='scheduled') base=pubQueueItems.filter(it=>it.publish_mode==='scheduled'&&it.status==='queued');
-    else if(pubSummaryFilter==='done') base=pubQueueItems.filter(it=>it.status==='published');
-    else if(pubSummaryFilter==='failed') base=pubQueueItems.filter(it=>it.status==='failed');
-    else base=pubQueueItems.slice();
-  }else if(pubSummaryFilter==='queue'){
-    base=pubQueueItems.filter(it=>it.status==='queued');
-  }else if(pubSummaryFilter==='scheduled'){
-    base=pubQueueItems.filter(it=>it.publish_mode==='scheduled'&&it.status==='queued');
-  }else if(pubSummaryFilter==='done'){
-    base=pubQueueItems.filter(it=>it.status==='published');
-  }else if(pubSummaryFilter==='failed'){
-    base=pubQueueItems.filter(it=>it.status==='failed');
-  }else{
-    base=pubQueueItems.slice();
-  }
-  pubFiltered=base;
+  if(pubSummaryFilter==='queue') base=pubQueueItems.filter(it=>it.status==='queued');
+  else if(pubSummaryFilter==='scheduled') base=pubQueueItems.filter(it=>it.publish_mode==='scheduled'&&it.status==='queued');
+  else if(pubSummaryFilter==='done') base=pubQueueItems.filter(it=>it.status==='published');
+  else if(pubSummaryFilter==='failed') base=pubQueueItems.filter(it=>it.status==='failed');
+  else base=pubQueueItems.slice();
 
+  const accFilter=(document.getElementById('pubFilterAccount')||{}).value||'';
+  if(accFilter){
+    const accConnIds=new Set(pubChannelConns.filter(c=>c.account_id===accFilter).map(c=>c.id));
+    base=base.filter(it=>it.channel_connection_id && accConnIds.has(it.channel_connection_id));
+  }
+
+  pubFiltered=base;
   const lc=document.getElementById('pubListCount');
   if(lc) lc.textContent=pubFiltered.length+'건';
   pubRenderList();
   pubRenderDetail();
+  csRenderCardsGrid();
 }
 
 function pubStClass(s){
@@ -9751,6 +10650,7 @@ function pubRenderList(){
           <div style="font-size:10px;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${csEsc(title)}</div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--muted)">
+          ${(()=>{const acc=pubGetAccountForConn(it.channel_connection_id);return acc?`<span style="font-size:8px;padding:1px 5px;border-radius:3px;background:rgba(107,79,160,.1);color:var(--purple);font-weight:600">${csEsc(acc.label)}</span>`:''})()}
           <span>${csEsc([itCh,itCt].filter(Boolean).join(' · ')||'—')}</span>
         </div>
         ${whenFull?`<div style="display:flex;align-items:center;gap:5px;margin-top:4px;padding:4px 8px;border-radius:5px;background:rgba(107,79,160,.06)">
@@ -9828,13 +10728,29 @@ function pubRenderDetail(){
   const schedVal=pubToDatetimeLocalValue(it.publish_at);
   const connMatch = pubFindConnForContent(it);
   const selConnId = it.channel_connection_id || (connMatch ? connMatch.id : '');
-  const connOpts = ['<option value="">(자동 매칭 / 시뮬레이션)</option>'].concat(
-    pubChannelConns.map(c => {
-      const lbl = (PUB_PLATFORM_LABEL[c.platform]||c.platform) + ' · ' + (c.account_name||'');
-      const sel = c.id === selConnId ? 'selected' : '';
-      return `<option value="${csEsc(c.id).replace(/"/g,'&quot;')}" ${sel}>${csEsc(lbl)}</option>`;
-    })
-  ).join('');
+  const connOpts = (()=>{
+    let html='<option value="">(자동 매칭 / 시뮬레이션)</option>';
+    pubAccounts.forEach(acc=>{
+      const chs=(acc.channels||[]);
+      if(!chs.length) return;
+      html+=`<optgroup label="${csEsc(acc.label)}">`;
+      chs.forEach(c=>{
+        const lbl=(PUB_PLATFORM_LABEL[c.platform]||c.platform)+' · '+(c.account_name||'');
+        html+=`<option value="${csEsc(c.id).replace(/"/g,'&quot;')}" ${c.id===selConnId?'selected':''}>${csEsc(lbl)}</option>`;
+      });
+      html+='</optgroup>';
+    });
+    const unlinked=pubChannelConns.filter(c=>!c.account_id);
+    if(unlinked.length){
+      html+='<optgroup label="미연결">';
+      unlinked.forEach(c=>{
+        const lbl=(PUB_PLATFORM_LABEL[c.platform]||c.platform)+' · '+(c.account_name||'');
+        html+=`<option value="${csEsc(c.id).replace(/"/g,'&quot;')}" ${c.id===selConnId?'selected':''}>${csEsc(lbl)}</option>`;
+      });
+      html+='</optgroup>';
+    }
+    return html;
+  })();
 
   (async()=>{
     const hist=await pubLoadHistory(it.content_id);
@@ -9858,11 +10774,16 @@ function pubRenderDetail(){
   const connStatusHtml = selConnId
     ? '<span style="font-size:8px;color:var(--green);font-weight:600">실제 발행</span>'
     : '<span style="font-size:8px;color:#fbbf24;font-weight:600">시뮬레이션 (채널 미연결)</span>';
+  const detailAcc = pubGetAccountForConn(selConnId);
+  const accBadgeHtml = detailAcc
+    ? `<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(107,79,160,.1);color:var(--purple);font-weight:700">${csEsc(detailAcc.label)}</span>`
+    : '';
 
   body.innerHTML=`
     <div class="pub-field"><label>콘텐츠 ID</label><div style="font-size:9px;color:var(--muted)">${csEsc(it.content_id)}</div></div>
     <div class="pub-field"><label>제목</label><div style="font-size:11px;font-weight:600">${csEsc(title)}</div></div>
     <div class="pub-field"><label>채널 · 유형</label><div style="font-size:10px">${csEsc([itCh,itCt].filter(Boolean).join(' · ')||'—')}</div></div>
+    <div class="pub-field"><label>계정</label><div style="font-size:10px">${accBadgeHtml||'<span style="font-size:9px;color:var(--muted)">미지정</span>'}</div></div>
     <div class="pub-field"><label>발행 모드</label><div style="font-size:10px">${it.publish_mode==='scheduled'?'예약':'즉시'} ${connStatusHtml}</div></div>
     <div class="pub-field"><label>상태</label>
       <div style="display:flex;align-items:center;gap:8px">
@@ -9921,8 +10842,9 @@ function pubResyncSnapshot(pmId){
 function pubBuildScheduleSummary(pm){
   const cards=Array.isArray(pm.cardsSnapshot)?pm.cardsSnapshot:[];
   const total=cards.length;
-  const finalized=cards.filter(c=>c&&c.finalized).length;
-  const published=cards.filter(c=>c&&c.publishedAt).length;
+  const accId=pmGetCurrentAccountId();
+  const finalized=cards.filter(c=>c&&pmGetCardStateForAccount(c,accId).finalized).length;
+  const published=cards.filter(c=>c&&pmGetCardStateForAccount(c,accId).publishedAt).length;
   const editing=total-finalized-published;
 
   const relatedQueue=pubQueueItems.filter(qi=>{
@@ -9997,6 +10919,7 @@ function pubBuildScheduleSummary(pm){
 
 function pubBuildCardGridForPublish(pm){
   let cards = Array.isArray(pm.cardsSnapshot) ? pm.cardsSnapshot.map(pmNormalizeSnapshotCard).filter(Boolean) : [];
+  const pubAccSel=(document.getElementById('pubFilterAccount')||{}).value||'';
   if(!cards.length){
     return '<div class="pub-empty-list"><div class="pub-empty-ttl">이 원고에 카드가 없습니다</div><p>콘텐츠 스튜디오에서 분류 후 저장하면 카드가 표시됩니다.</p></div>';
   }
@@ -10006,6 +10929,33 @@ function pubBuildCardGridForPublish(pm){
   const studioCount = csCards.length;
   const mismatch = studioCount > 0 && studioCount !== cards.length;
 
+  if(!pubAccSel){
+    let simpleHtml = `<div style="padding:10px 14px;font-size:10px;color:var(--muted);background:rgba(107,79,160,.04);border-radius:6px;margin:10px 14px">💡 <b>계정을 선택</b>하면 체크박스·보류·즉시 발행 등 채널별 관리 기능이 활성화됩니다.</div>`;
+    simpleHtml += `<div style="padding:6px 14px 4px;font-size:10px;font-weight:600;color:var(--muted)">카드 ${cards.length}개</div>`;
+    simpleHtml += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;padding:10px 14px;overflow-y:auto">';
+    cards.forEach((c,idx)=>{
+      const num=String(idx+1).padStart(2,'0');
+      const chLbl=[c.channel,c.channelType].filter(Boolean).join(' · ')||(CS_TYPE_LABELS[c.type]||'기타');
+      const titleStr=csEsc((c.title||'(제목 없음)').slice(0,50));
+      const bodyStr=csEsc((c.body||c.shortSummary||'').replace(/<[^>]+>/g,'').slice(0,100));
+      const tagsStr=(c.tags||[]).slice(0,4).map(t=>'#'+csEsc(t)).join(' ');
+      simpleHtml+=`<div style="border:1px solid var(--border);border-radius:10px;background:var(--card);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;font-weight:800;color:var(--purple)">No.${num}</span>
+          <span class="cs-card-type-badge ${c.type}" style="font-size:8px">${CS_TYPE_LABELS[c.type]||'기타'}</span>
+          <span style="font-size:9px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${csEsc(chLbl)}</span>
+        </div>
+        <div style="padding:10px">
+          <div style="font-size:11px;font-weight:600;margin-bottom:4px;line-height:1.4">${titleStr}</div>
+          <div style="font-size:9px;color:var(--muted);line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${bodyStr}</div>
+          ${tagsStr?`<div style="font-size:8px;color:var(--purple)">${tagsStr}</div>`:''}
+        </div>
+      </div>`;
+    });
+    simpleHtml+='</div>';
+    return simpleHtml;
+  }
+
   let html = `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card);flex-wrap:wrap;position:sticky;top:0;z-index:5">
     <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer;font-weight:600">
       <input type="checkbox" ${allChecked?'checked':''} onchange="pubToggleAllCards('${pmIdJs}',this.checked)" style="accent-color:var(--purple);width:15px;height:15px">
@@ -10013,6 +10963,7 @@ function pubBuildCardGridForPublish(pm){
     </label>
     <span style="font-size:10px;color:var(--purple);font-weight:700">${checkedCount}<span style="color:var(--muted);font-weight:500">/${cards.length}</span></span>
     <span style="flex:1"></span>
+    <button type="button" onclick="pmSaveManuscriptCards('${pmIdJs}')" style="font-size:9px;padding:4px 12px;border:none;border-radius:6px;background:var(--purple);color:#fff;cursor:pointer;font-weight:700">저장</button>
     ${mismatch ? `<span style="font-size:8px;color:var(--red);font-weight:600">스튜디오 ${studioCount}개 ≠ 스냅샷 ${cards.length}개</span>
     <button type="button" style="font-size:8px;padding:4px 10px;border:none;border-radius:6px;background:var(--purple);color:#fff;cursor:pointer;font-weight:600" onclick="pubResyncSnapshot('${pmIdJs}')">동기화</button>` : ''}
   </div>`;
@@ -10024,8 +10975,10 @@ function pubBuildCardGridForPublish(pm){
     const checked = pubCheckedCards.has(String(c.id));
     const cardIdJs = String(c.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 
-    const stLab = c.publishedAt ? '발행완료' : (c.finalized ? '완성' : '편집중');
-    const stCls = c.publishedAt ? 'background:#22c55e;color:#fff' : (c.finalized ? 'background:var(--purple);color:#fff' : 'background:var(--border);color:var(--text)');
+    const st = pmGetCardStateForAccount(c, pubAccSel);
+    const stLab = st.publishedAt ? '발행완료' : (st.finalized ? '완성' : '편집중');
+    const stCls = st.publishedAt ? 'background:#22c55e;color:#fff' : (st.finalized ? 'background:var(--purple);color:#fff' : 'background:var(--border);color:var(--text)');
+    const holdOn = !!st.onHold;
     const connMatch = pubFindConnForContent(c);
     const connLbl = connMatch ? (PUB_PLATFORM_LABEL[connMatch.platform]||connMatch.platform) : '시뮬레이션';
     const connColor = connMatch ? 'var(--green)' : '#fbbf24';
@@ -10034,7 +10987,7 @@ function pubBuildCardGridForPublish(pm){
     const bodyStr = csEsc((c.body || c.shortSummary || '').replace(/<[^>]+>/g, '').slice(0, 80));
     const tagsStr = (c.tags || []).slice(0, 4).map(t => '#' + csEsc(t)).join(' ');
 
-    html += `<div style="position:relative;border:${checked?'2px solid var(--purple)':'1px solid var(--border)'};border-radius:10px;background:var(--card);overflow:hidden;transition:border .15s,box-shadow .15s;cursor:pointer;${checked?'box-shadow:0 0 0 3px rgba(139,92,246,0.15)':''}" onclick="pubToggleCardCheck('${pmIdJs}','${cardIdJs}')">
+    html += `<div style="position:relative;border:${checked?'2px solid var(--purple)':'1px solid var(--border)'};border-radius:10px;background:var(--card);overflow:hidden;transition:border .15s,box-shadow .15s;cursor:pointer;${holdOn?'opacity:.5;':''}${checked?'box-shadow:0 0 0 3px rgba(139,92,246,0.15)':''}" onclick="pubToggleCardCheck('${pmIdJs}','${cardIdJs}')">
       <label style="position:absolute;top:8px;left:8px;z-index:2;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;border:2px solid ${checked?'var(--purple)':'var(--border2)'};background:${checked?'var(--purple)':'#fff'};cursor:pointer;transition:all .15s" onclick="event.stopPropagation()">
         <input type="checkbox" ${checked?'checked':''} onchange="pubToggleCardCheck('${pmIdJs}','${cardIdJs}')" style="position:absolute;opacity:0;width:0;height:0">
         ${checked?'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5L5.5 10L11 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
@@ -10043,6 +10996,7 @@ function pubBuildCardGridForPublish(pm){
         <span style="font-size:11px;font-weight:800;color:var(--purple)">No.${num}</span>
         <span style="font-size:9px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${csEsc(chLbl)}</span>
         <span style="font-size:8px;padding:2px 6px;border-radius:4px;${stCls};font-weight:600">${stLab}</span>
+        <button type="button" onclick="event.stopPropagation();pmToggleCardHold('${pmIdJs}','${cardIdJs}',event)" style="font-size:7px;padding:2px 6px;border-radius:4px;font-weight:700;cursor:pointer;border:1px solid ${holdOn?'rgba(180,60,60,.3)':'#ddd'};background:${holdOn?'rgba(180,60,60,.12)':'#fff'};color:${holdOn?'#b43c3c':'#aaa'}">보류</button>
       </div>
       <div style="padding:10px 10px 10px 10px">
         <div style="font-size:11px;font-weight:600;margin-bottom:4px;line-height:1.4">${titleStr}</div>
@@ -10051,12 +11005,12 @@ function pubBuildCardGridForPublish(pm){
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
           <span style="font-size:8px;color:${connColor};font-weight:600">${csEsc(connLbl)}</span>
           <span style="flex:1"></span>
-          ${c.publishedAt ? `<span style="font-size:8px;color:var(--green);font-weight:700">✓ 발행완료</span>
+          ${st.publishedAt ? `<span style="font-size:8px;color:var(--green);font-weight:700">✓ 발행완료</span>
           <button type="button" style="font-size:7px;padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);cursor:pointer;color:var(--muted)" onclick="event.stopPropagation();pubRevertPublished('${pmIdJs}','${cardIdJs}')" title="발행완료를 취소하고 편집중으로 되돌립니다">발행 취소</button>` : ''}
-          ${!c.publishedAt && c.finalized ? `<button type="button" style="font-size:7px;padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);cursor:pointer;color:var(--muted)" onclick="event.stopPropagation();pubToggleCardFinalized('${pmIdJs}','${cardIdJs}',false)" title="편집중으로 되돌리기">편집중으로</button>
+          ${!st.publishedAt && st.finalized ? `<button type="button" style="font-size:7px;padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);cursor:pointer;color:var(--muted)" onclick="event.stopPropagation();pubToggleCardFinalized('${pmIdJs}','${cardIdJs}',false)" title="편집중으로 되돌리기">편집중으로</button>
           <button type="button" style="font-size:8px;padding:4px 10px;border:none;border-radius:5px;background:var(--purple);color:#fff;cursor:pointer;font-weight:600" onclick="event.stopPropagation();pubPublishFromSavedCard('${pmIdJs}','${cardIdJs}')">즉시 발행</button>
           <button type="button" style="font-size:8px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:var(--card);cursor:pointer" onclick="event.stopPropagation();pubScheduleFromSavedCard('${pmIdJs}','${cardIdJs}')">예약</button>` : ''}
-          ${!c.publishedAt && !c.finalized ? `<button type="button" style="font-size:8px;padding:4px 10px;border:none;border-radius:5px;background:var(--green);color:#fff;cursor:pointer;font-weight:600" onclick="event.stopPropagation();pubToggleCardFinalized('${pmIdJs}','${cardIdJs}',true)">완성</button>` : ''}
+          ${!st.publishedAt && !st.finalized ? `<button type="button" style="font-size:8px;padding:4px 10px;border:none;border-radius:5px;background:var(--green);color:#fff;cursor:pointer;font-weight:600" onclick="event.stopPropagation();pubToggleCardFinalized('${pmIdJs}','${cardIdJs}',true)">완성</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -10071,11 +11025,9 @@ function pubRevertPublished(pmId, cardId){
   const card = pm.cardsSnapshot.find(c => c && String(c.id) === String(cardId));
   if(!card) return;
   if(!confirm('이 카드의 발행완료 상태를 취소하시겠습니까?\n(실제 플랫폼에 올린 글은 삭제되지 않습니다.)')) return;
-  card.publishedAt = null;
-  card.finalized = false;
+  const accId = pmGetCurrentAccountId();
+  pmSetCardStateForAccount(card, accId, { publishedAt: null, publishedFromQueueId: null, finalized: false });
   savePublishManuscripts();
-  const studioCard = csCards.find(c => String(c.id) === String(cardId));
-  if(studioCard){ studioCard.publishedAt = null; studioCard.finalized = false; }
   pubRenderDetail();
   toast('발행완료 → 편집중으로 변경됨', 'ok');
 }
@@ -10085,14 +11037,10 @@ function pubToggleCardFinalized(pmId, cardId, finalize){
   if(!pm || !Array.isArray(pm.cardsSnapshot)) return;
   const card = pm.cardsSnapshot.find(c => c && String(c.id) === String(cardId));
   if(!card) return;
-  card.finalized = !!finalize;
+  const accId = pmGetCurrentAccountId();
+  pmSetCardStateForAccount(card, accId, { finalized: !!finalize });
   if(finalize && !card.finalizedAt) card.finalizedAt = new Date().toISOString();
   savePublishManuscripts();
-  const studioCard = csCards.find(c => String(c.id) === String(cardId));
-  if(studioCard){
-    studioCard.finalized = card.finalized;
-    if(finalize) studioCard.finalizedAt = card.finalizedAt;
-  }
   pubRenderDetail();
   toast(finalize ? '완성 처리됨' : '편집중으로 변경됨', 'ok');
 }
@@ -11220,26 +12168,7 @@ function toast(msg,type='ok'){
 }
 
 // ── INIT ──
-(function initSessionUI(){
-  if(!driveSession) return;
-  const s = driveSession;
-  // 사용자 pill 표시
-  const pill = document.getElementById('userPill');
-  if(pill) pill.style.display='flex';
-  const nameEl = document.getElementById('topUserName');
-  if(nameEl) nameEl.textContent = s.name || s.email?.split('@')[0] || '';
-  const avatarEl = document.getElementById('topUserAvatar');
-  if(avatarEl && s.picture){ avatarEl.src=s.picture; avatarEl.style.display=''; }
-  // 관리자 배지 + 버튼
-  if(s.isAdmin){
-    const badge = document.getElementById('adminPillBadge');
-    if(badge) badge.style.display='';
-    const adminBtn = document.getElementById('adminBtn');
-    if(adminBtn) adminBtn.style.display='';
-  }
-  const logoutBtn = document.getElementById('logoutBtn');
-  if(logoutBtn) logoutBtn.style.display='';
-})();
+bsApplySessionToTopbar();
 if(typeof initAiSettingsUI==='function') initAiSettingsUI();
 
 function doLogout(){
